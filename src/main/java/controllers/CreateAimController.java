@@ -1,6 +1,6 @@
 package controllers;
 
-import clientside.ThreadToWrite;
+import server_interaction.Threads.WriteThread;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
@@ -20,7 +20,7 @@ public class CreateAimController {
 
     public void createAim(ActionEvent actionEvent) {
         //Main.projects.create(new Project(projectName.getText()));
-        Thread t5 = new ThreadToWrite(connector, CAim(MainController.choosedIdOfProject, aimName.getText(), Integer.parseInt(aimPriority.getText())));
+        Thread t5 = new WriteThread(CAim(MainController.choosedIdOfProject, aimName.getText(), Integer.parseInt(aimPriority.getText())));
         t5.start();
         CreateAimStage.close();
         MainController.refreshAimTable(aiTable, MainController.choosedIdOfProject);

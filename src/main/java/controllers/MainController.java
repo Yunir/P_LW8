@@ -1,6 +1,8 @@
 package controllers;
 
-import clientside.ThreadToWrite;
+import objects.TableviewObservableLists.AimsHolder;
+import objects.TableviewObservableLists.ProjectsHolder;
+import server_interaction.Threads.WriteThread;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.scene.control.Button;
@@ -27,12 +29,12 @@ import java.util.Date;
 
 import static server_interaction.Commands.RAim;
 import static server_interaction.Commands.RProject;
-import static main.Main.connector;
 import static main.Main.data;
 
 public class MainController {
     private Stage logInStage;
-
+    public static AimsHolder aimsHolder;
+    public static ProjectsHolder projectsHolder;
     static int choosedIdOfProject = -1;
     static private boolean disconnected = false;
     @FXML
@@ -71,6 +73,11 @@ public class MainController {
         PUpdate.setDisable(true);
         PDelete.setDisable(true);
 
+    }
+
+    public void initializeDataObsLists() {
+        aimsHolder = new AimsHolder();
+        projectsHolder = new ProjectsHolder();
     }
 
     //Control pop-up logIn Stage
@@ -152,11 +159,11 @@ public class MainController {
     }
 
     public void openAimsOfProject(MouseEvent mouseEvent) {
-        Project temp = (Project) ((TableView)mouseEvent.getSource()).getSelectionModel().getSelectedItem();
-        if(temp==null)return;
-        choosedIdOfProject = temp.id;
-        System.out.println(temp.id + " " + temp.getAmount() + " " + temp.getName());
-        refresh(projectsTable, aimsTable, temp.id);
+        Project selectedProject = (Project) ((TableView)mouseEvent.getSource()).getSelectionModel().getSelectedItem();
+        if(selectedProject==null)return;
+        choosedIdOfProject = selectedProject.getId();
+        System.out.println(selectedProject.getId() + " " + selectedProject.getAmount() + " " + selectedProject.getName());
+        refresh(projectsTable, aimsTable, selectedProject.getId());
         aimsTable.setPlaceholder(new Label("There is no aims yet."));
         ACreate.setDisable(false);
         PUpdate.setDisable(false);
@@ -167,8 +174,8 @@ public class MainController {
             public void run()
             {
                 projectsTable.requestFocus();
-                projectsTable.getSelectionModel().select(temp.id-1);
-                projectsTable.getFocusModel().focus(temp.id-1);
+                projectsTable.getSelectionModel().select(selectedProject.getId()-1);
+                projectsTable.getFocusModel().focus(selectedProject.getId()-1);
             }
         });
         //aimsTable.setItems(temp.aims.getAims());
@@ -177,13 +184,13 @@ public class MainController {
     public void refreshScene(ActionEvent actionEvent) {
         choosedIdOfProject = -1;
         refresh(projectsTable, aimsTable, -1);
-        data.getAims().setAimsObsList(FXCollections.observableArrayList());
-        aimsTable.setItems(FXCollections.observableArrayList());
+        //TODO: flush Aimlist
         ACreate.setDisable(true);
         AUpdate.setDisable(true);
         ADelete.setDisable(true);
         PUpdate.setDisable(true);
         PDelete.setDisable(true);
+        aimsTable.setItems(FXCollections.observableArrayList());
         aimsTable.setPlaceholder(new Label("Click to any project to start working with aims."));
     }
 
@@ -192,11 +199,11 @@ public class MainController {
         choosedIdOfProject = currProjectId;
         System.out.println(Main.readThread.await_of_collection);
         if(currProjectId == -1) {
-            Thread t1 = new ThreadToWrite(connector, RProject());
+            Thread t1 = new WriteThread(RProject());
             Main.readThread.await_of_collection = true;
             t1.start();
         } else {
-            Thread t2 = new ThreadToWrite(connector, RAim(currProjectId));
+            Thread t2 = new WriteThread(RAim(currProjectId));
             Main.readThread.await_of_collection = true;
             t2.start();
         }
@@ -216,19 +223,19 @@ public class MainController {
                     Main.readThread.await_of_collection = false;
                 }
             }
-            s.setItems(data.getProjects().getProjectsObsList());
-            if(currProjectId != -1) ss.setItems(data.getAims().getAimsObsList());
+            s.setItems(projectsHolder.getProjectsObsList());
+            if(currProjectId != -1) ss.setItems(aimsHolder.getAimsObsList());
     }
 
     public void refresh() {
         System.out.println("Refresh started...");
         System.out.println(Main.readThread.await_of_collection);
         if(choosedIdOfProject == -1) {
-            Thread t1 = new ThreadToWrite(connector, RProject());
+            Thread t1 = new WriteThread(RProject());
             Main.readThread.await_of_collection = true;
             t1.start();
         } else {
-            Thread t2 = new ThreadToWrite(connector, RAim(choosedIdOfProject));
+            Thread t2 = new WriteThread(RAim(choosedIdOfProject));
             Main.readThread.await_of_collection = true;
             t2.start();
         }
@@ -248,16 +255,16 @@ public class MainController {
                     Main.readThread.await_of_collection = false;
                 }
             }
-            projectsTable.setItems(data.getProjects().getProjectsObsList());
-            if(choosedIdOfProject != -1) aimsTable.setItems(data.getAims().getAimsObsList());
+            projectsTable.setItems(projectsHolder.getProjectsObsList());
+            if(choosedIdOfProject != -1) aimsTable.setItems(aimsHolder.getAimsObsList());
 
-        projectsTable.setItems(data.getProjects().getProjectsObsList());
+        projectsTable.setItems(projectsHolder.getProjectsObsList());
     }
 
 
     static public void refreshAimTable(TableView ss, int currProjectId) {
         System.out.println("решил рефрешнуть " + currProjectId);
-        Thread t2 = new ThreadToWrite(connector, RAim(currProjectId));
+        Thread t2 = new WriteThread(RAim(currProjectId));
         Main.readThread.await_of_collection = true;
         t2.start();
 
@@ -275,7 +282,7 @@ public class MainController {
                     Main.readThread.await_of_collection = false;
                 }
             }
-            ss.setItems(data.getAims().getAimsObsList());
+            ss.setItems(aimsHolder.getAimsObsList());
 
     }
 

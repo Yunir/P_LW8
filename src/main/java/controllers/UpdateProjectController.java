@@ -1,6 +1,6 @@
 package controllers;
 
-import clientside.ThreadToWrite;
+import server_interaction.Threads.WriteThread;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableView;
@@ -21,7 +21,7 @@ public class UpdateProjectController {
 
     public void updateProject(ActionEvent actionEvent) {
         //Main.projects.create(new Project(projectName.getText()));
-        Thread t0 = new ThreadToWrite(connector, UProject(choosedIdOfProject, newProjectName.getText()));
+        Thread t0 = new WriteThread(UProject(choosedIdOfProject, newProjectName.getText()));
         t0.start();
         UpdateProjectStage.close();
         MainController.refresh(prTable, aiTable, -1);
