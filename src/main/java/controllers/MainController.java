@@ -31,10 +31,10 @@ import static main.Main.connector;
 import static main.Main.data;
 
 public class MainController {
-    Stage logInStage;
+    private Stage logInStage;
 
     static int choosedIdOfProject = -1;
-    static boolean disconnected = false;
+    static private boolean disconnected = false;
     @FXML
     private TableView projectsTable;
     @FXML
@@ -65,10 +65,6 @@ public class MainController {
         nameOfAim.setCellValueFactory(new PropertyValueFactory<Aim, String>("name"));
         priorityOfAim.setCellValueFactory(new PropertyValueFactory<Aim, Integer>("priority"));
         aimsTable.setPlaceholder(new Label("Click to any project to start working with aims."));
-        /*Main.projects.exampleInitData();
-        for (int i = 0; i < Main.projects.getProjectsObsList().size(); i++) {
-            Main.projects.getProjectsObsList().get(i).aims.exampleInitData(i+1);
-        }*/
         ACreate.setDisable(true);
         AUpdate.setDisable(true);
         ADelete.setDisable(true);
@@ -77,6 +73,7 @@ public class MainController {
 
     }
 
+    //Control pop-up logIn Stage
     public void showLogInDialog(Stage parent) {
         logInStage = new Stage(StageStyle.TRANSPARENT);
         try {
@@ -94,7 +91,6 @@ public class MainController {
             System.out.println("Can'readThread load fxml 'connect' file: " + e.getMessage());
         }
     }
-
     public void hideLogInDialog() {
         Platform.runLater(new Runnable() {
             @Override
@@ -102,23 +98,6 @@ public class MainController {
                 logInStage.close();
             }
         });
-    }
-
-    public void showLogInDialog(ActionEvent actionEvent) {
-        Stage stage = new Stage();
-        try {
-            Parent root = FXMLLoader.load(getClass().getResource("../../resources/fxml/connect.fxml"));
-            stage.setTitle("Logging in");
-            stage.setMinHeight(150);
-            stage.setMinWidth(300);
-            stage.setResizable(false);
-            stage.setScene(new Scene(root));
-            stage.initModality(Modality.WINDOW_MODAL);
-            stage.initOwner(((Node)actionEvent.getSource()).getScene().getWindow());
-            stage.show();
-        } catch (IOException e) {
-            System.out.println("Can'readThread load fxml 'connect' file");
-        }
     }
 
     public void showCreateProjectDialog(ActionEvent actionEvent) {
@@ -223,8 +202,8 @@ public class MainController {
         }
         System.out.println("Install awaiting value - " + Main.readThread.await_of_collection);
 
-        if (connector.con_established) {
-            Date oldDate = new Date();
+       // if (connector.con_established) {        }
+        Date oldDate = new Date();
             Date newDate;
             long seconds;
             System.out.println("Before trip value - " + Main.readThread.await_of_collection);
@@ -239,7 +218,6 @@ public class MainController {
             }
             s.setItems(data.getProjects().getProjectsObsList());
             if(currProjectId != -1) ss.setItems(data.getAims().getAimsObsList());
-        }
     }
 
     public void refresh() {
@@ -256,7 +234,7 @@ public class MainController {
         }
         System.out.println("Install awaiting value - " + Main.readThread.await_of_collection);
 
-        if (connector.con_established) {
+        //if (connector.con_established) {}
             Date oldDate = new Date();
             Date newDate;
             long seconds;
@@ -272,7 +250,7 @@ public class MainController {
             }
             projectsTable.setItems(data.getProjects().getProjectsObsList());
             if(choosedIdOfProject != -1) aimsTable.setItems(data.getAims().getAimsObsList());
-        }
+
         projectsTable.setItems(data.getProjects().getProjectsObsList());
     }
 
@@ -283,7 +261,7 @@ public class MainController {
         Main.readThread.await_of_collection = true;
         t2.start();
 
-        if (connector.con_established) {
+        //if (connector.con_established) {}
 
             Date oldDate = new Date();
             Date newDate;
@@ -298,7 +276,7 @@ public class MainController {
                 }
             }
             ss.setItems(data.getAims().getAimsObsList());
-        }
+
     }
 
     public void unlockButtons(MouseEvent mouseEvent) {

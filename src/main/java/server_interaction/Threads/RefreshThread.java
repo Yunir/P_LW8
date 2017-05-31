@@ -1,4 +1,4 @@
-package server_interaction;
+package server_interaction.Threads;
 
 import static main.Main.mainController;
 

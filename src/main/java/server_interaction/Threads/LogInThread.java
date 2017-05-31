@@ -1,4 +1,4 @@
-package server_interaction;
+package server_interaction.Threads;
 
 import java.io.IOException;
 import static main.Main.connector;
@@ -13,7 +13,7 @@ public class LogInThread extends Thread {
         try {
             boolean logpassCorrect = false;
             while(!logpassCorrect) {
-                if (connector.getdIn().readUTF().equals("allow")) {
+                if (connector.ioFuncs.getdIn().readUTF().equals("allow")) {
                     logpassCorrect = true;
                     mainController.hideLogInDialog();
                 } else System.out.println("login or password are incorrect"); //TODO: 3 atempts, then disconnect

@@ -1,15 +1,15 @@
 package main;
 
 import server_interaction.Connector;
-import clientside.ThreadToRead;
-import server_interaction.LogInThread;
+import server_interaction.Threads.ReadThread;
+import server_interaction.Threads.LogInThread;
 import controllers.MainController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import server_interaction.RefreshThread;
+import server_interaction.Threads.RefreshThread;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -18,7 +18,7 @@ import java.net.UnknownHostException;
 public class Main extends Application {
 
     public static MainController mainController;
-    public static ThreadToRead readThread;
+    public static ReadThread readThread;
     public static Connector connector;
     public static DataModel data;
 
@@ -38,7 +38,7 @@ public class Main extends Application {
             connector.establishConnection();
             LogInThread logIn = new LogInThread();
             logIn.start();
-            readThread = new ThreadToRead(logIn);
+            readThread = new ReadThread(logIn);
             readThread.start();
             RefreshThread refreshThread = new RefreshThread(logIn);
             refreshThread.start();
