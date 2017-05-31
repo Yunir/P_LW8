@@ -6,7 +6,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
-import static clientside.SampleCommands.CAim;
+import static server_interaction.Commands.CAim;
 import static controllers.CreateProjectController.aiTable;
 import static main.Main.connector;
 

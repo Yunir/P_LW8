@@ -7,7 +7,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
-import static clientside.SampleCommands.UProject;
+import static server_interaction.Commands.UProject;
 import static controllers.MainController.choosedIdOfProject;
 import static main.Main.connector;
 

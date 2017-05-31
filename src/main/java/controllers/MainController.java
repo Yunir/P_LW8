@@ -9,7 +9,6 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.StageStyle;
-import main.DataModel;
 import main.Main;
 import objects.Aim;
 import objects.Project;
@@ -26,14 +25,14 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.util.Date;
 
-import static clientside.SampleCommands.RAim;
-import static clientside.SampleCommands.RProject;
-import static java.lang.Thread.sleep;
+import static server_interaction.Commands.RAim;
+import static server_interaction.Commands.RProject;
 import static main.Main.connector;
 import static main.Main.data;
-import static main.Main.refresh;
 
 public class MainController {
+    Stage logInStage;
+
     static int choosedIdOfProject = -1;
     static boolean disconnected = false;
     @FXML
@@ -75,40 +74,34 @@ public class MainController {
         ADelete.setDisable(true);
         PUpdate.setDisable(true);
         PDelete.setDisable(true);
-        Thread k = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while(!refresh) {
-                    System.out.println(".");
-                    try {
-                        sleep(2500);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-                refresh(projectsTable, aimsTable, -1);
-                projectsTable.setItems(data.getProjects().getProjectsObsList());
-            }
-        });
-        k.start();
+
     }
 
     public void showLogInDialog(Stage parent) {
-        Stage stage = new Stage(StageStyle.TRANSPARENT);
+        logInStage = new Stage(StageStyle.TRANSPARENT);
         try {
-            Parent rot = FXMLLoader.load(getClass().getResource("../fxml/connect.fxml"));
-            stage.setTitle("Logging in");
-            stage.setMinHeight(150);
-            stage.setMinWidth(300);
-            stage.setResizable(false);
-            stage.setScene(new Scene(rot));
-            stage.initModality(Modality.WINDOW_MODAL);
-            stage.initOwner(parent);
-            ConnectController.LoginStage = stage;
-            stage.show();
+            Parent root = FXMLLoader.load(getClass().getResource("../fxml/connect.fxml"));
+            logInStage.setTitle("Logging in");
+            logInStage.setMinHeight(150);
+            logInStage.setMinWidth(300);
+            logInStage.setResizable(false);
+            logInStage.setScene(new Scene(root));
+            logInStage.initModality(Modality.WINDOW_MODAL);
+            logInStage.initOwner(parent);
+            ConnectController.LoginStage = logInStage;
+            logInStage.show();
         } catch (IOException e) {
-            System.out.println("Can't load fxml 'connect' file: " + e.getMessage());
+            System.out.println("Can'readThread load fxml 'connect' file: " + e.getMessage());
         }
+    }
+
+    public void hideLogInDialog() {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                logInStage.close();
+            }
+        });
     }
 
     public void showLogInDialog(ActionEvent actionEvent) {
@@ -124,7 +117,7 @@ public class MainController {
             stage.initOwner(((Node)actionEvent.getSource()).getScene().getWindow());
             stage.show();
         } catch (IOException e) {
-            System.out.println("Can't load fxml 'connect' file");
+            System.out.println("Can'readThread load fxml 'connect' file");
         }
     }
 
@@ -141,7 +134,7 @@ public class MainController {
             CreateProjectController.prTable = projectsTable;
             stage.show();
         } catch (IOException e) {
-            System.out.println("Can't load fxml 'createProject' file");
+            System.out.println("Can'readThread load fxml 'createProject' file");
         }
     }
 
@@ -158,7 +151,7 @@ public class MainController {
             UpdateProjectController.prTable = projectsTable;
             stage.show();
         } catch (IOException e) {
-            System.out.println("Can't load fxml 'createProject' file");
+            System.out.println("Can'readThread load fxml 'createProject' file");
         }
     }
 
@@ -175,7 +168,7 @@ public class MainController {
             CreateProjectController.aiTable = aimsTable;
             stage.show();
         } catch (IOException e) {
-            System.out.println("Can't load fxml 'createAim' file");
+            System.out.println("Can'readThread load fxml 'createAim' file");
         }
     }
 
@@ -218,40 +211,76 @@ public class MainController {
     static public void refresh(TableView s, TableView ss, int currProjectId) {
         System.out.println("Refresh started...");
         choosedIdOfProject = currProjectId;
-        System.out.println(Main.t.await_of_collection);
+        System.out.println(Main.readThread.await_of_collection);
         if(currProjectId == -1) {
             Thread t1 = new ThreadToWrite(connector, RProject());
-            Main.t.await_of_collection = true;
+            Main.readThread.await_of_collection = true;
             t1.start();
         } else {
             Thread t2 = new ThreadToWrite(connector, RAim(currProjectId));
-            Main.t.await_of_collection = true;
+            Main.readThread.await_of_collection = true;
             t2.start();
         }
-        System.out.println("Install awaiting value - " + Main.t.await_of_collection);
+        System.out.println("Install awaiting value - " + Main.readThread.await_of_collection);
 
         if (connector.con_established) {
             Date oldDate = new Date();
             Date newDate;
             long seconds;
-            System.out.println("Before trip value - " + Main.t.await_of_collection);
-            while(Main.t.await_of_collection) {
+            System.out.println("Before trip value - " + Main.readThread.await_of_collection);
+            while(Main.readThread.await_of_collection) {
                 newDate = new Date();
                 seconds = (newDate.getTime()-oldDate.getTime())/1000;
                 if (seconds > 5) {
                     System.out.println("Response of refresh time over");
                     disconnected = true;
-                    Main.t.await_of_collection = false;
+                    Main.readThread.await_of_collection = false;
                 }
             }
             s.setItems(data.getProjects().getProjectsObsList());
             if(currProjectId != -1) ss.setItems(data.getAims().getAimsObsList());
         }
     }
+
+    public void refresh() {
+        System.out.println("Refresh started...");
+        System.out.println(Main.readThread.await_of_collection);
+        if(choosedIdOfProject == -1) {
+            Thread t1 = new ThreadToWrite(connector, RProject());
+            Main.readThread.await_of_collection = true;
+            t1.start();
+        } else {
+            Thread t2 = new ThreadToWrite(connector, RAim(choosedIdOfProject));
+            Main.readThread.await_of_collection = true;
+            t2.start();
+        }
+        System.out.println("Install awaiting value - " + Main.readThread.await_of_collection);
+
+        if (connector.con_established) {
+            Date oldDate = new Date();
+            Date newDate;
+            long seconds;
+            System.out.println("Before trip value - " + Main.readThread.await_of_collection);
+            while(Main.readThread.await_of_collection) {
+                newDate = new Date();
+                seconds = (newDate.getTime()-oldDate.getTime())/1000;
+                if (seconds > 5) {
+                    System.out.println("Response of refresh time over");
+                    disconnected = true;
+                    Main.readThread.await_of_collection = false;
+                }
+            }
+            projectsTable.setItems(data.getProjects().getProjectsObsList());
+            if(choosedIdOfProject != -1) aimsTable.setItems(data.getAims().getAimsObsList());
+        }
+        projectsTable.setItems(data.getProjects().getProjectsObsList());
+    }
+
+
     static public void refreshAimTable(TableView ss, int currProjectId) {
         System.out.println("решил рефрешнуть " + currProjectId);
         Thread t2 = new ThreadToWrite(connector, RAim(currProjectId));
-        Main.t.await_of_collection = true;
+        Main.readThread.await_of_collection = true;
         t2.start();
 
         if (connector.con_established) {
@@ -259,13 +288,13 @@ public class MainController {
             Date oldDate = new Date();
             Date newDate;
             long seconds;
-            while(Main.t.await_of_collection) {
+            while(Main.readThread.await_of_collection) {
                 newDate = new Date();
                 seconds = (newDate.getTime()-oldDate.getTime())/1000;
                 if (seconds > 5) {
                     System.out.println("Response time over");
                     disconnected = true;
-                    Main.t.await_of_collection = false;
+                    Main.readThread.await_of_collection = false;
                 }
             }
             ss.setItems(data.getAims().getAimsObsList());

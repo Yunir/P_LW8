@@ -8,7 +8,6 @@ import javafx.stage.Stage;
 import org.apache.commons.codec.digest.DigestUtils;
 
 import static main.Main.connector;
-import static main.Main.start;
 
 public class ConnectController {
     @FXML
@@ -20,12 +19,8 @@ public class ConnectController {
     @FXML
     private Label exceptionOfLogPass;
     public void connectQuery(ActionEvent actionEvent) {
-        connector.writeToServer("access;"+login.getText()+";"+ DigestUtils.md5Hex(password.getText()));
-        if(connector.checkLogPassFromServer()) {
-            start = true;
-            LoginStage.close();
-        }
-        else exceptionOfLogPass.setVisible(true);
+        connector.ioFuncs.writeToServer("access;"+login.getText()+";"+ DigestUtils.md5Hex(password.getText()));
+        exceptionOfLogPass.setVisible(true);
     }
 
     public void exitTheApp(ActionEvent actionEvent) {

@@ -1,9 +1,9 @@
-package clientside;
+package server_interaction;
 
 /**
  * Created by Yunicoed on 17.05.2017.
  */
-public class SampleCommands {
+public class Commands {
     public static String UProject = "project;update;jkvsanjdao;dfs";
     private static String RProject = "project;read"; //если кеши одинаковые, не читать
     public static String DProject = "project;delete;jkvsanjdao;cache"; //если кеши одинаковые, не читать; FIELD NAME _ UNIQUE!
@@ -30,6 +30,8 @@ public class SampleCommands {
         String query = "aim;read;"+i;
         return query;
     }
+
+
 
 
 }

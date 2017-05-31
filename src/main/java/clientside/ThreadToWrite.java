@@ -1,6 +1,6 @@
 package clientside;
 
-import connection.Connector;
+import server_interaction.Connector;
 
 public class ThreadToWrite extends Thread {
 
@@ -14,6 +14,6 @@ public class ThreadToWrite extends Thread {
 
     @Override
     public void run(){
-        connector.writeToServer(sms);
+        connector.ioFuncs.writeToServer(sms);
     }
 }

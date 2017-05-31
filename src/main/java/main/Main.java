@@ -1,31 +1,31 @@
 package main;
 
-import connection.Connector;
+import server_interaction.Connector;
 import clientside.ThreadToRead;
+import server_interaction.LogInThread;
 import controllers.MainController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import server_interaction.RefreshThread;
+
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import static java.lang.Thread.sleep;
 
 public class Main extends Application {
-    public static boolean start = false;
-    public static boolean refresh = false;
-    public static ThreadToRead t;
 
-    private static MainController MainController;
+    public static MainController mainController;
+    public static ThreadToRead readThread;
     public static Connector connector;
     public static DataModel data;
 
     @Override
     public void start(Stage primaryStage) throws IOException{
-        MainController = setMainView(primaryStage);
-        MainController.showLogInDialog(primaryStage);
+        mainController = showMainView(primaryStage);
+        mainController.showLogInDialog(primaryStage);
     }
 
 
@@ -36,21 +36,12 @@ public class Main extends Application {
             connector.setIA(InetAddress.getByName("localhost"));
             connector.setPort(9999);
             connector.establishConnection();
-            Thread k = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    while(!start) {System.out.println(".");
-                        try {
-                            sleep(2500);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }}
-                    t = new ThreadToRead(connector);
-                    t.start();
-                    refresh = true;
-                }
-            });
-            k.start();
+            LogInThread logIn = new LogInThread();
+            logIn.start();
+            readThread = new ThreadToRead(logIn);
+            readThread.start();
+            RefreshThread refreshThread = new RefreshThread(logIn);
+            refreshThread.start();
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
@@ -58,7 +49,7 @@ public class Main extends Application {
 
     }
 
-    private MainController setMainView(Stage parent) throws IOException {
+    private MainController showMainView(Stage parent) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("../fxml/main.fxml"));
         Parent root = loader.load();
         parent.setTitle("Deal with it!");

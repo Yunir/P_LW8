@@ -1,13 +1,9 @@
-package connection;
+package server_interaction;
 
 import clientside.SendPacket;
 import com.google.gson.Gson;
-import controllers.ConnectController;
 import javafx.collections.FXCollections;
-import main.DataModel;
 import main.Main;
-import objects.Project;
-import objects.ProjectsHolder;
 
 import java.io.*;
 import java.net.InetAddress;
@@ -24,23 +20,20 @@ public class Connector {
     Socket socket = null;
     InputStream in = null;
     OutputStream out = null;
-    DataInputStream dIn;
-    DataOutputStream dOut;
+    private DataInputStream dIn;
+    private DataOutputStream dOut;
     private InetAddress IA;
     private int port;
-
+    public IOFuncs ioFuncs;
 
     public void establishConnection() {
-
-    }
-
-    public void Connect(InetAddress IA, int port) {
         try {
             socket = new Socket(IA, port);
             in = socket.getInputStream();
             out = socket.getOutputStream();
             dIn = new DataInputStream(in);
             dOut = new DataOutputStream(out);
+            ioFuncs = new IOFuncs(dIn, dOut);
             con_established = true;
         } catch (UnknownHostException e) {
             System.out.println("Host not found");
@@ -50,52 +43,7 @@ public class Connector {
         }
     }
 
-    synchronized public void writeToServer(String sms){
-        InputStreamReader isr = new InputStreamReader(System.in);
-        BufferedReader keyboard = new BufferedReader(isr);
 
-        String line = null;
-        try {
-            if(con_established) {
-                line = sms;
-                //System.out.println(line);
-                dOut.writeUTF(line);
-                System.out.println(":");
-                dOut.flush();
-            }
-        } catch (IOException e) {
-            System.out.println("Something incorrect in writeToServer");
-        }
-    }
-
-    public static String ObjectToString(Object o){
-        String line = null;
-        ByteArrayOutputStream bytearr = new ByteArrayOutputStream();
-        ObjectOutputStream oos = null;
-        try {
-            oos = new ObjectOutputStream(bytearr);
-            oos.writeObject(o);
-            line = bytearr.toString();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return line;
-    }
-
-    public boolean checkLogPassFromServer(){
-        String line = null;
-        try {
-             if(con_established) {
-                line = dIn.readUTF();
-                System.out.println(";");
-                System.out.println(line);
-                if(line.equals("allow")) return true;
-            }
-        } catch (IOException e) {
-            System.out.println("Something incorrect in checkLogPassFromServer");
-        }
-        return false;
-    }
 
     public void listenToServer(){
         String line = null;
@@ -115,8 +63,8 @@ public class Connector {
                     for (int i = 0; i < s.aimsList.size(); i++) {
                         data.getAims().create(s.aimsList.get(i));
                     }
-                    Main.t.await_of_collection = false;
-                    System.out.println("Installed" + Main.t.await_of_collection + " value");
+                    Main.readThread.await_of_collection = false;
+                    System.out.println("Installed" + Main.readThread.await_of_collection + " value");
                 }
             }
         } catch (IOException e) {
@@ -144,4 +92,7 @@ public class Connector {
         this.port = port;
     }
 
+    public DataInputStream getdIn() {
+        return dIn;
+    }
 }
