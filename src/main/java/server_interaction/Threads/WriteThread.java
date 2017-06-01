@@ -1,6 +1,6 @@
 package server_interaction.Threads;
 
-import static main.Main.connector;
+import static main.Main.IOConnector;
 
 public class WriteThread extends Thread {
 
@@ -8,7 +8,7 @@ public class WriteThread extends Thread {
 
     @Override
     public void run(){
-        connector.ioFuncs.writeToServer(sms);
+        IOConnector.ioFuncs.writeToServer(sms);
     }
 
     public WriteThread(String sms){

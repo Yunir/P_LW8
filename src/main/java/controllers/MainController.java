@@ -2,6 +2,8 @@ package controllers;
 
 import objects.TableviewObservableLists.AimsHolder;
 import objects.TableviewObservableLists.ProjectsHolder;
+import server_interaction.MessageSolver;
+import server_interaction.PacketOfData;
 import server_interaction.Threads.WriteThread;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -29,7 +31,6 @@ import java.util.Date;
 
 import static server_interaction.Commands.RAim;
 import static server_interaction.Commands.RProject;
-import static main.Main.data;
 
 public class MainController {
     private Stage logInStage;
@@ -137,7 +138,7 @@ public class MainController {
             UpdateProjectController.prTable = projectsTable;
             stage.show();
         } catch (IOException e) {
-            System.out.println("Can'readThread load fxml 'createProject' file");
+            System.out.println("Can't readThread load fxml 'createProject' file");
         }
     }
 
@@ -209,7 +210,7 @@ public class MainController {
         }
         System.out.println("Install awaiting value - " + Main.readThread.await_of_collection);
 
-       // if (connector.con_established) {        }
+       // if (IOConnector.con_established) {        }
         Date oldDate = new Date();
             Date newDate;
             long seconds;
@@ -228,9 +229,14 @@ public class MainController {
     }
 
     public void refresh() {
+        MessageSolver m = new MessageSolver();
+        PacketOfData p = new PacketOfData();
         System.out.println("Refresh started...");
         System.out.println(Main.readThread.await_of_collection);
-        if(choosedIdOfProject == -1) {
+        Thread t1 = new WriteThread(m.serializePacketOfData(p));
+        Main.readThread.await_of_collection = true;
+        t1.start();
+        /*if(choosedIdOfProject == -1) {
             Thread t1 = new WriteThread(RProject());
             Main.readThread.await_of_collection = true;
             t1.start();
@@ -241,7 +247,7 @@ public class MainController {
         }
         System.out.println("Install awaiting value - " + Main.readThread.await_of_collection);
 
-        //if (connector.con_established) {}
+        //if (IOConnector.con_established) {}
             Date oldDate = new Date();
             Date newDate;
             long seconds;
@@ -258,7 +264,7 @@ public class MainController {
             projectsTable.setItems(projectsHolder.getProjectsObsList());
             if(choosedIdOfProject != -1) aimsTable.setItems(aimsHolder.getAimsObsList());
 
-        projectsTable.setItems(projectsHolder.getProjectsObsList());
+        projectsTable.setItems(projectsHolder.getProjectsObsList());*/
     }
 
 
@@ -268,7 +274,7 @@ public class MainController {
         Main.readThread.await_of_collection = true;
         t2.start();
 
-        //if (connector.con_established) {}
+        //if (IOConnector.con_established) {}
 
             Date oldDate = new Date();
             Date newDate;

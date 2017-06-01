@@ -1,5 +1,6 @@
 package main;
 
+import objects.DataHolder;
 import server_interaction.Connector;
 import server_interaction.Threads.ReadThread;
 import server_interaction.Threads.LogInThread;
@@ -19,23 +20,30 @@ public class Main extends Application {
 
     public static MainController mainController;
     public static ReadThread readThread;
-    public static Connector connector;
-    public static DataModel data;
+    public static Connector IOConnector;
+    public static Connector acceptChangesConnector;
+    public static DataHolder data;
+
 
     @Override
     public void start(Stage primaryStage) throws IOException{
         mainController = showMainView(primaryStage);
         mainController.showLogInDialog(primaryStage);
+        mainController.initializeDataObsLists();
     }
 
 
     public static void main(String[] args)  {
-        data = new DataModel();
+        data = new DataHolder();
         try {
-            connector = new Connector();
-            connector.setIA(InetAddress.getByName("localhost"));
-            connector.setPort(9999);
-            connector.establishConnection();
+            IOConnector = new Connector();
+            IOConnector.setIA(InetAddress.getByName("localhost"));
+            IOConnector.setPort(9999);
+            IOConnector.establishConnection();
+            acceptChangesConnector = new Connector();
+            acceptChangesConnector.setIA(InetAddress.getByName("localhost"));
+            acceptChangesConnector.setPort(8888);
+            //acceptChangesConnector.establishConnection();
             LogInThread logIn = new LogInThread();
             logIn.start();
             readThread = new ReadThread(logIn);

@@ -8,7 +8,6 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 import static server_interaction.Commands.CProject;
-import static main.Main.connector;
 
 public class CreateProjectController {
     static public TableView prTable;

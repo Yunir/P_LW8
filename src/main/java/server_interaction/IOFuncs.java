@@ -1,7 +1,7 @@
 package server_interaction;
 
-import clientside.SendPacket;
 import com.google.gson.Gson;
+import com.sun.xml.internal.bind.v2.runtime.reflect.Lister;
 import javafx.collections.FXCollections;
 import main.Main;
 
@@ -35,20 +35,12 @@ public class IOFuncs {
         try {
             while(true){
                 //if(con_established) {}
-
                 line = dIn.readUTF();
                     System.out.println(";");
                     System.out.println(line);
-                    SendPacket s = new Gson().fromJson(line, SendPacket.class);
-                    data.getProjects().setProjectsObsList(FXCollections.observableArrayList());
-                    data.getAims().setAimsObsList(FXCollections.observableArrayList());
-                    for (int i = 0; i < s.projectsList.size(); i++) {
-                        data.getProjects().create(s.projectsList.get(i));
-                        //System.out.println(s.projectsList.get(i).getName());
-                    }
-                    for (int i = 0; i < s.aimsList.size(); i++) {
-                        data.getAims().create(s.aimsList.get(i));
-                    }
+                    PacketOfData packetOfData = new Gson().fromJson(line, PacketOfData.class);
+                    //data.setProjects(packetOfData.getProjectsList());
+
                     Main.readThread.await_of_collection = false;
                     System.out.println("Installed" + Main.readThread.await_of_collection + " value");
             }

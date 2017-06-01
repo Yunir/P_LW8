@@ -9,7 +9,6 @@ import javafx.stage.Stage;
 
 import static server_interaction.Commands.UProject;
 import static controllers.MainController.choosedIdOfProject;
-import static main.Main.connector;
 
 public class UpdateProjectController {
     static public TableView prTable;

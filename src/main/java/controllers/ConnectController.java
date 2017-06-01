@@ -5,9 +5,13 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
+import main.Main;
 import org.apache.commons.codec.digest.DigestUtils;
+import server_interaction.MessageSolver;
+import server_interaction.PacketOfData;
+import server_interaction.Threads.WriteThread;
 
-import static main.Main.connector;
+import static main.Main.IOConnector;
 
 public class ConnectController {
     @FXML
@@ -19,7 +23,12 @@ public class ConnectController {
     @FXML
     private Label exceptionOfLogPass;
     public void connectQuery(ActionEvent actionEvent) {
-        connector.ioFuncs.writeToServer("access;"+login.getText()+";"+ DigestUtils.md5Hex(password.getText()));
+
+        MessageSolver m = new MessageSolver();
+        PacketOfData p = new PacketOfData();
+        //IOConnector.ioFuncs.writeToServer(m.serializePacketOfData(p));
+
+        IOConnector.ioFuncs.writeToServer("access;"+login.getText()+";"+ DigestUtils.md5Hex(password.getText()));
         exceptionOfLogPass.setVisible(true);
     }
 

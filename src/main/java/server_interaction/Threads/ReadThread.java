@@ -1,6 +1,6 @@
 package server_interaction.Threads;
 
-import static main.Main.connector;
+import static main.Main.IOConnector;
 
 public class ReadThread extends Thread {
     volatile public boolean await_of_collection = false;
@@ -14,6 +14,6 @@ public class ReadThread extends Thread {
         try {
             loginAwaitThread.join();
         } catch (InterruptedException e) { e.printStackTrace(); }
-        connector.ioFuncs.readFromServer();
+        IOConnector.ioFuncs.readFromServer();
     }
 }

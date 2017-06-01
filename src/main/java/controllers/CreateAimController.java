@@ -8,7 +8,6 @@ import javafx.stage.Stage;
 
 import static server_interaction.Commands.CAim;
 import static controllers.CreateProjectController.aiTable;
-import static main.Main.connector;
 
 public class CreateAimController {
     @FXML

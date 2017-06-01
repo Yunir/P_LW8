@@ -25,7 +25,7 @@ public class Connector {
             System.out.println("Host not found");
         } catch (IOException e) {
             //TODO: notify user
-            System.out.println("Server is not available");
+            System.out.println("Server in "+ IA.getHostAddress()+":"+port+" is not available");
         }
     }
 

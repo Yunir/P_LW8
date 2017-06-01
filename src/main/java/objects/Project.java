@@ -1,32 +1,34 @@
 package objects;
 
-import java.io.Serializable;
+import java.util.ArrayList;
 
-/**
- * Created by Yunicoed on 16.05.2017.
- */
 public class Project {
-    public int id;
-    public String name;
-    public int amount;
+    private int id;
+    private String name;
+    private int amount;
+    public ArrayList<Aim> aimsList = new ArrayList<Aim>();
 
-    public Project(int id, String s, int amount) {
+    public Project(int id, String name, int amount) {
         this.id = id;
-        name = s;
+        this.name = name;
         this.amount = amount;
     }
 
+    /*Getters, setters*/
+    public ArrayList<Aim> getAimsList() {return aimsList;}
     public String getName() {
         return name;
     }
     public void setName(String name) {
         this.name = name;
     }
-
     public int getAmount() {
         return amount;
     }
     public void setAmount(int amount) {
         this.amount = amount;
+    }
+    public int getId() {
+        return id;
     }
 }
