@@ -2,8 +2,8 @@ package controllers;
 
 import objects.TableviewObservableLists.AimsHolder;
 import objects.TableviewObservableLists.ProjectsHolder;
+import server_interaction.MessageCreator;
 import server_interaction.MessageSolver;
-import server_interaction.PacketOfData;
 import server_interaction.Threads.WriteThread;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -86,9 +86,9 @@ public class MainController {
         logInStage = new Stage(StageStyle.TRANSPARENT);
         try {
             Parent root = FXMLLoader.load(getClass().getResource("../fxml/connect.fxml"));
-            logInStage.setTitle("Logging in");
-            logInStage.setMinHeight(150);
-            logInStage.setMinWidth(300);
+            //logInStage.setTitle("Logging in");
+            //logInStage.setMinHeight(150);
+            //logInStage.setMinWidth(300);
             logInStage.setResizable(false);
             logInStage.setScene(new Scene(root));
             logInStage.initModality(Modality.WINDOW_MODAL);
@@ -106,6 +106,67 @@ public class MainController {
                 logInStage.close();
             }
         });
+    }
+    public void showServerUnavailableDialog(Stage parent) {
+        logInStage = new Stage(StageStyle.TRANSPARENT);
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("../fxml/serverUnavailable.fxml"));
+            logInStage.setMinHeight(150);
+            logInStage.setMinWidth(300);
+            logInStage.setResizable(false);
+            logInStage.setScene(new Scene(root));
+            logInStage.initModality(Modality.WINDOW_MODAL);
+            logInStage.initOwner(parent);
+            ConnectController.LoginStage = logInStage;
+            logInStage.show();
+        } catch (IOException e) {
+            System.out.println("Can'readThread load fxml 'connect' file: " + e.getMessage());
+        }
+    }
+
+    public void refresh() {
+        MessageSolver mSolver = new MessageSolver();
+        MessageCreator mCreator = new MessageCreator();
+        System.out.println("Refresh started...");
+        Thread t = new WriteThread(mSolver.serializePacketOfData(mCreator.firstRead()));
+        //Main.readThread.await_of_collection = true;
+        t.start();
+        /*if(choosedIdOfProject == -1) {
+            Thread t1 = new WriteThread(RProject());
+            Main.readThread.await_of_collection = true;
+            t1.start();
+        } else {
+            Thread t2 = new WriteThread(RAim(choosedIdOfProject));
+            Main.readThread.await_of_collection = true;
+            t2.start();
+        }
+        System.out.println("Install awaiting value - " + Main.readThread.await_of_collection);
+
+        //if (IOConnector.con_established) {}
+            Date oldDate = new Date();
+            Date newDate;
+            long seconds;
+            System.out.println("Before trip value - " + Main.readThread.await_of_collection);
+            while(Main.readThread.await_of_collection) {
+                newDate = new Date();
+                seconds = (newDate.getTime()-oldDate.getTime())/1000;
+                if (seconds > 5) {
+                    System.out.println("Response of refresh time over");
+                    disconnected = true;
+                    Main.readThread.await_of_collection = false;
+                }
+            }
+            projectsTable.setItems(projectsHolder.getProjectsObsList());
+            if(choosedIdOfProject != -1) aimsTable.setItems(aimsHolder.getAimsObsList());
+
+        projectsTable.setItems(projectsHolder.getProjectsObsList());*/
+    }
+
+    public void putDataToObservableList () {
+        System.out.println("putting Data to ObservableLists");
+        projectsHolder.setProjectsObsList(FXCollections.observableArrayList(Main.data.getProjects()));
+        projectsTable.setItems(projectsHolder.getProjectsObsList());
+        projectsHolder.showAllProjects();
     }
 
     public void showCreateProjectDialog(ActionEvent actionEvent) {
@@ -227,46 +288,6 @@ public class MainController {
             s.setItems(projectsHolder.getProjectsObsList());
             if(currProjectId != -1) ss.setItems(aimsHolder.getAimsObsList());
     }
-
-    public void refresh() {
-        MessageSolver m = new MessageSolver();
-        PacketOfData p = new PacketOfData();
-        System.out.println("Refresh started...");
-        System.out.println(Main.readThread.await_of_collection);
-        Thread t1 = new WriteThread(m.serializePacketOfData(p));
-        Main.readThread.await_of_collection = true;
-        t1.start();
-        /*if(choosedIdOfProject == -1) {
-            Thread t1 = new WriteThread(RProject());
-            Main.readThread.await_of_collection = true;
-            t1.start();
-        } else {
-            Thread t2 = new WriteThread(RAim(choosedIdOfProject));
-            Main.readThread.await_of_collection = true;
-            t2.start();
-        }
-        System.out.println("Install awaiting value - " + Main.readThread.await_of_collection);
-
-        //if (IOConnector.con_established) {}
-            Date oldDate = new Date();
-            Date newDate;
-            long seconds;
-            System.out.println("Before trip value - " + Main.readThread.await_of_collection);
-            while(Main.readThread.await_of_collection) {
-                newDate = new Date();
-                seconds = (newDate.getTime()-oldDate.getTime())/1000;
-                if (seconds > 5) {
-                    System.out.println("Response of refresh time over");
-                    disconnected = true;
-                    Main.readThread.await_of_collection = false;
-                }
-            }
-            projectsTable.setItems(projectsHolder.getProjectsObsList());
-            if(choosedIdOfProject != -1) aimsTable.setItems(aimsHolder.getAimsObsList());
-
-        projectsTable.setItems(projectsHolder.getProjectsObsList());*/
-    }
-
 
     static public void refreshAimTable(TableView ss, int currProjectId) {
         System.out.println("решил рефрешнуть " + currProjectId);

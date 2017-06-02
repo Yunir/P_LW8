@@ -8,6 +8,7 @@ import main.Main;
 import java.io.*;
 
 import static main.Main.data;
+import static main.Main.mainController;
 
 /**
  * Created by Yunicoed on 31.05.2017.
@@ -36,13 +37,13 @@ public class IOFuncs {
             while(true){
                 //if(con_established) {}
                 line = dIn.readUTF();
-                    System.out.println(";");
-                    System.out.println(line);
-                    PacketOfData packetOfData = new Gson().fromJson(line, PacketOfData.class);
-                    //data.setProjects(packetOfData.getProjectsList());
-
-                    Main.readThread.await_of_collection = false;
-                    System.out.println("Installed" + Main.readThread.await_of_collection + " value");
+                System.out.println(line);
+                PacketOfData packetOfData = new Gson().fromJson(line, PacketOfData.class);
+                data.setProjects(packetOfData.getProjectsList());
+                //data.showAllProjects();
+                mainController.putDataToObservableList();
+                Main.readThread.await_of_collection = false;
+                //System.out.println("Installed" + Main.readThread.await_of_collection + " value");
             }
         } catch (IOException e) {
             System.out.println("Something incorrect in listenToServer");
@@ -53,9 +54,7 @@ public class IOFuncs {
     public DataInputStream getdIn() {
         return dIn;
     }
-
     public DataOutputStream getdOut() {
         return dOut;
     }
-
 }

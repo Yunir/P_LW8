@@ -23,5 +23,9 @@ public class ProjectsHolder {
         return ProjectsObsList;
     }
     public void setProjectsObsList(ObservableList<Project> projectsObsList) {ProjectsObsList = projectsObsList;}
-
+    public void showAllProjects() {
+        for (int i = 0; i < ProjectsObsList.size(); i++) {
+            System.out.println(ProjectsObsList.get(i).getId() + " " + ProjectsObsList.get(i).getName());
+        }
+    }
 }

@@ -27,7 +27,7 @@
       <HBox prefWidth="200.0">
          <children>
             <Label prefWidth="500.0" text="Login" />
-            <TextField fx:id="login" prefWidth="650.0" promptText="Write here your login...">
+            <TextField fx:id="login" prefWidth="650.0" promptText="Write here your login..." text="admin">
                <HBox.margin>
                   <Insets />
                </HBox.margin>
@@ -44,7 +44,7 @@
                   <Insets />
                </HBox.margin>
             </Label>
-            <PasswordField fx:id="password" prefWidth="650.0" promptText="Write here your password..." />
+            <PasswordField fx:id="password" prefWidth="650.0" promptText="Write here your password..." text="admin" />
          </children>
          <VBox.margin>
             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />

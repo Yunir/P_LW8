@@ -24,12 +24,22 @@ public class Main extends Application {
     public static Connector acceptChangesConnector;
     public static DataHolder data;
 
-
     @Override
     public void start(Stage primaryStage) throws IOException{
         mainController = showMainView(primaryStage);
         mainController.showLogInDialog(primaryStage);
         mainController.initializeDataObsLists();
+
+        if(IOConnector.establishConnection(primaryStage)) {
+            //acceptChangesConnector.establishConnection();
+            LogInThread logIn = new LogInThread();
+            logIn.start();
+            //TODO: awaiting thread
+            readThread = new ReadThread(logIn);
+            readThread.start();
+            RefreshThread refreshThread = new RefreshThread(logIn);
+            refreshThread.start();
+        }
     }
 
 
@@ -39,17 +49,9 @@ public class Main extends Application {
             IOConnector = new Connector();
             IOConnector.setIA(InetAddress.getByName("localhost"));
             IOConnector.setPort(9999);
-            IOConnector.establishConnection();
             acceptChangesConnector = new Connector();
             acceptChangesConnector.setIA(InetAddress.getByName("localhost"));
             acceptChangesConnector.setPort(8888);
-            //acceptChangesConnector.establishConnection();
-            LogInThread logIn = new LogInThread();
-            logIn.start();
-            readThread = new ReadThread(logIn);
-            readThread.start();
-            RefreshThread refreshThread = new RefreshThread(logIn);
-            refreshThread.start();
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }

@@ -23,12 +23,8 @@ public class ConnectController {
     @FXML
     private Label exceptionOfLogPass;
     public void connectQuery(ActionEvent actionEvent) {
-
-        MessageSolver m = new MessageSolver();
-        PacketOfData p = new PacketOfData();
-        //IOConnector.ioFuncs.writeToServer(m.serializePacketOfData(p));
-
         IOConnector.ioFuncs.writeToServer("access;"+login.getText()+";"+ DigestUtils.md5Hex(password.getText()));
+        //TODO: if only recieve deny
         exceptionOfLogPass.setVisible(true);
     }
 
