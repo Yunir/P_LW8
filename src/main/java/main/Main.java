@@ -2,7 +2,6 @@ package main;
 
 import objects.DataHolder;
 import server_interaction.Connector;
-import server_interaction.Threads.ReadThread;
 import server_interaction.Threads.LogInThread;
 import controllers.MainController;
 import javafx.application.Application;
@@ -10,7 +9,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import server_interaction.Threads.RefreshThread;
+import server_interaction.Threads.IOThread;
+import server_interaction.Threads.ReadThread;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -19,7 +19,6 @@ import java.net.UnknownHostException;
 public class Main extends Application {
 
     public static MainController mainController;
-    public static ReadThread readThread;
     public static Connector IOConnector;
     public static Connector acceptChangesConnector;
     public static DataHolder data;
@@ -31,14 +30,12 @@ public class Main extends Application {
         mainController.initializeDataObsLists();
 
         if(IOConnector.establishConnection(primaryStage)) {
-            //acceptChangesConnector.establishConnection();
+            acceptChangesConnector.establishConnection(primaryStage);
             LogInThread logIn = new LogInThread();
             logIn.start();
             //TODO: awaiting thread
-            readThread = new ReadThread(logIn);
-            readThread.start();
-            RefreshThread refreshThread = new RefreshThread(logIn);
-            refreshThread.start();
+            IOThread ioThread = new IOThread(logIn);
+            ioThread.start();
         }
     }
 

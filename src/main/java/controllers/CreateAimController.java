@@ -19,10 +19,12 @@ public class CreateAimController {
 
     public void createAim(ActionEvent actionEvent) {
         //Main.projects.create(new Project(projectName.getText()));
-        Thread t5 = new WriteThread(CAim(MainController.choosedIdOfProject, aimName.getText(), Integer.parseInt(aimPriority.getText())));
-        t5.start();
+        //TODO check it is 32 symbols and have only characters
+        //TODO sort - when add
+        Thread t = new WriteThread(CAim(MainController.choosedIdOfProject, aimName.getText(), Integer.parseInt(aimPriority.getText())));
+        t.start();
         CreateAimStage.close();
-        MainController.refreshAimTable(aiTable, MainController.choosedIdOfProject);
+        //MainController.refreshAimTable(aiTable, MainController.choosedIdOfProject);
 
     }
 }

@@ -1,5 +1,7 @@
 package controllers;
 
+import objects.Project;
+import server_interaction.IOFuncs;
 import server_interaction.Threads.WriteThread;
 import javafx.scene.control.TableView;
 import javafx.event.ActionEvent;
@@ -19,9 +21,8 @@ public class CreateProjectController {
 
     public void createProject(ActionEvent actionEvent) {
         //Main.projects.create(new Project(projectName.getText()));
-        Thread t0 = new WriteThread(CProject(projectName.getText()));
-        t0.start();
+        IOFuncs.addProject(projectName.getText());
         CreateProjectStage.close();
-        MainController.refresh(prTable, aiTable, -1);
+        //MainController.getFirstData(prTable, aiTable, -1);
     }
 }

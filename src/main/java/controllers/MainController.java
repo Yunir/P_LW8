@@ -29,11 +29,13 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.util.Date;
 
+import static main.Main.IOConnector;
 import static server_interaction.Commands.RAim;
 import static server_interaction.Commands.RProject;
 
 public class MainController {
     private Stage logInStage;
+    private int selectedProjectId = -1;
     public static AimsHolder aimsHolder;
     public static ProjectsHolder projectsHolder;
     static int choosedIdOfProject = -1;
@@ -85,7 +87,8 @@ public class MainController {
     public void showLogInDialog(Stage parent) {
         logInStage = new Stage(StageStyle.TRANSPARENT);
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("../fxml/connect.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("../fxml/connect.fxml"));
+            Parent root = loader.load();
             //logInStage.setTitle("Logging in");
             //logInStage.setMinHeight(150);
             //logInStage.setMinWidth(300);
@@ -93,6 +96,7 @@ public class MainController {
             logInStage.setScene(new Scene(root));
             logInStage.initModality(Modality.WINDOW_MODAL);
             logInStage.initOwner(parent);
+            //you can use loader.getController()to make class
             ConnectController.LoginStage = logInStage;
             logInStage.show();
         } catch (IOException e) {
@@ -124,44 +128,6 @@ public class MainController {
         }
     }
 
-    public void refresh() {
-        MessageSolver mSolver = new MessageSolver();
-        MessageCreator mCreator = new MessageCreator();
-        System.out.println("Refresh started...");
-        Thread t = new WriteThread(mSolver.serializePacketOfData(mCreator.firstRead()));
-        //Main.readThread.await_of_collection = true;
-        t.start();
-        /*if(choosedIdOfProject == -1) {
-            Thread t1 = new WriteThread(RProject());
-            Main.readThread.await_of_collection = true;
-            t1.start();
-        } else {
-            Thread t2 = new WriteThread(RAim(choosedIdOfProject));
-            Main.readThread.await_of_collection = true;
-            t2.start();
-        }
-        System.out.println("Install awaiting value - " + Main.readThread.await_of_collection);
-
-        //if (IOConnector.con_established) {}
-            Date oldDate = new Date();
-            Date newDate;
-            long seconds;
-            System.out.println("Before trip value - " + Main.readThread.await_of_collection);
-            while(Main.readThread.await_of_collection) {
-                newDate = new Date();
-                seconds = (newDate.getTime()-oldDate.getTime())/1000;
-                if (seconds > 5) {
-                    System.out.println("Response of refresh time over");
-                    disconnected = true;
-                    Main.readThread.await_of_collection = false;
-                }
-            }
-            projectsTable.setItems(projectsHolder.getProjectsObsList());
-            if(choosedIdOfProject != -1) aimsTable.setItems(aimsHolder.getAimsObsList());
-
-        projectsTable.setItems(projectsHolder.getProjectsObsList());*/
-    }
-
     public void putDataToObservableList () {
         System.out.println("putting Data to ObservableLists");
         projectsHolder.setProjectsObsList(FXCollections.observableArrayList(Main.data.getProjects()));
@@ -169,11 +135,36 @@ public class MainController {
         projectsHolder.showAllProjects();
     }
 
+    public void openAimsOfProject(MouseEvent mouseEvent) {
+        Project selectedProject = (Project) ((TableView)mouseEvent.getSource()).getSelectionModel().getSelectedItem();
+        if(selectedProject == null || selectedProject.getId() == selectedProjectId)return;
+
+        selectedProjectId = selectedProject.getId();
+        //System.out.println(selectedProject.getId() + " " + selectedProject.getAmount() + " " + selectedProject.getName());
+        aimsHolder.setAimsObsList(FXCollections.observableArrayList(selectedProject.getAimsList()));
+        aimsTable.setItems(aimsHolder.getAimsObsList());
+        ACreate.setDisable(false);
+        PUpdate.setDisable(false);
+        PDelete.setDisable(false);
+        /*Platform.runLater(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                projectsTable.requestFocus();
+                projectsTable.getSelectionModel().select(selectedProject.getId()-1);
+                projectsTable.getFocusModel().focus(selectedProject.getId()-1);
+            }
+        });*/
+    }
+
+
+
     public void showCreateProjectDialog(ActionEvent actionEvent) {
         Stage stage = new Stage();
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("../../resources/fxml/createProject.fxml"));
-            stage.setTitle("New project");
+            Parent root = FXMLLoader.load(getClass().getResource("../fxml/createProject.fxml"));
+            //stage.setTitle("New project");
             stage.setResizable(false);
             stage.setScene(new Scene(root));
             stage.initModality(Modality.WINDOW_MODAL);
@@ -220,32 +211,9 @@ public class MainController {
         }
     }
 
-    public void openAimsOfProject(MouseEvent mouseEvent) {
-        Project selectedProject = (Project) ((TableView)mouseEvent.getSource()).getSelectionModel().getSelectedItem();
-        if(selectedProject==null)return;
-        choosedIdOfProject = selectedProject.getId();
-        System.out.println(selectedProject.getId() + " " + selectedProject.getAmount() + " " + selectedProject.getName());
-        refresh(projectsTable, aimsTable, selectedProject.getId());
-        aimsTable.setPlaceholder(new Label("There is no aims yet."));
-        ACreate.setDisable(false);
-        PUpdate.setDisable(false);
-        PDelete.setDisable(false);
-        Platform.runLater(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                projectsTable.requestFocus();
-                projectsTable.getSelectionModel().select(selectedProject.getId()-1);
-                projectsTable.getFocusModel().focus(selectedProject.getId()-1);
-            }
-        });
-        //aimsTable.setItems(temp.aims.getAims());
-    }
-
-    public void refreshScene(ActionEvent actionEvent) {
+    /*public void refreshScene(ActionEvent actionEvent) {
         choosedIdOfProject = -1;
-        refresh(projectsTable, aimsTable, -1);
+        getFirstData(projectsTable, aimsTable, -1);
         //TODO: flush Aimlist
         ACreate.setDisable(true);
         AUpdate.setDisable(true);
@@ -254,9 +222,9 @@ public class MainController {
         PDelete.setDisable(true);
         aimsTable.setItems(FXCollections.observableArrayList());
         aimsTable.setPlaceholder(new Label("Click to any project to start working with aims."));
-    }
+    }*/
 
-    static public void refresh(TableView s, TableView ss, int currProjectId) {
+    /*static public void getFirstData(TableView s, TableView ss, int currProjectId) {
         System.out.println("Refresh started...");
         choosedIdOfProject = currProjectId;
         System.out.println(Main.readThread.await_of_collection);
@@ -280,16 +248,16 @@ public class MainController {
                 newDate = new Date();
                 seconds = (newDate.getTime()-oldDate.getTime())/1000;
                 if (seconds > 5) {
-                    System.out.println("Response of refresh time over");
+                    System.out.println("Response of getFirstData time over");
                     disconnected = true;
                     Main.readThread.await_of_collection = false;
                 }
             }
             s.setItems(projectsHolder.getProjectsObsList());
             if(currProjectId != -1) ss.setItems(aimsHolder.getAimsObsList());
-    }
+    }*/
 
-    static public void refreshAimTable(TableView ss, int currProjectId) {
+    /*static public void refreshAimTable(TableView ss, int currProjectId) {
         System.out.println("решил рефрешнуть " + currProjectId);
         Thread t2 = new WriteThread(RAim(currProjectId));
         Main.readThread.await_of_collection = true;
@@ -311,7 +279,7 @@ public class MainController {
             }
             ss.setItems(aimsHolder.getAimsObsList());
 
-    }
+    }*/
 
     public void unlockButtons(MouseEvent mouseEvent) {
         Aim temp = (Aim) ((TableView)mouseEvent.getSource()).getSelectionModel().getSelectedItem();

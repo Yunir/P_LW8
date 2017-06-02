@@ -23,6 +23,6 @@ public class UpdateProjectController {
         Thread t0 = new WriteThread(UProject(choosedIdOfProject, newProjectName.getText()));
         t0.start();
         UpdateProjectStage.close();
-        MainController.refresh(prTable, aiTable, -1);
+        //MainController.getFirstData(prTable, aiTable, -1);
     }
 }

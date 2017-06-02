@@ -17,7 +17,7 @@
          <children>
             <HBox alignment="TOP_RIGHT" prefHeight="40.0" prefWidth="700.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0">
                <children>
-                  <Button layoutX="582.0" layoutY="25.0" mnemonicParsing="false" onAction="#refreshScene" text="Refresh">
+                  <Button layoutX="582.0" layoutY="25.0" mnemonicParsing="false"  text="Refresh"><!--onAction="#refreshScene"-->
                      <HBox.margin>
                         <Insets left="7.0" right="7.0" top="15.0" />
                      </HBox.margin>

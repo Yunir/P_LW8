@@ -31,7 +31,10 @@ public class Connector {
             System.out.println("Host not found");
             return false;
         } catch (IOException e) {
-            //TODO: pepe frog
+            //TODO MEM pepe frog
+            //TODO MEM Do it!
+            //TODO MEM Pismak - yes you can, смелее
+            //TODO MEM you entered to secret zone (oy-yeah)
             mainController.showServerUnavailableDialog(primaryStage);
             System.out.println("Server in "+ IA.getHostAddress()+":"+port+" is not available");
             return false;
@@ -43,7 +46,6 @@ public class Connector {
     public void setIA(InetAddress IA) {
         this.IA = IA;
     }
-
     public void setPort(int port) {
         this.port = port;
     }

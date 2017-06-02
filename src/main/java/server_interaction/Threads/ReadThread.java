@@ -14,6 +14,6 @@ public class ReadThread extends Thread {
         try {
             loginAwaitThread.join();
         } catch (InterruptedException e) { e.printStackTrace(); }
-        IOConnector.ioFuncs.readFromServer();
+        //IOConnector.ioFuncs.readFromServer();
     }
 }
