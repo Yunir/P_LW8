@@ -1,11 +1,12 @@
+/*
 package server_interaction.Threads;
 
 import static main.Main.IOConnector;
 
-public class ReadThread extends Thread {
+public class AcceptChangesThread extends Thread {
     volatile public boolean await_of_collection = false;
     private Thread loginAwaitThread;
-    public ReadThread(Thread loginAwaitThread) {
+    public AcceptChangesThread(Thread loginAwaitThread) {
         this.loginAwaitThread = loginAwaitThread;
     }
 
@@ -14,6 +15,7 @@ public class ReadThread extends Thread {
         try {
             loginAwaitThread.join();
         } catch (InterruptedException e) { e.printStackTrace(); }
-        //IOConnector.ioFuncs.readFromServer();
+        create.ioFuncs.readFromServer();
     }
 }
+*/

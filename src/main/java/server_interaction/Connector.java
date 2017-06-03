@@ -1,10 +1,12 @@
 package server_interaction;
 
 import javafx.stage.Stage;
+import server_interaction.Threads.AwaitChangesThread;
 
 import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 
 import static main.Main.mainController;
@@ -19,16 +21,25 @@ public class Connector {
     private InetAddress IA;
     private int port;
     public IOFuncs ioFuncs;
-
-    public boolean establishConnection(Stage primaryStage) {
+    Stage primaryStage;
+    public boolean establishConnection(Stage primaryStage, boolean awaiting) {
+        this.primaryStage = primaryStage;
         try {
             socket = new Socket(IA, port);
             in = socket.getInputStream();
             out = socket.getOutputStream();
             ioFuncs = new IOFuncs(new DataInputStream(in), new DataOutputStream(out));
+            if(awaiting){
+                AwaitChangesThread awaitChangesThread = new AwaitChangesThread(ioFuncs);
+                awaitChangesThread.start();
+            }
             return true;
         } catch (UnknownHostException e) {
             System.out.println("Host not found");
+            return false;
+        } catch (SocketException e){
+            mainController.showServerUnavailableDialog(primaryStage);
+            System.out.println("Server in "+ IA.getHostAddress()+":"+port+" is not available");
             return false;
         } catch (IOException e) {
             //TODO MEM pepe frog
@@ -39,6 +50,11 @@ public class Connector {
             System.out.println("Server in "+ IA.getHostAddress()+":"+port+" is not available");
             return false;
         }
+    }
+
+    public void showLostConnection () {
+        mainController.showServerUnavailableDialog(primaryStage);
+        System.out.println("Server in "+ IA.getHostAddress()+":"+port+" is not available");
     }
 
     /*Getters and setters*/

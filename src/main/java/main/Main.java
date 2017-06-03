@@ -10,7 +10,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import server_interaction.Threads.IOThread;
-import server_interaction.Threads.ReadThread;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -29,13 +28,14 @@ public class Main extends Application {
         mainController.showLogInDialog(primaryStage);
         mainController.initializeDataObsLists();
 
-        if(IOConnector.establishConnection(primaryStage)) {
-            acceptChangesConnector.establishConnection(primaryStage);
+        if(IOConnector.establishConnection(primaryStage, false)) {
+            acceptChangesConnector.establishConnection(primaryStage, true);
             LogInThread logIn = new LogInThread();
             logIn.start();
             //TODO: awaiting thread
             IOThread ioThread = new IOThread(logIn);
             ioThread.start();
+
         }
     }
 

@@ -2,16 +2,16 @@ package server_interaction;
 
 import com.google.gson.Gson;
 import com.sun.xml.internal.bind.v2.runtime.reflect.Lister;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import main.Main;
 import objects.Project;
 import server_interaction.Threads.WriteThread;
 
 import java.io.*;
+import java.net.SocketException;
 
-import static main.Main.IOConnector;
-import static main.Main.data;
-import static main.Main.mainController;
+import static main.Main.*;
 
 /**
  * Created by Yunicoed on 31.05.2017.
@@ -47,11 +47,12 @@ public class IOFuncs {
     /*Read, write methods*/
     synchronized public void writeToServer(String sms){
         try {
+            System.out.println("Writing to server...");
             dOut.writeUTF(sms);
             dOut.flush();
         } catch (IOException e) { System.out.println("Caused problem in writing to server"); }
     }
-    public void readFromServer() throws IOException {
+    public void readFromServer() throws SocketException, IOException {
         String line = null;
         line = dIn.readUTF();
         System.out.println(line);
@@ -59,6 +60,22 @@ public class IOFuncs {
         data.setProjects(packetOfData.getProjectsList());
         //data.showAllProjects();
         mainController.putDataToObservableList();
+    }
+
+    public void awaitOfUpdates() {
+        boolean allIsGood = true;
+        while (allIsGood){
+            try {acceptChangesConnector.ioFuncs.readFromServer();} catch (IOException e) {
+                allIsGood = false;
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        acceptChangesConnector.showLostConnection();
+                    }
+                });
+            }
+            System.out.println("Wow, new Information");
+        }
     }
 
     /*Getters and setters*/
