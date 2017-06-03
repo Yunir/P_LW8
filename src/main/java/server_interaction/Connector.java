@@ -10,6 +10,7 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 
 import static general_classes.Main.mainController;
+import static general_classes.Main.serverUnavailableController;
 
 /**
  * Created by Yunicoed on 17.05.2017.
@@ -44,7 +45,7 @@ public class Connector {
             System.out.println("Host not found");
             return false;
         } catch (SocketException e){
-            mainController.showServerUnavailableDialog(primaryStage);
+            serverUnavailableController.showServerUnavailableScene();
             System.out.println("Server in "+ IA.getHostAddress()+":"+port+" is not available");
             return false;
         } catch (IOException e) {
@@ -52,14 +53,14 @@ public class Connector {
             //TODO MEM Do it!
             //TODO MEM Pismak - yes you can, смелее
             //TODO MEM you entered to secret zone (oy-yeah)
-            mainController.showServerUnavailableDialog(primaryStage);
+            serverUnavailableController.showServerUnavailableScene();
             System.out.println("Server in "+ IA.getHostAddress()+":"+port+" is not available");
             return false;
         }
     }
 
     public void showLostConnection () {
-        mainController.showServerUnavailableDialog(primaryStage);
+        serverUnavailableController.showServerUnavailableScene();
         System.out.println("Server in "+ IA.getHostAddress()+":"+port+" is not available");
     }
 

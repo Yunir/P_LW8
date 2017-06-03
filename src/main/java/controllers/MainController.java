@@ -26,7 +26,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 
 public class MainController {
-    private Stage logInStage;
+    public static volatile boolean confirmationReceived = false;
     private int selectedProjectId = -1;
     public static AimsHolder aimsHolder;
     public static ProjectsHolder projectsHolder;
@@ -68,56 +68,8 @@ public class MainController {
         PUpdate.setDisable(true);
         PDelete.setDisable(true);
 
-    }
-
-    public void initializeDataObsLists() {
         aimsHolder = new AimsHolder();
         projectsHolder = new ProjectsHolder();
-    }
-
-    //Control pop-up logIn Stage
-    public void showLogInDialog(Stage parent) {
-        logInStage = new Stage(StageStyle.TRANSPARENT);
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("../fxml/connect.fxml"));
-            Parent root = loader.load();
-            //logInStage.setTitle("Logging in");
-            //logInStage.setMinHeight(150);
-            //logInStage.setMinWidth(300);
-            logInStage.setResizable(false);
-            logInStage.setScene(new Scene(root));
-            logInStage.initModality(Modality.WINDOW_MODAL);
-            logInStage.initOwner(parent);
-            //you can use loader.getController()to make class
-            //ConnectController.LoginStage = logInStage;
-            logInStage.show();
-        } catch (IOException e) {
-            System.out.println("Can'readThread load fxml 'connect' file: " + e.getMessage());
-        }
-    }
-    public void hideLogInDialog() {
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                logInStage.close();
-            }
-        });
-    }
-    public void showServerUnavailableDialog(Stage parent) {
-        logInStage = new Stage(StageStyle.TRANSPARENT);
-        try {
-            Parent root = FXMLLoader.load(getClass().getResource("../fxml/serverUnavailable.fxml"));
-            logInStage.setMinHeight(150);
-            logInStage.setMinWidth(300);
-            logInStage.setResizable(false);
-            logInStage.setScene(new Scene(root));
-            logInStage.initModality(Modality.WINDOW_MODAL);
-            logInStage.initOwner(parent);
-            //ConnectController.LoginStage = logInStage;
-            logInStage.show();
-        } catch (IOException e) {
-            System.out.println("Can'readThread load fxml 'connect' file: " + e.getMessage());
-        }
     }
 
     public void putDataToObservableList () {
@@ -138,20 +90,7 @@ public class MainController {
         ACreate.setDisable(false);
         PUpdate.setDisable(false);
         PDelete.setDisable(false);
-        /*Platform.runLater(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                projectsTable.requestFocus();
-                projectsTable.getSelectionModel().select(selectedProject.getId()-1);
-                projectsTable.getFocusModel().focus(selectedProject.getId()-1);
-            }
-        });*/
     }
-
-
-
     public void showCreateProjectDialog(ActionEvent actionEvent) {
         Stage stage = new Stage();
         try {
@@ -168,7 +107,6 @@ public class MainController {
             System.out.println("Can'readThread load fxml 'createProject' file");
         }
     }
-
     public void showUpdateProjectDialog(ActionEvent actionEvent) {
         Stage stage = new Stage();
         try {
@@ -185,7 +123,6 @@ public class MainController {
             System.out.println("Can't readThread load fxml 'createProject' file");
         }
     }
-
     public void showCreateAimDialog(ActionEvent actionEvent) {
         Stage stage = new Stage();
         try {

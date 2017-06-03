@@ -1,5 +1,6 @@
 package general_classes;
 
+import controllers.MainController;
 import interfaces.ServerInterface;
 import javafx.stage.Stage;
 import server_interaction.Connector;
@@ -11,7 +12,6 @@ import static general_classes.Main.locker;
 
 public class ToServer implements ServerInterface {
     private Connector connector;
-    //private ToServerThread toServerThread;
 
 
     public ToServer() {
@@ -24,15 +24,16 @@ public class ToServer implements ServerInterface {
     public boolean establishConnection(Stage parent) {
         return connector.establishConnection(parent, false);
     }
-    public void getFirstFullPacket(Thread waitIt) {
+    public void getFirstFullPacket() {
         new Thread(new Runnable() {
             @Override
             public void run() {
                 locker.lock();
+                System.out.println("lock: ToServer");
                 try {
-                    System.out.println("waiting logpass");
-                    condition.await();
-                    connector.getIoFuncs().getFirstData(waitIt);
+                    if(!MainController.confirmationReceived)condition.await();
+                    System.out.println("Start downloading FirstData");
+                    connector.getIoFuncs().getFirstData();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }finally {
@@ -43,11 +44,6 @@ public class ToServer implements ServerInterface {
 
 
     }
-    /*@Override
-    public void runThread(Thread logIn) {
-        toServerThread = new ToServerThread(logIn);
-        toServerThread.start();
-    }*/
 
 
     /*private methods*/

@@ -1,15 +1,17 @@
 package general_classes;
 
+import controllers.MainController;
 import interfaces.ServerInterface;
 import javafx.stage.Stage;
 import server_interaction.Connector;
-
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
+import static general_classes.Main.condition;
+import static general_classes.Main.locker;
+
 public class FromServer implements ServerInterface {
     private Connector connector;
-    //private FromServerThread fromServerThread;
 
     public FromServer() {
         defaultSettings();
@@ -21,11 +23,26 @@ public class FromServer implements ServerInterface {
     public boolean establishConnection(Stage parent) {
         return connector.establishConnection(parent, false);
     }
-    /*@Override
-    public void runThread(Thread logIn) {
-        fromServerThread = new ToServerThread(logIn);
-        fromServerThread.start();
-    }*/
+    public void awaitOfUpdates() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                locker.lock();
+                System.out.println("lock: FromServer");
+                try {
+                    if(!MainController.confirmationReceived)condition.await();
+                    System.out.println("проснулся: FromServer");
+
+                    connector.getIoFuncs().awaitOfUpdates();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } finally {
+                    locker.unlock();
+                }
+            }
+        }).start();
+
+    }
 
 
     /*private methods*/

@@ -21,7 +21,7 @@ public class IOFuncs {
         this.dOut = dOut;
     }
 
-    public void getFirstData(Thread waitIt) {
+    public void getFirstData() {
         MessageSolver mSolver = new MessageSolver();
         MessageCreator mCreator = new MessageCreator();
         System.out.println("Getting start-Data...");
@@ -60,19 +60,25 @@ public class IOFuncs {
     }
 
     public void awaitOfUpdates() {
-        boolean allIsGood = true;
-        while (allIsGood){
-            try {fromServer.getConnector().ioFuncs.readFromServer();} catch (IOException e) {
-                allIsGood = false;
-                Platform.runLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        fromServer.getConnector().showLostConnection();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                boolean allIsGood = true;
+                while (allIsGood){
+                    try {fromServer.getConnector().ioFuncs.readFromServer();} catch (IOException e) {
+                        allIsGood = false;
+                        Platform.runLater(new Runnable() {
+                            @Override
+                            public void run() {
+                                fromServer.getConnector().showLostConnection();
+                            }
+                        });
                     }
-                });
+                    System.out.println("Wow, new Information");
+                }
             }
-            System.out.println("Wow, new Information");
-        }
+        }).start();
+
     }
 
     /*Getters and setters*/
