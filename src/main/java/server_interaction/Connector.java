@@ -9,7 +9,7 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 
-import static main.Main.mainController;
+import static general_classes.Main.mainController;
 
 /**
  * Created by Yunicoed on 17.05.2017.
@@ -22,6 +22,12 @@ public class Connector {
     private int port;
     public IOFuncs ioFuncs;
     Stage primaryStage;
+
+    public Connector(InetAddress IA, int port) {
+        this.IA = IA;
+        this.port = port;
+    }
+
     public boolean establishConnection(Stage primaryStage, boolean awaiting) {
         this.primaryStage = primaryStage;
         try {
@@ -57,12 +63,8 @@ public class Connector {
         System.out.println("Server in "+ IA.getHostAddress()+":"+port+" is not available");
     }
 
-    /*Getters and setters*/
-
-    public void setIA(InetAddress IA) {
-        this.IA = IA;
-    }
-    public void setPort(int port) {
-        this.port = port;
+    /*Getters*/
+    public IOFuncs getIoFuncs() {
+        return ioFuncs;
     }
 }

@@ -2,9 +2,6 @@ package controllers;
 
 import objects.TableviewObservableLists.AimsHolder;
 import objects.TableviewObservableLists.ProjectsHolder;
-import server_interaction.MessageCreator;
-import server_interaction.MessageSolver;
-import server_interaction.Threads.WriteThread;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.scene.control.Button;
@@ -13,7 +10,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.StageStyle;
-import main.Main;
+import general_classes.Main;
 import objects.Aim;
 import objects.Project;
 import javafx.event.ActionEvent;
@@ -27,11 +24,6 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.util.Date;
-
-import static main.Main.IOConnector;
-import static server_interaction.Commands.RAim;
-import static server_interaction.Commands.RProject;
 
 public class MainController {
     private Stage logInStage;
@@ -97,7 +89,7 @@ public class MainController {
             logInStage.initModality(Modality.WINDOW_MODAL);
             logInStage.initOwner(parent);
             //you can use loader.getController()to make class
-            ConnectController.LoginStage = logInStage;
+            //ConnectController.LoginStage = logInStage;
             logInStage.show();
         } catch (IOException e) {
             System.out.println("Can'readThread load fxml 'connect' file: " + e.getMessage());
@@ -121,7 +113,7 @@ public class MainController {
             logInStage.setScene(new Scene(root));
             logInStage.initModality(Modality.WINDOW_MODAL);
             logInStage.initOwner(parent);
-            ConnectController.LoginStage = logInStage;
+            //ConnectController.LoginStage = logInStage;
             logInStage.show();
         } catch (IOException e) {
             System.out.println("Can'readThread load fxml 'connect' file: " + e.getMessage());

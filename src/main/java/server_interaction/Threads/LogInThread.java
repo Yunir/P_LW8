@@ -1,8 +1,8 @@
 package server_interaction.Threads;
 
 import java.io.IOException;
-import static main.Main.IOConnector;
-import static main.Main.mainController;
+
+import static general_classes.Main.*;
 
 /**
  * Created by Yunicoed on 31.05.2017.
@@ -12,14 +12,18 @@ public class LogInThread extends Thread {
     public void run() {
         try {
             boolean logpassCorrect = false;
+            locker.lock();
             while(!logpassCorrect) {
-                if (IOConnector.ioFuncs.getdIn().readUTF().equals("allow")) {
+                if (toServer.getConnector().ioFuncs.getdIn().readUTF().equals("allow")) {
                     logpassCorrect = true;
                     mainController.hideLogInDialog();
-                } else System.out.println("login or password are incorrect");
+                    condition.signalAll();
+                } else {
+                    System.out.println("login or password are incorrect");
+                }
                 //TODO: 3 atempts, then disconnect
             }
-
+            locker.unlock();
 
 
         } catch (IOException e) {e.printStackTrace();}

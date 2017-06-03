@@ -1,15 +1,16 @@
+/*
 package server_interaction.Threads;
 
 import server_interaction.IOFuncs;
 
-import static main.Main.mainController;
-
+*/
 /**
  * Created by Yunicoed on 31.05.2017.
- */
-public class IOThread extends Thread {
+ *//*
+
+public class ToServerThread extends Thread {
     Thread loginAwaitThread;
-    public IOThread(Thread loginAwaitThread) {
+    public ToServerThread(Thread loginAwaitThread) {
         this.loginAwaitThread = loginAwaitThread;
     }
 
@@ -21,3 +22,4 @@ public class IOThread extends Thread {
         IOFuncs.getFirstData();
     }
 }
+*/

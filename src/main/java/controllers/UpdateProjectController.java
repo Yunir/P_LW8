@@ -20,8 +20,8 @@ public class UpdateProjectController {
 
     public void updateProject(ActionEvent actionEvent) {
         //Main.projects.create(new Project(projectName.getText()));
-        Thread t0 = new WriteThread(UProject(choosedIdOfProject, newProjectName.getText()));
-        t0.start();
+        //  Thread t0 = new WriteThread(UProject(choosedIdOfProject, newProjectName.getText()));
+        //  t0.start();
         UpdateProjectStage.close();
         //MainController.getFirstData(prTable, aiTable, -1);
     }

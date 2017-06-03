@@ -1,17 +1,13 @@
 package server_interaction;
 
 import com.google.gson.Gson;
-import com.sun.xml.internal.bind.v2.runtime.reflect.Lister;
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
-import main.Main;
-import objects.Project;
 import server_interaction.Threads.WriteThread;
 
 import java.io.*;
 import java.net.SocketException;
 
-import static main.Main.*;
+import static general_classes.Main.*;
 
 /**
  * Created by Yunicoed on 31.05.2017.
@@ -25,13 +21,14 @@ public class IOFuncs {
         this.dOut = dOut;
     }
 
-    public static void getFirstData() {
+    public void getFirstData(Thread waitIt) {
         MessageSolver mSolver = new MessageSolver();
         MessageCreator mCreator = new MessageCreator();
         System.out.println("Getting start-Data...");
-        Thread t = new WriteThread(mSolver.serializePacketOfData(mCreator.firstRead()));
+        Thread t = new WriteThread(toServer.getConnector(), mSolver.serializePacketOfData(mCreator.firstRead()));
+
         t.start();
-        try {IOConnector.ioFuncs.readFromServer();} catch (IOException e) {e.printStackTrace();}
+        try {readFromServer();} catch (IOException e) {e.printStackTrace();}
 
     }
 
@@ -39,9 +36,9 @@ public class IOFuncs {
         MessageSolver mSolver = new MessageSolver();
         MessageCreator mCreator = new MessageCreator();
         System.out.println("Sending project...");
-        Thread t = new WriteThread(mSolver.serializePacketOfData(mCreator.addProject(nameOfProject)));
+        Thread t = new WriteThread(toServer.getConnector(), mSolver.serializePacketOfData(mCreator.addProject(nameOfProject)));
         t.start();
-        try {IOConnector.ioFuncs.readFromServer();} catch (IOException e) {e.printStackTrace();}
+        try {toServer.getConnector().ioFuncs.readFromServer();} catch (IOException e) {e.printStackTrace();}
     }
 
     /*Read, write methods*/
@@ -52,7 +49,7 @@ public class IOFuncs {
             dOut.flush();
         } catch (IOException e) { System.out.println("Caused problem in writing to server"); }
     }
-    public void readFromServer() throws SocketException, IOException {
+    public void readFromServer() throws IOException {
         String line = null;
         line = dIn.readUTF();
         System.out.println(line);
@@ -65,12 +62,12 @@ public class IOFuncs {
     public void awaitOfUpdates() {
         boolean allIsGood = true;
         while (allIsGood){
-            try {acceptChangesConnector.ioFuncs.readFromServer();} catch (IOException e) {
+            try {fromServer.getConnector().ioFuncs.readFromServer();} catch (IOException e) {
                 allIsGood = false;
                 Platform.runLater(new Runnable() {
                     @Override
                     public void run() {
-                        acceptChangesConnector.showLostConnection();
+                        fromServer.getConnector().showLostConnection();
                     }
                 });
             }
