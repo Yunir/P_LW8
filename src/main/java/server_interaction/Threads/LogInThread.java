@@ -1,6 +1,5 @@
 package server_interaction.Threads;
 
-import controllers.ConnectController;
 import controllers.MainController;
 import javafx.application.Platform;
 
@@ -25,7 +24,7 @@ public class LogInThread extends Thread {
                     logpassCorrect = true;
                     MainController.confirmationReceived = true;
                     connectController.hideLogInDialog();
-                    condition.signalAll();
+                    accessToResource.signalAll();
                     System.out.println("Всех оповестил");
                 } else {
                     System.out.println("login or password are incorrect");

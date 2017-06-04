@@ -9,14 +9,14 @@ public class DataHolder {
 
     public DataHolder() {projectsList = new ArrayList<Project>();}
 
-    /*Setters, getters*/
+    /*Getters, setters*/
     public ArrayList getProjects() {return projectsList;}
     public void setProjects(ArrayList projects) {
         projectsList = projects;
     }
     public void showAllProjects () {
         for (int i = 0; i < projectsList.size(); i++) {
-            System.out.println(projectsList.get(i).getId() + " " + projectsList.get(i).getName());
+            System.out.println(projectsList.get(i).getName());
         }
     }
 }

@@ -7,7 +7,7 @@ import server_interaction.Connector;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
-import static general_classes.Main.condition;
+import static general_classes.Main.accessToResource;
 import static general_classes.Main.locker;
 
 public class ToServer implements ServerInterface {
@@ -31,7 +31,7 @@ public class ToServer implements ServerInterface {
                 locker.lock();
                 System.out.println("lock: ToServer");
                 try {
-                    if(!MainController.confirmationReceived)condition.await();
+                    if(!MainController.confirmationReceived) accessToResource.await();
                     System.out.println("Start downloading FirstData");
                     connector.getIoFuncs().getFirstData();
                 } catch (InterruptedException e) {

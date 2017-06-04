@@ -18,15 +18,17 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class Main extends Application {
-    ControllerCreator CC = new ControllerCreator();
     public static DataHolder data;
     public static ToServer toServer;
     public static FromServer fromServer;
+    //Controllers
+    ControllerCreator CC = new ControllerCreator();
     public static MainController mainController;
     public static ConnectController connectController;
     public static ServerUnavailableController serverUnavailableController;
+
     public static volatile ReentrantLock locker = new ReentrantLock();
-    public static volatile Condition condition = locker.newCondition();
+    public static volatile Condition accessToResource = locker.newCondition();
 
     public static void main(String[] args)  {
         data = new DataHolder();

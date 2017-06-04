@@ -1,6 +1,7 @@
 package server_interaction;
 
 
+import objects.Command;
 import objects.Project;
 
 /**
@@ -10,14 +11,14 @@ public class MessageCreator {
     PacketOfData packetOfData;
     public PacketOfData firstRead() {
         packetOfData = new PacketOfData();
-        packetOfData.setCommandType(packetOfData.FIRST_READ);
+        packetOfData.setCommandType(Command.FIRST_READ);
         return packetOfData;
     }
 
     public PacketOfData addProject(String nameOfProject) {
         packetOfData = new PacketOfData();
-        packetOfData.setCommandType(packetOfData.ADD);
-        packetOfData.project = nameOfProject;
+        packetOfData.setCommandType(Command.ADD_PROJECT);
+        packetOfData.setName(nameOfProject);
         return packetOfData;
     }
 }

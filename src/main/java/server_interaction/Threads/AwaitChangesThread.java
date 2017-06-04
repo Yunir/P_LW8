@@ -17,9 +17,6 @@ public class AwaitChangesThread extends Thread {
 
     @Override
     public void run() {
-        /*try {
-            //loginAwaitThread.join();
-        } catch (InterruptedException e) { e.printStackTrace(); }*/
             ioFuncs.awaitOfUpdates();
     }
 }

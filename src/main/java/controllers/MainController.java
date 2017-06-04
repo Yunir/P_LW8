@@ -27,7 +27,7 @@ import java.io.IOException;
 
 public class MainController {
     public static volatile boolean confirmationReceived = false;
-    private int selectedProjectId = -1;
+    //private int selectedProjectId = -1;
     public static AimsHolder aimsHolder;
     public static ProjectsHolder projectsHolder;
     static int choosedIdOfProject = -1;
@@ -81,9 +81,9 @@ public class MainController {
 
     public void openAimsOfProject(MouseEvent mouseEvent) {
         Project selectedProject = (Project) ((TableView)mouseEvent.getSource()).getSelectionModel().getSelectedItem();
-        if(selectedProject == null || selectedProject.getId() == selectedProjectId)return;
+        //TODO identify  selectedProject.getId() == selectedProjectId without id
+        if(selectedProject == null)return;
 
-        selectedProjectId = selectedProject.getId();
         //System.out.println(selectedProject.getId() + " " + selectedProject.getAmount() + " " + selectedProject.getName());
         aimsHolder.setAimsObsList(FXCollections.observableArrayList(selectedProject.getAimsList()));
         aimsTable.setItems(aimsHolder.getAimsObsList());

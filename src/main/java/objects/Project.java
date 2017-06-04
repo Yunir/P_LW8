@@ -3,13 +3,11 @@ package objects;
 import java.util.ArrayList;
 
 public class Project {
-    private int id;
     private String name;
     private int amount;
     public ArrayList<Aim> aimsList = new ArrayList<Aim>();
 
-    public Project(int id, String name, int amount) {
-        this.id = id;
+    public Project(String name, int amount) {
         this.name = name;
         this.amount = amount;
     }
@@ -27,8 +25,5 @@ public class Project {
     }
     public void setAmount(int amount) {
         this.amount = amount;
-    }
-    public int getId() {
-        return id;
     }
 }
