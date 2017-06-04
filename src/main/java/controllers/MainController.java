@@ -27,11 +27,9 @@ import java.io.IOException;
 
 public class MainController {
     public static volatile boolean confirmationReceived = false;
-    //private int selectedProjectId = -1;
     public static AimsHolder aimsHolder;
     public static ProjectsHolder projectsHolder;
     static int choosedIdOfProject = -1;
-    static private boolean disconnected = false;
     @FXML
     private TableView projectsTable;
     @FXML

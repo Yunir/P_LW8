@@ -7,7 +7,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 public class PacketOfData implements Serializable {
-    int connectionId;
+    private int connectionId;
     private String name;
     private int priority;
     private Command commandType;
@@ -28,6 +28,12 @@ public class PacketOfData implements Serializable {
     }
     public void setPriority(int priority) {
         this.priority = priority;
+    }
+    public int getConnectionId() {
+        return connectionId;
+    }
+    public void setConnectionId(int connectionId) {
+        this.connectionId = connectionId;
     }
 }
 

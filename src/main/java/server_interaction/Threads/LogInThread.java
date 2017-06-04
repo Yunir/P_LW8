@@ -7,9 +7,6 @@ import java.io.IOException;
 
 import static general_classes.Main.*;
 
-/**
- * Created by Yunicoed on 31.05.2017.
- */
 public class LogInThread extends Thread {
     @Override
     public void run() {
@@ -19,7 +16,7 @@ public class LogInThread extends Thread {
             System.out.println("lock: logpass");
             while(!logpassCorrect) {
                 System.out.println("in loop");
-                if (toServer.getConnector().ioFuncs.getdIn().readUTF().equals("allow")) {
+                if (toServer.getConnector().ioFuncs.getdIn().readUTF().equals("accept")) {
                     System.out.println("confirmation received");
                     logpassCorrect = true;
                     MainController.confirmationReceived = true;

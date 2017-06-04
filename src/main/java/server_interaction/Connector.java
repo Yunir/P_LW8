@@ -1,5 +1,6 @@
 package server_interaction;
 
+import general_classes.ActionEventSolver;
 import javafx.stage.Stage;
 import server_interaction.Threads.AwaitChangesThread;
 
@@ -22,6 +23,7 @@ public class Connector {
     private InetAddress IA;
     private int port;
     public IOFuncs ioFuncs;
+    public ActionEventSolver actionEventSolver;
     Stage primaryStage;
 
     public Connector(InetAddress IA, int port) {
@@ -36,6 +38,7 @@ public class Connector {
             in = socket.getInputStream();
             out = socket.getOutputStream();
             ioFuncs = new IOFuncs(new DataInputStream(in), new DataOutputStream(out));
+            actionEventSolver = new ActionEventSolver(new DataInputStream(in), new DataOutputStream(out));
             if(awaiting){
                 AwaitChangesThread awaitChangesThread = new AwaitChangesThread(ioFuncs);
                 awaitChangesThread.start();
