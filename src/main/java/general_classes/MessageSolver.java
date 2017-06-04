@@ -30,35 +30,26 @@ public class MessageSolver {
         gson = new GsonBuilder().create();
     }
 
-    public boolean checkAuthData() {
-        try {
-            String authData = dis.readUTF();
-            String[] splitedLine = authData.split(";");
-            while (true){
-                if (LOGIN.equals(splitedLine[0]) && PASSWORD.equals(splitedLine[1])) {
-                    dos.writeUTF(REQUEST_ACCEPT);
-                    return true;
-                }
-                else dos.writeUTF(REQUEST_DENY);
+    public boolean checkAuthData() throws IOException {
+        String authData = dis.readUTF();
+        String[] splitedLine = authData.split(";");
+        while (true){
+            if (LOGIN.equals(splitedLine[0]) && PASSWORD.equals(splitedLine[1])) {
+                dos.writeUTF(REQUEST_ACCEPT);
+                return true;
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+            else dos.writeUTF(REQUEST_DENY);
         }
-        return false;
     }
     
-    public void startConversationWithUser() {
-        try {
-            String receivedMessage;
-            while(true) {
-                receivedMessage = dis.readUTF();
-                System.out.printf(WRITE_MESSAGE, userId, receivedMessage);
-                dos.writeUTF(analyzeMessage(receivedMessage, userId));
-                dos.flush();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-    }
+    public void startConversationWithUser() throws IOException {
+        String receivedMessage;
+        while(true) {
+            receivedMessage = dis.readUTF();
+            System.out.printf(WRITE_MESSAGE, userId, receivedMessage);
+            dos.writeUTF(analyzeMessage(receivedMessage, userId));
+            dos.flush();
+        }
     }
 
     public String analyzeMessage(String message, int idOfConnection) {

@@ -29,7 +29,15 @@ public class ToConnection extends Thread {
     @Override
     public void run() {
         System.out.printf(USER_ACCEPTED, idOfConnection);
-        messageSolver.checkAuthData();
-        messageSolver.startConversationWithUser();
+        try {
+            messageSolver.checkAuthData();
+            messageSolver.startConversationWithUser();
+        } catch (IOException e) {
+            try {
+                System.out.println("User " + idOfConnection + " stopped the connection.");
+                socket.close();
+            } catch (IOException ee) {ee.printStackTrace();}
+        }
+
     }
 }

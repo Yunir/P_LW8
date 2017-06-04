@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.IOException;
 import java.net.Socket;
 
 import static general_classes.Main.*;
@@ -34,7 +35,6 @@ public class FromConnection extends Thread {
 
             while (true) {
                 locker.lock();
-                try {
                     while(!notifyEveryone) {
                         System.out.println("nothing to update to user " + idOfConnection);
                         updates.await();
@@ -43,17 +43,20 @@ public class FromConnection extends Thread {
                     System.out.println("Write new information to user " + idOfConnection);
                     if(idOfConnection != generalPacketOfData.getConnectionId()) dos.writeUTF(gson.toJson(generalPacketOfData));
                     else System.out.println("User " + idOfConnection + " sent this updates, he doesn't need on it");
-                }
-                catch(Exception e){
-                        System.out.println("some exception in notifying others");
-                }
+
                 dos.flush();
                 locker.unlock();
             sleep(5000);
             notifyEveryone = false;
              }
         } catch(Exception e) {
-            System.out.println("Exception : " + e);
+            locker.unlock();
+            try {
+                System.out.println("Connection with User " + idOfConnection + " had lost.");
+                recieveChangesSocket.close();
+            } catch (IOException ee) {
+                ee.printStackTrace();
+            }
         }
     }
 }
