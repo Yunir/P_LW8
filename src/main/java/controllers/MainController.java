@@ -25,15 +25,12 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
+import static general_classes.Main.toServer;
+
 public class MainController {
     public static volatile boolean confirmationReceived = false;
     public static AimsHolder aimsHolder;
     public static ProjectsHolder projectsHolder;
-    static int choosedIdOfProject = -1;
-
-    public TableView getProjectsTable() {
-        return projectsTable;
-    }
 
     @FXML
     private TableView<Project> projectsTable;
@@ -85,7 +82,6 @@ public class MainController {
 
     public void openAimsOfProject(MouseEvent mouseEvent) {
         Project selectedProject = (Project) ((TableView)mouseEvent.getSource()).getSelectionModel().getSelectedItem();
-        //TODO identify  selectedProject.getId() == selectedProjectId without id
         if(selectedProject == null)return;
         aimsHolder.setAimsObsList(FXCollections.observableArrayList(selectedProject.getAimsList()));
         aimsTable.setItems(aimsHolder.getAimsObsList());
@@ -115,7 +111,7 @@ public class MainController {
         Stage stage = new Stage();
         try {
             UpdateProjectController.oldProjectName = projectsTable.getSelectionModel().getSelectedItem().getName();
-            Parent root = FXMLLoader.load(getClass().getResource("..//fxml/updateProject.fxml"));
+            Parent root = FXMLLoader.load(getClass().getResource("../fxml/updateProject.fxml"));
             stage.setTitle("Change name of project");
             stage.setResizable(false);
             stage.setScene(new Scene(root));
@@ -129,6 +125,10 @@ public class MainController {
             e.printStackTrace();
         }
     }
+    public void deleteProject(ActionEvent actionEvent) {
+        toServer.getConnector().actionEventSolver.deleteProject(projectsTable.getSelectionModel().getSelectedItem().getName());
+    }
+
     public void showCreateAimDialog(ActionEvent actionEvent) {
         Stage stage = new Stage();
         try {
@@ -146,34 +146,20 @@ public class MainController {
         }
     }
 
-    /*static public void refreshAimTable(TableView ss, int currProjectId) {
-        System.out.println("решил рефрешнуть " + currProjectId);
-        Thread t2 = new WriteThread(RAim(currProjectId));
-        Main.readThread.await_of_collection = true;
-        t2.start();
-
-        //if (IOConnector.con_established) {}
-
-            Date oldDate = new Date();
-            Date newDate;
-            long seconds;
-            while(Main.readThread.await_of_collection) {
-                newDate = new Date();
-                seconds = (newDate.getTime()-oldDate.getTime())/1000;
-                if (seconds > 5) {
-                    System.out.println("Response time over");
-                    disconnected = true;
-                    Main.readThread.await_of_collection = false;
-                }
-            }
-            ss.setItems(aimsHolder.getAimsObsList());
-
-    }*/
-
     public void unlockButtons(MouseEvent mouseEvent) {
         Aim temp = (Aim) ((TableView)mouseEvent.getSource()).getSelectionModel().getSelectedItem();
         if(temp==null)return;
         AUpdate.setDisable(false);
         ADelete.setDisable(false);
+    }
+    public void disableUpdateDeleteButtons() {
+        PUpdate.setDisable(true);
+        PDelete.setDisable(true);
+        ACreate.setDisable(true);
+        AUpdate.setDisable(true);
+        ADelete.setDisable(true);
+    }
+    public TableView getProjectsTable() {
+        return projectsTable;
     }
 }
