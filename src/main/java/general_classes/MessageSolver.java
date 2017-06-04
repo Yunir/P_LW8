@@ -59,20 +59,36 @@ public class MessageSolver {
                 packetOfData.setProjectsList(dataHolder.getProjectsList());
                 return gson.toJson(packetOfData);
             case ADD_PROJECT:
-                locker.lock();
-                //add to collection
-                dataHolder.getProjectsList().add(new Project(packetOfData.getName(), 0));
-                //add to DB
-                DB.insertProject(packetOfData.getName());
-                generalPacketOfData = new PacketOfData();
-                System.out.println("Need to send new data to other users");
-                notifyEveryone = true;
-                generalPacketOfData.projectsList = dataHolder.getProjectsList();
-                generalPacketOfData.setConnectionId(idOfConnection);
-                updates.signalAll();
-                System.out.println("Notified everyone, that we have new Data");
-                locker.unlock();
-                return REQUEST_ACCEPT;
+                if(DB.findSimilarProjects(packetOfData.getName()) == 0){
+                    locker.lock();
+                    //add to collection
+                    dataHolder.getProjectsList().add(new Project(packetOfData.getName(), 0));
+                    //add to DB
+                    DB.insertProject(packetOfData.getName());
+                    generalPacketOfData = new PacketOfData();
+                    System.out.println("Need to send new data to other users");
+                    notifyEveryone = true;
+                    generalPacketOfData.projectsList = dataHolder.getProjectsList();
+                    generalPacketOfData.setConnectionId(idOfConnection);
+                    updates.signalAll();
+                    System.out.println("Notified everyone, that we have new Data");
+                    locker.unlock();
+                    return REQUEST_ACCEPT;
+                } else {
+                    System.out.println("You have already project with this name");
+                    return REQUEST_DENY;
+                }
+
+            case UPDATE_PROJECT:
+                break;
+            case DELETE_PROJECT:
+                break;
+            case ADD_AIM:
+                break;
+            case UPDATE_AIM:
+                break;
+            case DELETE_AIM:
+                break;
             default:
                 break;
         }

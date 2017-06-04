@@ -67,19 +67,31 @@ public class Database {
         }
     }
 
+    public int findSimilarProjects(String name) {
+        try {
+            Statement statement = null;
+            ResultSet rs = null;
+            String query = "select count(id) from projectholder where project ~* \'^"+ name +"$\';";
+            statement = dbConnection.createStatement();
+            rs = statement.executeQuery(query);
+            System.out.println("Query successfully completed");
+            while (rs.next()){
+                return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return -1;
+    }
+
     /*Private Methods*/
     private void activateQuery(String q) throws SQLException {
         Statement statement = null;
+        ResultSet rs = null;
         String query = q;
-        try {
-            statement = dbConnection.createStatement();
-            statement.execute(query);
-            System.out.println("Query successfully completed");
-        }  finally {
-            if (statement != null) {
-                statement.close();
-            }
-        }
+        statement = dbConnection.createStatement();
+        statement.execute(query);
+        System.out.println("Query successfully completed");
     }
 
     /*Getters, setters*/
