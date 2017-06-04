@@ -39,7 +39,7 @@ public class MainController {
     @FXML
     private TableColumn<Project, Integer> amountOfAims;
     @FXML
-    private TableView aimsTable;
+    private TableView<Aim> aimsTable;
     @FXML
     private TableColumn<Aim, String> nameOfAim;
     @FXML
@@ -129,6 +129,10 @@ public class MainController {
         toServer.getConnector().actionEventSolver.deleteProject(projectsTable.getSelectionModel().getSelectedItem().getName());
     }
 
+    public void deleteAim(ActionEvent actionEvent) {
+        toServer.getConnector().actionEventSolver.deleteAim(projectsTable.getSelectionModel().getSelectedItem().getName(), aimsTable.getSelectionModel().getSelectedItem().getName());
+    }
+
     public void showCreateAimDialog(ActionEvent actionEvent) {
         Stage stage = new Stage();
         try {
@@ -167,10 +171,20 @@ public class MainController {
     }
 
     public void showUpdateAimDialog(ActionEvent actionEvent) {
-
-    }
-
-    public void deleteAim(ActionEvent actionEvent) {
-
+        Stage stage = new Stage();
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("../fxml/updateAim.fxml"));
+            stage.setTitle("Change aim and priority");
+            stage.setResizable(false);
+            stage.setScene(new Scene(root));
+            stage.initModality(Modality.WINDOW_MODAL);
+            stage.initOwner(((Node)actionEvent.getSource()).getScene().getWindow());
+            UpdateAimController.UpdateAimStage = stage;
+            UpdateAimController.projectName = projectsTable.getSelectionModel().getSelectedItem().getName();
+            UpdateAimController.oldAimName = aimsTable.getSelectionModel().getSelectedItem().getName();
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
