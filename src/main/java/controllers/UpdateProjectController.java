@@ -1,28 +1,24 @@
 package controllers;
 
-import server_interaction.Threads.WriteThread;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
-import static server_interaction.Commands.UProject;
-import static controllers.MainController.choosedIdOfProject;
+import static general_classes.Main.toServer;
 
 public class UpdateProjectController {
     static public TableView prTable;
     static public TableView aiTable;
+    public static String oldProjectName;
     @FXML
     public static Stage UpdateProjectStage;
     @FXML
     public TextField newProjectName;
 
     public void updateProject(ActionEvent actionEvent) {
-        //Main.projects.create(new Project(projectName.getText()));
-        //  Thread t0 = new WriteThread(UProject(choosedIdOfProject, newProjectName.getText()));
-        //  t0.start();
+        toServer.getConnector().actionEventSolver.updateProject(oldProjectName, newProjectName.getText());
         UpdateProjectStage.close();
-        //MainController.getFirstData(prTable, aiTable, -1);
     }
 }

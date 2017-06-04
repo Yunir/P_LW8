@@ -10,7 +10,7 @@ public class DataHolder {
     public DataHolder() {projectsList = new ArrayList<Project>();}
 
     /*Getters, setters*/
-    public ArrayList getProjects() {return projectsList;}
+    public ArrayList<Project> getProjects() {return projectsList;}
     public void setProjects(ArrayList projects) {
         projectsList = projects;
     }

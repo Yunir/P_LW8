@@ -12,9 +12,6 @@ import javafx.stage.StageStyle;
 
 import java.io.IOException;
 
-/**
- * Created by Yunicoed on 04.06.2017.
- */
 public class ControllerCreator {
 
     /*Create Controllers*/

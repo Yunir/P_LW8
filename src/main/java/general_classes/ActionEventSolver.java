@@ -3,12 +3,10 @@ package general_classes;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import controllers.MainController;
+import javafx.collections.FXCollections;
 import objects.Command;
 import objects.Project;
-import server_interaction.MessageCreator;
-import server_interaction.MessageSolver;
 import server_interaction.PacketOfData;
-import server_interaction.Threads.WriteThread;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -16,7 +14,6 @@ import java.io.IOException;
 
 import static general_classes.Main.data;
 import static general_classes.Main.mainController;
-import static general_classes.Main.toServer;
 
 public class ActionEventSolver {
     private Gson gson;
@@ -47,7 +44,6 @@ public class ActionEventSolver {
                         System.out.println("Denied!");
                     }
                     //data.showAllProjects();
-                    mainController.putDataToObservableList();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -55,4 +51,34 @@ public class ActionEventSolver {
         }).start();
     }
 
+    public void updateProject(String oldName, String newName) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                try {
+                    PacketOfData p = new PacketOfData();
+                    p.setCommandType(Command.UPDATE_PROJECT);
+                    p.setName(oldName+";"+newName);
+                    dos.writeUTF(gson.toJson(p));
+                    dos.flush();
+                    if(dis.readUTF().equals("accept")) {
+                        for (int i = 0; i < data.getProjects().size(); i++) {
+                            if(data.getProjects().get(i).getName().equals(oldName)) {
+                                data.getProjects().get(i).setName(newName);
+                                break;
+                            }
+                        }
+
+                        mainController.projectsHolder.setProjectsObsList(FXCollections.observableArrayList(data.getProjects()));
+                        mainController.getProjectsTable().refresh();
+                    } else {
+                        System.out.println("Denied!");
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
 }
