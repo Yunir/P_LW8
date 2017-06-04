@@ -89,7 +89,7 @@ public class MessageSolver {
                             break;
                         }
                     }
-                    //add to DB
+                    //update in DB
                     DB.updateProject(splitedLine[0], splitedLine[1]);
                     generalPacketOfData = new PacketOfData();
                     System.out.println("Need to send new data to other users");
@@ -105,7 +105,32 @@ public class MessageSolver {
                     return REQUEST_DENY;
                 }
             case DELETE_PROJECT:
-                break;
+                if(DB.findSimilarProjects(packetOfData.getName()) != 0){
+                    locker.lock();
+                    //delete in collection
+                    int deleteNum = -1;
+                    for (int i = 0; i < dataHolder.getProjectsList().size(); i++) {
+                        if(dataHolder.getProjectsList().get(i).getName().equals(packetOfData.getName())) {
+                            deleteNum = i;
+                            break;
+                        }
+                    }
+                    dataHolder.getProjectsList().remove(deleteNum);
+                    //delete from DB
+                    DB.deleteProject(packetOfData.getName());
+                    generalPacketOfData = new PacketOfData();
+                    System.out.println("Need to send new data to other users");
+                    notifyEveryone = true;
+                    generalPacketOfData.projectsList = dataHolder.getProjectsList();
+                    generalPacketOfData.setConnectionId(idOfConnection);
+                    updates.signalAll();
+                    System.out.println("Notified everyone, that we have new Data");
+                    locker.unlock();
+                    return REQUEST_ACCEPT;
+                } else {
+                    System.out.println("You don't have project with name " + packetOfData.getName());
+                    return REQUEST_DENY;
+                }
             case ADD_AIM:
                 break;
             case UPDATE_AIM:
