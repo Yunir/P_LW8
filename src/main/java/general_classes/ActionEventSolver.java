@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import controllers.MainController;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
+import objects.Aim;
 import objects.Command;
 import objects.Project;
 import server_interaction.PacketOfData;
@@ -41,6 +42,46 @@ public class ActionEventSolver {
                     if(dis.readUTF().equals("accept")) {
                         data.getProjects().add(new Project(nameOfProject, 0));
                         MainController.projectsHolder.create(new Project(nameOfProject, 0));
+                    } else {
+                        System.out.println("Denied!");
+                    }
+                    //data.showAllProjects();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
+    public void addAim(String nameOfProject, String text,int prior) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                try {
+                    PacketOfData p = new PacketOfData();
+                    p.setCommandType(Command.ADD_AIM);
+                    p.setName(nameOfProject+";"+text);
+                    p.setPriority(prior);
+                    dos.writeUTF(gson.toJson(p));
+                    dos.flush();
+                    if(dis.readUTF().equals("accept")) {
+                        int ind = -1;
+                        for (int i = 0; i < data.getProjects().size(); i++) {
+                            if(data.getProjects().get(i).getName().equals(nameOfProject)) {
+                                ind = i;
+                                data.getProjects().get(i).getAimsList().add(new Aim(text, prior));
+                                data.getProjects().get(i).setAmount(data.getProjects().get(i).getAmount()+1);
+                                break;
+                            }
+                        }
+                        mainController.projectsHolder.setProjectsObsList(FXCollections.observableArrayList(data.getProjects()));
+
+                        mainController.getProjectsTable().getItems().clear();
+                        mainController.getProjectsTable().getItems().addAll(mainController.projectsHolder.getProjectsObsList());
+                        mainController.getAimsTable().getItems().clear();
+                        mainController.disableUpdateDeleteButtons();
+                        //MainController.projectsHolder.getProjectsObsList().get(ind).getAimsList().add(new Aim(text, prior));
                     } else {
                         System.out.println("Denied!");
                     }
@@ -120,4 +161,5 @@ public class ActionEventSolver {
             }
         }).start();
     }
+
 }

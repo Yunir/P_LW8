@@ -134,12 +134,12 @@
                                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                  </HBox.margin>
                               </Button>
-                              <Button fx:id="AUpdate" mnemonicParsing="false" text="Update">
+                              <Button fx:id="AUpdate" mnemonicParsing="false" onAction="#showUpdateAimDialog" text="Update">
                                  <HBox.margin>
                                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                  </HBox.margin>
                               </Button>
-                              <Button fx:id="ADelete" mnemonicParsing="false" text="Delete">
+                              <Button fx:id="ADelete" mnemonicParsing="false" onAction="#deleteAim" text="Delete">
                                  <HBox.margin>
                                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                  </HBox.margin>

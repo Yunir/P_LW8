@@ -132,17 +132,17 @@ public class MainController {
     public void showCreateAimDialog(ActionEvent actionEvent) {
         Stage stage = new Stage();
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("../../resources/fxml/createAim.fxml"));
+            Parent root = FXMLLoader.load(getClass().getResource("../fxml/createAim.fxml"));
             stage.setTitle("New aim");
             stage.setResizable(false);
             stage.setScene(new Scene(root));
             stage.initModality(Modality.WINDOW_MODAL);
             stage.initOwner(((Node)actionEvent.getSource()).getScene().getWindow());
             CreateAimController.CreateAimStage = stage;
-            CreateProjectController.aiTable = aimsTable;
+            CreateAimController.projectName = projectsTable.getSelectionModel().getSelectedItem().getName();
             stage.show();
         } catch (IOException e) {
-            System.out.println("Can'readThread load fxml 'createAim' file");
+            e.printStackTrace();
         }
     }
 
@@ -161,5 +161,16 @@ public class MainController {
     }
     public TableView getProjectsTable() {
         return projectsTable;
+    }
+    public TableView getAimsTable() {
+        return aimsTable;
+    }
+
+    public void showUpdateAimDialog(ActionEvent actionEvent) {
+
+    }
+
+    public void deleteAim(ActionEvent actionEvent) {
+
     }
 }
