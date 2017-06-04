@@ -80,9 +80,25 @@ public class Database {
             e.printStackTrace();
         }
     }
+    public void updateAim(String project, String oldName, String newName, int priority) {
+        try {
+            activateQuery("UPDATE aimholder SET aim = \'"+newName+"\', priority = "+priority+" WHERE project_id = (SELECT id FROM projectholder WHERE project = \'"+project+"\') AND aim = \'"+oldName+"\';");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
     public void deleteProject(String name) {
         try {
             activateQuery("DELETE FROM projectholder WHERE project = \'"+name+"\';");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void deleteAim(String project, String aim) {
+
+        try {
+            activateQuery("DELETE FROM aimholder WHERE project_id = (SELECT id FROM projectholder WHERE project = \'"+project+"\') AND aim = \'"+aim+"\';");
         } catch (SQLException e) {
             e.printStackTrace();
         }

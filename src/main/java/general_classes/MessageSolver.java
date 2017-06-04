@@ -160,9 +160,68 @@ public class MessageSolver {
                     return REQUEST_DENY;
                 }
             case UPDATE_AIM:
-                break;
+                String[] updtAim = packetOfData.getName().split(";");
+                if(DB.findSimilarAims(updtAim[0], updtAim[1]) != 0){
+                    locker.lock();
+                    //change in collection
+                    for (int i = 0; i < dataHolder.getProjectsList().size(); i++) {
+                        if(dataHolder.getProjectsList().get(i).getName().equals(updtAim[0])) {
+                            for (int j = 0; j < dataHolder.getProjectsList().get(i).getAimsList().size(); j++) {
+                                if(dataHolder.getProjectsList().get(i).getAimsList().get(j).getName().equals(updtAim[1])) {
+                                    dataHolder.getProjectsList().get(i).getAimsList().get(j).setName(updtAim[2]);
+                                    dataHolder.getProjectsList().get(i).getAimsList().get(j).setPriority(packetOfData.getPriority());
+                                    break;
+                                }
+                            }
+                            break;
+                        }
+                    }
+                    //update in DB
+                    DB.updateAim(updtAim[0], updtAim[1], updtAim[2], packetOfData.getPriority());
+                    generalPacketOfData = new PacketOfData();
+                    System.out.println("Need to send new data to other users");
+                    notifyEveryone = true;
+                    generalPacketOfData.projectsList = dataHolder.getProjectsList();
+                    generalPacketOfData.setConnectionId(idOfConnection);
+                    updates.signalAll();
+                    System.out.println("Notified everyone, that we have new Data");
+                    locker.unlock();
+                    return REQUEST_ACCEPT;
+                } else {
+                    System.out.println("You have already aim with same name - " + updtAim[1]);
+                    return REQUEST_DENY;
+                }
             case DELETE_AIM:
-                break;
+                String[] delAim = packetOfData.getName().split(";");
+                if(DB.findSimilarAims(delAim[0], delAim[1]) != 0){
+                    locker.lock();
+                    //change in collection
+                    for (int i = 0; i < dataHolder.getProjectsList().size(); i++) {
+                        if(dataHolder.getProjectsList().get(i).getName().equals(delAim[0])) {
+                            for (int j = 0; j < dataHolder.getProjectsList().get(i).getAimsList().size(); j++) {
+                                if(dataHolder.getProjectsList().get(i).getAimsList().get(j).getName().equals(delAim[1])) {
+                                    dataHolder.getProjectsList().get(i).getAimsList().remove(j);
+                                    break;
+                                }
+                            }
+                            break;
+                        }
+                    }
+                    //update in DB
+                    DB.deleteAim(delAim[0], delAim[1]);
+                    generalPacketOfData = new PacketOfData();
+                    System.out.println("Need to send new data to other users");
+                    notifyEveryone = true;
+                    generalPacketOfData.projectsList = dataHolder.getProjectsList();
+                    generalPacketOfData.setConnectionId(idOfConnection);
+                    updates.signalAll();
+                    System.out.println("Notified everyone, that we have new Data");
+                    locker.unlock();
+                    return REQUEST_ACCEPT;
+                } else {
+                    System.out.println("You don't have aim with same name - " + delAim[1]);
+                    return REQUEST_DENY;
+                }
             default:
                 break;
         }
