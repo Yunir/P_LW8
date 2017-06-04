@@ -35,20 +35,26 @@ public class FromConnection extends Thread {
 
             while (true) {
                 locker.lock();
-                    while(!notifyEveryone) {
+                System.out.println(idOfConnection + ".");
+                while(!notifyEveryone) {
                         System.out.println("nothing to update to user " + idOfConnection);
                         updates.await();
-                        System.out.println("User is awake " + idOfConnection);
+                    System.out.println(idOfConnection + "..");
+                    System.out.println("User is awake " + idOfConnection);
                     }
                     System.out.println("Write new information to user " + idOfConnection);
                     if(idOfConnection != generalPacketOfData.getConnectionId()) dos.writeUTF(gson.toJson(generalPacketOfData));
                     else System.out.println("User " + idOfConnection + " sent this updates, he doesn't need on it");
-
+                System.out.println(idOfConnection + "...");
                 dos.flush();
                 locker.unlock();
-            sleep(5000);
-            notifyEveryone = false;
-             }
+            sleep(1000);
+                System.out.println(idOfConnection + "....");
+
+                notifyEveryone = false;
+                System.out.println(idOfConnection + ".....");
+
+            }
         } catch(Exception e) {
             locker.unlock();
             try {

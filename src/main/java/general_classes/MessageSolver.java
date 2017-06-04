@@ -75,12 +75,35 @@ public class MessageSolver {
                     locker.unlock();
                     return REQUEST_ACCEPT;
                 } else {
-                    System.out.println("You have already project with this name");
+                    System.out.println("You have already project with name " + packetOfData.getName());
                     return REQUEST_DENY;
                 }
-
             case UPDATE_PROJECT:
-                break;
+                String[] splitedLine = packetOfData.getName().split(";");
+                if(DB.findSimilarProjects(splitedLine[1]) == 0){
+                    locker.lock();
+                    //change in collection
+                    for (Project eachProject : dataHolder.getProjectsList()) {
+                        if (eachProject.getName().equals(splitedLine[0])) {
+                            eachProject.setName(splitedLine[1]);
+                            break;
+                        }
+                    }
+                    //add to DB
+                    DB.updateProject(splitedLine[0], splitedLine[1]);
+                    generalPacketOfData = new PacketOfData();
+                    System.out.println("Need to send new data to other users");
+                    notifyEveryone = true;
+                    generalPacketOfData.projectsList = dataHolder.getProjectsList();
+                    generalPacketOfData.setConnectionId(idOfConnection);
+                    updates.signalAll();
+                    System.out.println("Notified everyone, that we have new Data");
+                    locker.unlock();
+                    return REQUEST_ACCEPT;
+                } else {
+                    System.out.println("You have already project with name " + splitedLine[1]);
+                    return REQUEST_DENY;
+                }
             case DELETE_PROJECT:
                 break;
             case ADD_AIM:

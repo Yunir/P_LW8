@@ -67,6 +67,14 @@ public class Database {
         }
     }
 
+    public void updateProject(String oldName, String newName) {
+        try {
+            activateQuery("UPDATE projectholder SET project = \'"+newName+"\' WHERE project = \'"+oldName+"\';");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     public int findSimilarProjects(String name) {
         try {
             Statement statement = null;
