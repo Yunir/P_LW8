@@ -5,7 +5,7 @@ import objects.Project;
 
 import java.sql.*;
 import java.util.ArrayList;
-import static main.Main.dataHolder;
+import static general_classes.Main.dataHolder;
 
 public class Database {
     static final String DB_DRIVER = "org.postgresql.Driver";

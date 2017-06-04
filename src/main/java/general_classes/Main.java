@@ -1,25 +1,28 @@
-package main;
+package general_classes;
 
-import client_interaction.IOServer;
 import client_interaction.PacketOfData;
-import client_interaction.ReceiveChangesServerThread;
 import data_processing.Database;
 import objects.DataHolder;
+
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class Main {
     public static DataHolder dataHolder;
     public static volatile PacketOfData generalPacketOfData = new PacketOfData();
-    public static volatile PacketOfData temp = new PacketOfData();
     public static volatile  boolean notifyEveryone = false;
     public static Database DB;
+
+    public static volatile ReentrantLock locker = new ReentrantLock();
+    public static volatile Condition updates = locker.newCondition();
+
     public static void main(String[] args) {
-        DB = new Database();
         dataHolder = new DataHolder();
+        DB = new Database();
         DB.getFullDB();
-        ReceiveChangesServerThread receiveChangesServerThread = new ReceiveChangesServerThread();
-        receiveChangesServerThread.start();
-        IOServer IOServer = new IOServer();
-        IOServer.waitConnections();
-        System.exit(0);
+        ToServer toServer = new ToServer();
+        FromServer fromServer = new FromServer();
+        toServer.start();
+        fromServer.start();
     }
 }

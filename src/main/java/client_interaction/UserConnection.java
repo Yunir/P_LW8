@@ -46,7 +46,7 @@ public class UserConnection extends Thread {
                 line = dis.readUTF();
                 System.out.println(String.format(TEMPL_MSG, idOfConnection) + line);
                 //TODO: write that all is good and user can change data as he planned. Something like 'DONE'
-                line = processor.analyzeMessage(line);
+                line = processor.analyzeMessage(line, idOfConnection);
                 System.out.println("I'm sending back: " + line);
                 dos.writeUTF(line);
                 dos.flush();

@@ -4,11 +4,8 @@ import client_interaction.PacketOfData;
 import objects.Command;
 import objects.Project;
 
-import static main.Main.*;
+import static general_classes.Main.*;
 
-/**
- * Created by Yunicoed on 01.06.2017.
- */
 public class Processor {
     Database DB;
     private MessageSolver messageSolver;
@@ -23,7 +20,7 @@ public class Processor {
     }
 
     //TODO transfer to MessageCreator
-    public String analyzeMessage(String message) {
+    public String analyzeMessage(String message, int idOfConnection) {
         PacketOfData packetOfData = messageSolver.deserializePacketOfData(message);
         if(packetOfData.getCommandType() == Command.FIRST_READ) {
             packetOfData.projectsList = dataHolder.getProjectsList();
@@ -33,16 +30,15 @@ public class Processor {
             messageSolver.addProject(packetOfData.getName());
             packetOfData.projectsList = dataHolder.getProjectsList();
 
-            synchronized (generalPacketOfData) {
-                System.out.println("Data changed");
-                notifyEveryone = true;
-                temp = packetOfData;
-                generalPacketOfData.notifyAll();
-                System.out.println("Notified everyone, that we have new Data");
-            }
+            locker.lock();
+            System.out.println("Data changed");
+            notifyEveryone = true;
+            generalPacketOfData = packetOfData;
+            generalPacketOfData.setConnectionId(idOfConnection);
+            updates.signalAll();
+            System.out.println("Notified everyone, that we have new Data");
+            locker.unlock();
         }
-        //если message - прочитать - отправить message
-        //TODO finish work with refresh data
         return messageSolver.serializePacketOfData(packetOfData);
     }
 

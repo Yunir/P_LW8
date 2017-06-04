@@ -2,16 +2,13 @@ package client_interaction;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import data_processing.MessageSolver;
 import data_processing.Processor;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.net.Socket;
 
-import static main.Main.generalPacketOfData;
-import static main.Main.notifyEveryone;
-import static main.Main.temp;
+import static general_classes.Main.*;
 
 public class ReceiveChangesConnection extends Thread {
     Processor processor;
@@ -41,39 +38,25 @@ public class ReceiveChangesConnection extends Thread {
             dos = new DataOutputStream(recieveChangesSocket.getOutputStream());
 
                 while (true) {
-                    synchronized (generalPacketOfData) {
-                        try {while(!notifyEveryone) {
-                        System.out.println("nothing to update to user " + idOfConnection);
-                        generalPacketOfData.wait();
-                        System.out.println("User is awake " + idOfConnection);
-                    }
-                    System.out.println("Write new information to user " + idOfConnection);
-                    //generalPacketOfData = temp;
-                    dos.writeUTF(gson.toJson(temp));} catch(Exception e){
-                            System.out.println("some exception in notifying others");
+                    locker.lock();
+                    try {
+                        while(!notifyEveryone) {
+                            System.out.println("nothing to update to user " + idOfConnection);
+                            updates.await();
+                            System.out.println("User is awake " + idOfConnection);
                         }
+                        System.out.println("Write new information to user " + idOfConnection);
+                        if(idOfConnection != generalPacketOfData.getConnectionId()) dos.writeUTF(gson.toJson(generalPacketOfData));
+                        else System.out.println("User " + idOfConnection + " sent this updates, he doesn't need on it");
+                    }
+                    catch(Exception e){
+                            System.out.println("some exception in notifying others");
+                    }
                     dos.flush();
-                }
-                    sleep(5000);
-                    notifyEveryone = false;
-            }
-
-                // Ожидание сообщения от клиента
-             /*
-                line = dis.readUTF();
-                System.out.println(String.format(TEMPL_MSG, idOfConnection) + line);
-                //TODO: write that all is good and user can change data as he planned. Something like 'DONE'
-                line = processor.analyzeMessage(line);
-                System.out.println("I'm sending back: " + line);
-                dos.writeUTF(line);
-                dos.flush();
-                if (line.equalsIgnoreCase("quit")) {
-                    //TODO: client close program and send last message 'quit'
-                    recieveChangesSocket.close();
-                    System.out.println(String.format(TEMPL_CONN, idOfConnection));
-                    break;
-                }
-            }*/
+                    locker.unlock();
+                sleep(5000);
+                notifyEveryone = false;
+             }
         } catch(Exception e) {
             System.out.println("Exception : " + e);
         }
