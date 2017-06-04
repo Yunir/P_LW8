@@ -31,7 +31,7 @@ public class Database {
 
     public void getFullDB() {
         Statement statement;
-        Statement substatement;
+        Statement subStatement;
         ResultSet resultSet;
         ResultSet subResultSet;
         try {
@@ -41,15 +41,15 @@ public class Database {
             ArrayList<Project> projectList = new ArrayList<Project>();
             while (resultSet.next()) {
                 String subquery = "SELECT id, aim, priority FROM aimholder where project_id = "+ resultSet.getInt(1) +" ORDER BY id;";
-                substatement = dbConnection.createStatement();
-                subResultSet = substatement.executeQuery(subquery);
+                subStatement = dbConnection.createStatement();
+                subResultSet = subStatement.executeQuery(subquery);
                 Project project = new Project(resultSet.getString(2).replace("  ",""),resultSet.getInt(3));
                 while(subResultSet.next()) {
-                    project.getAimsList().add(new Aim(subResultSet.getInt(1),subResultSet.getString(2).replace("  ",""),subResultSet.getInt(3)));
+                    project.getAimsList().add(new Aim(subResultSet.getString(2).replace("  ",""),subResultSet.getInt(3)));
                 }
                 projectList.add(project);
                 dataHolder.setProjects(projectList);
-                substatement.close();
+                subStatement.close();
                 subResultSet.close();
             }
             statement.close();

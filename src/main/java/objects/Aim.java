@@ -4,12 +4,10 @@ package objects;
  * Created by Yunicoed on 16.05.2017.
  */
 public class Aim {
-    public int id;
     public String name;
     public int priority;
 
-    public Aim(int id, String name, int priority) {
-        this.id = id;
+    public Aim(String name, int priority) {
         this.name = name;
         this.priority = priority;
     }

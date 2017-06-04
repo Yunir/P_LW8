@@ -1,6 +1,7 @@
 package data_processing;
 
 import client_interaction.PacketOfData;
+import objects.Command;
 import objects.Project;
 
 import static main.Main.*;
@@ -24,15 +25,14 @@ public class Processor {
     //TODO transfer to MessageCreator
     public String analyzeMessage(String message) {
         PacketOfData packetOfData = messageSolver.deserializePacketOfData(message);
-        if(packetOfData.getCommandType() == packetOfData.FIRST_READ) {
+        if(packetOfData.getCommandType() == Command.FIRST_READ) {
             packetOfData.projectsList = dataHolder.getProjectsList();
-        } else if (packetOfData.getCommandType() == packetOfData.ADD) {
+        } else if (packetOfData.getCommandType() == Command.ADD_PROJECT) {
             //script
-            if(packetOfData.aim == null) {
-                dataHolder.getProjectsList().add(new Project(packetOfData.project, 0));
-                messageSolver.addProject(packetOfData.project);
-                packetOfData.projectsList = dataHolder.getProjectsList();
-            }
+            dataHolder.getProjectsList().add(new Project(packetOfData.getName(), 0));
+            messageSolver.addProject(packetOfData.getName());
+            packetOfData.projectsList = dataHolder.getProjectsList();
+
             synchronized (generalPacketOfData) {
                 System.out.println("Data changed");
                 notifyEveryone = true;
