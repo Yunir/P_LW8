@@ -66,6 +66,13 @@ public class Database {
             e.printStackTrace();
         }
     }
+    public void addAim(String s, String s1, int priority) {
+        try {
+            activateQuery("INSERT INTO aimholder (project_id, aim, priority) VALUES ((SELECT id FROM projectholder WHERE project = \'"+s+"\'),\'"+s1+"\',"+priority+");");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
     public void updateProject(String oldName, String newName) {
         try {
             activateQuery("UPDATE projectholder SET project = \'"+newName+"\' WHERE project = \'"+oldName+"\';");
@@ -85,6 +92,23 @@ public class Database {
             Statement statement = null;
             ResultSet rs = null;
             String query = "select count(id) from projectholder where project ~* \'^"+ name +"$\';";
+            statement = dbConnection.createStatement();
+            rs = statement.executeQuery(query);
+            System.out.println("Query successfully completed");
+            while (rs.next()){
+                return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return -1;
+    }
+
+    public int findSimilarAims(String project, String aim) {
+        try {
+            Statement statement = null;
+            ResultSet rs = null;
+            String query = "SELECT count(id) FROM aimholder WHERE aim = \'"+aim+"\' AND project_id = (SELECT id FROM projectholder WHERE project = \'"+project+"\');";
             statement = dbConnection.createStatement();
             rs = statement.executeQuery(query);
             System.out.println("Query successfully completed");

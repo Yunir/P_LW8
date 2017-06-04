@@ -3,6 +3,7 @@ package general_classes;
 import client_interaction.PacketOfData;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import objects.Aim;
 import objects.Project;
 import org.apache.commons.codec.digest.DigestUtils;
 
@@ -132,7 +133,32 @@ public class MessageSolver {
                     return REQUEST_DENY;
                 }
             case ADD_AIM:
-                break;
+                String[] splitedLineAim = packetOfData.getName().split(";");
+                if(DB.findSimilarAims(splitedLineAim[0], splitedLineAim[1]) == 0){
+                    locker.lock();
+                    //change in collection
+                    for (Project eachProject : dataHolder.getProjectsList()) {
+                        if (eachProject.getName().equals(splitedLineAim[0])) {
+                            eachProject.getAimsList().add(new Aim(splitedLineAim[1], packetOfData.getPriority()));
+                            eachProject.setAmount(eachProject.getAmount()+1);
+                            break;
+                        }
+                    }
+                    //update in DB
+                    DB.addAim(splitedLineAim[0], splitedLineAim[1], packetOfData.getPriority());
+                    generalPacketOfData = new PacketOfData();
+                    System.out.println("Need to send new data to other users");
+                    notifyEveryone = true;
+                    generalPacketOfData.projectsList = dataHolder.getProjectsList();
+                    generalPacketOfData.setConnectionId(idOfConnection);
+                    updates.signalAll();
+                    System.out.println("Notified everyone, that we have new Data");
+                    locker.unlock();
+                    return REQUEST_ACCEPT;
+                } else {
+                    System.out.println("You have already aim with same name - " + splitedLineAim[1]);
+                    return REQUEST_DENY;
+                }
             case UPDATE_AIM:
                 break;
             case DELETE_AIM:

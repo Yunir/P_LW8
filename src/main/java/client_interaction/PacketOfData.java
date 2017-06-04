@@ -31,6 +31,9 @@ public class PacketOfData implements Serializable {
     public void setPriority(int priority) {
         this.priority = priority;
     }
+    public int getPriority() {
+        return priority;
+    }
     public int getConnectionId() {
         return connectionId;
     }
