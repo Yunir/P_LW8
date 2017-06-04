@@ -8,7 +8,6 @@ public class DataHolder {
     public DataHolder() {projectsList = new ArrayList<Project>();}
 
     /*Setters, getters*/
-    public ArrayList getProjects() {return projectsList;}
     public void setProjects(ArrayList projects) {
         projectsList = projects;
     }

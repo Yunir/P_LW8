@@ -1,13 +1,11 @@
 package general_classes;
 
-import client_interaction.ReceiveChangesConnection;
-import client_interaction.UserConnection;
+import client_interaction.FromConnection;
 
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.UnknownHostException;
 
 public class FromServer extends Thread {
     private final int PORT = 8888;
@@ -30,7 +28,7 @@ public class FromServer extends Thread {
         try {
             while(true) {
                 socket = serverSocket.accept();
-                new ReceiveChangesConnection(countOfConnections++, socket);
+                new FromConnection(countOfConnections++, socket);
             }
         } catch (IOException e) {
             e.printStackTrace();

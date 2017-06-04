@@ -19,6 +19,9 @@ public class PacketOfData implements Serializable {
     public ArrayList<Project> getProjectsList() {
         return projectsList;
     }
+    public void setProjectsList(ArrayList<Project> projectsList) {
+        this.projectsList = projectsList;
+    }
     public void setName(String name) {
         this.name = name;
     }

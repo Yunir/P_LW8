@@ -58,27 +58,29 @@ public class Database {
             e.printStackTrace();
         }
     }
-  /*  public void activateQuery(String q) throws SQLException {
+
+    public void insertProject(String name) {
+        try {
+            activateQuery("INSERT INTO projectholder (project) VALUES(\'" + name + "\');");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /*Private Methods*/
+    private void activateQuery(String q) throws SQLException {
         Statement statement = null;
         String query = q;
-
         try {
             statement = dbConnection.createStatement();
-
-            // выполнить SQL запрос
             statement.execute(query);
-            System.out.println("Query successfully finished.");
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        } finally {
+            System.out.println("Query successfully completed");
+        }  finally {
             if (statement != null) {
                 statement.close();
             }
-            *//*if (dbConnection != null) {
-                dbConnection.close();
-            }*//*
         }
-    }*/
+    }
 
     /*Getters, setters*/
     public Connection getDbConnection() {return dbConnection;}

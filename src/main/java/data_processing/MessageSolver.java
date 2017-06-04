@@ -1,3 +1,4 @@
+/*
 package data_processing;
 
 import client_interaction.PacketOfData;
@@ -34,18 +35,6 @@ public class MessageSolver {
         return gson.toJson(packetOfData);
     }
 
-    public void addProject(String name) {
-        try {
-            activateQuery("INSERT INTO projectholder (project) VALUES(\'" + name + "\');");
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public PacketOfData deserializePacketOfData (String message) {
-        return gson.fromJson(message, PacketOfData.class);
-    }
-
     public boolean parseExecuteResult(String line) throws SQLException {
         gson = new GsonBuilder().create();
         PacketOfData packetOfData = new PacketOfData();
@@ -69,7 +58,8 @@ public class MessageSolver {
             String Password = DigestUtils.md5Hex("admin");
             if (name.equals(splitedLine[1]) && Password.equals(splitedLine[2])) return true;
             else return false;
-        } /*else {
+        } */
+/*else {
             switch (splitedLine[1]) {
                 case "create":
                     try {
@@ -81,7 +71,11 @@ public class MessageSolver {
                     try {
                         generalPacketOfData.setProjectsList(Utils.getAllProjects(connection));
                         //TODO: tie with numbers
-                        //generalPacketOfData.getProjectsList().get(*//*какой-то проект*//*).aimsList = Utils.getAllAims(Integer.parseInt(splitedLine[2]),connection);
+                        //generalPacketOfData.getProjectsList().get(*//*
+*/
+/*какой-то проект*//*
+*/
+/*).aimsList = Utils.getAllAims(Integer.parseInt(splitedLine[2]),connection);
                         SQLCommand = gson.toJson(generalPacketOfData);
                     } catch (SQLException e) {
                         e.printStackTrace();
@@ -107,21 +101,10 @@ public class MessageSolver {
 
                     break;
             }
-        }*/
+        }*//*
+
         return true;
     }
 
-    public void activateQuery(String q) throws SQLException {
-        Statement statement = null;
-        String query = q;
-        try {
-            statement = dbConnection.createStatement();
-            statement.execute(query);
-            System.out.println("Query successfully completed");
-        }  finally {
-            if (statement != null) {
-                statement.close();
-            }
-        }
-    }
 }
+*/

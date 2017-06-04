@@ -10,7 +10,7 @@ import java.util.concurrent.locks.ReentrantLock;
 public class Main {
     public static DataHolder dataHolder;
     public static volatile PacketOfData generalPacketOfData = new PacketOfData();
-    public static volatile  boolean notifyEveryone = false;
+    public static volatile boolean notifyEveryone = false;
     public static Database DB;
 
     public static volatile ReentrantLock locker = new ReentrantLock();

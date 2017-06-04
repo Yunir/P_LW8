@@ -1,6 +1,6 @@
 package general_classes;
 
-import client_interaction.UserConnection;
+import client_interaction.ToConnection;
 
 import java.io.*;
 import java.net.InetAddress;
@@ -30,7 +30,7 @@ public class ToServer extends Thread {
         try {
             while(true) {
                 socket = serverSocket.accept();
-                new UserConnection(countOfConnections++, socket);
+                new ToConnection(countOfConnections++, socket);
             }
         } catch (IOException e) {
             e.printStackTrace();
