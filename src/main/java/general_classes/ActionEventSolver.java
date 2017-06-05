@@ -7,21 +7,22 @@ import javafx.collections.FXCollections;
 import objects.Aim;
 import objects.Command;
 import objects.Project;
+import server_interaction.MessageSolver;
 import server_interaction.PacketOfData;
+import server_interaction.Threads.WriteThread;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-import static general_classes.Main.dataHolder;
-import static general_classes.Main.mainController;
+import static general_classes.Main.*;
+import static general_classes.Main.locker;
 
 public class ActionEventSolver {
     private Gson gson;
     private DataInputStream dis;
     private DataOutputStream dos;
     //private SocketChannel socketChannel;
-    //private MessageCreator messageCreator;
     public ActionEventSolver(DataInputStream dis, DataOutputStream dos) {
         this.dis = dis;
         this.dos = dos;
@@ -37,12 +38,41 @@ public class ActionEventSolver {
 
     public void getFirstData() {
         System.out.println("Sending start-Data...");
-        writeToServer(gson.toJson(messageCreator.firstRead()));
+        write(gson.toJson(messageCreator.firstRead()));
         try {
-            readFromServer();
+            read();
         } catch (IOException e) {
             e.printStackTrace();
         }*/
+    }
+
+    public void getFirstFullPacket() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                locker.lock();
+                System.out.println("lock.ToServer");
+                try {
+                    if(!MainController.confirmationReceived) accessToResource.await();
+                    getFirstData();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }finally {
+                    locker.unlock();
+                }
+            }
+        }).start();
+    }
+    public void getFirstData() {
+        try {
+            write(gson.toJson(MessageCreator.firstRead()));
+            String packet = read();
+            PacketOfData packetOfData = new Gson().fromJson(packet, PacketOfData.class);
+            dataHolder.setProjects(packetOfData.getProjectsList());
+            mainController.putDataToObservableList();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void addProject(String nameOfProject) {
@@ -267,7 +297,21 @@ public class ActionEventSolver {
         }).start();
     }
 
-    /*public void readFromServer() throws IOException {
+
+    //Simple Methods to talk with server
+    synchronized public void write(String sms)throws IOException {
+        System.out.println("write.start: " + sms);
+        dos.writeUTF(sms);
+        dos.flush();
+        System.out.println("write.end");
+    }
+    synchronized public String read() throws IOException {
+        String line = dis.readUTF();
+        System.out.println("read: " + line);
+        return line;
+    }
+
+    /*public void read() throws IOException {
         String line = null;
         line = dis.readUTF();
         System.out.println(line);
@@ -276,7 +320,7 @@ public class ActionEventSolver {
         //dataHolder.showAllProjects();
         mainController.putDataToObservableList();
     }
-    public void writeToServer(String readyPacket){
+    public void write(String readyPacket){
         new Thread(new Runnable() {
             @Override
             public void run() {

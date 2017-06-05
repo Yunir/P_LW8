@@ -12,12 +12,9 @@ import static general_classes.Main.locker;
 
 public class ToServer implements ServerInterface {
     private Connector connector;
-
-
     public ToServer() {
         defaultSettings();
     }
-
 
     /*public methods*/
     @Override
@@ -25,26 +22,8 @@ public class ToServer implements ServerInterface {
         return connector.establishConnection(parent, false);
     }
     public void getFirstFullPacket() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                locker.lock();
-                System.out.println("lock: ToServer");
-                try {
-                    if(!MainController.confirmationReceived) accessToResource.await();
-                    System.out.println("Start downloading FirstData");
-                    connector.getIoFuncs().getFirstData();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }finally {
-                    locker.unlock();
-                }
-            }
-        }).start();
-
-
+        connector.actionEventSolver.getFirstFullPacket();
     }
-
 
     /*private methods*/
     private void defaultSettings() {
@@ -60,4 +39,5 @@ public class ToServer implements ServerInterface {
     public Connector getConnector() {
         return connector;
     }
+
 }
