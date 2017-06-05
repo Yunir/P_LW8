@@ -35,6 +35,7 @@ public class MessageSolver {
 
     public boolean checkAuthData() throws IOException {
         while (true){
+            System.out.println("I am waiting to catch it");
             String authData = dis.readUTF();
             System.out.println(authData + " gotten");
             String[] splitedLine = authData.split(";");
