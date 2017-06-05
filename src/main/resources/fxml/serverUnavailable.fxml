@@ -28,7 +28,7 @@
       </Label>
       <Button mnemonicParsing="false" onAction="#exitTheApp" prefWidth="500.0" text="Ok">
          <VBox.margin>
-            <Insets bottom="10.0" left="135.0" right="135.0" top="20.0" />
+            <Insets bottom="10.0" left="135.0" right="135.0" top="50.0" />
          </VBox.margin>
       </Button>
       <ImageView cache="true" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
@@ -36,7 +36,7 @@
             <Image url="@../images/pepe.png" />
          </image>
          <VBox.margin>
-            <Insets top="-60.0" />
+            <Insets top="-90.0" />
          </VBox.margin>
       </ImageView>
    </children>

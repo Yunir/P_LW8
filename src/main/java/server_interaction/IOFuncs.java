@@ -1,11 +1,11 @@
 package server_interaction;
 
 import com.google.gson.Gson;
+import general_classes.MessageCreator;
 import javafx.application.Platform;
 import server_interaction.Threads.WriteThread;
 
 import java.io.*;
-import java.net.SocketException;
 
 import static general_classes.Main.*;
 
@@ -28,34 +28,45 @@ public class IOFuncs {
         Thread t = new WriteThread(toServer.getConnector(), mSolver.serializePacketOfData(mCreator.firstRead()));
 
         t.start();
-        try {readFromServer();} catch (IOException e) {e.printStackTrace();}
+        try {
+            readFromServer();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
     }
 
-    public static void addProject(String nameOfProject) {
+    public void addProject(String nameOfProject) {
         MessageSolver mSolver = new MessageSolver();
         MessageCreator mCreator = new MessageCreator();
         System.out.println("Sending project...");
         Thread t = new WriteThread(toServer.getConnector(), mSolver.serializePacketOfData(mCreator.addProject(nameOfProject)));
         t.start();
-        try {toServer.getConnector().ioFuncs.readFromServer();} catch (IOException e) {e.printStackTrace();}
+        try {
+            readFromServer();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /*Read, write methods*/
-    synchronized public void writeToServer(String sms){
+    synchronized public void writeToServer(String sms) {
         try {
             System.out.println("Writing to server...");
             dOut.writeUTF(sms);
             dOut.flush();
-        } catch (IOException e) { System.out.println("Caused problem in writing to server"); }
+        } catch (IOException e) {
+            System.out.println("Caused problem in writing to server");
+        }
     }
+
     public void readFromServer() throws IOException {
         String line = null;
         line = dIn.readUTF();
         System.out.println(line);
         PacketOfData packetOfData = new Gson().fromJson(line, PacketOfData.class);
-        data.setProjects(packetOfData.getProjectsList());
-        //data.showAllProjects();
+        dataHolder.setProjects(packetOfData.getProjectsList());
+        //dataHolder.showAllProjects();
         mainController.putDataToObservableList();
     }
 
@@ -64,8 +75,10 @@ public class IOFuncs {
             @Override
             public void run() {
                 boolean allIsGood = true;
-                while (allIsGood){
-                    try {fromServer.getConnector().ioFuncs.readFromServer();} catch (IOException e) {
+                while (allIsGood) {
+                    try {
+                        readFromServer();
+                    } catch (IOException e) {
                         allIsGood = false;
                         Platform.runLater(new Runnable() {
                             @Override
@@ -85,6 +98,7 @@ public class IOFuncs {
     public DataInputStream getdIn() {
         return dIn;
     }
+
     public DataOutputStream getdOut() {
         return dOut;
     }

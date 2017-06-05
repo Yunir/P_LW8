@@ -1,12 +1,10 @@
-package server_interaction;
+package general_classes;
 
 
 import objects.Command;
 import objects.Project;
+import server_interaction.PacketOfData;
 
-/**
- * Created by Yunicoed on 02.06.2017.
- */
 public class MessageCreator {
     PacketOfData packetOfData;
     public PacketOfData firstRead() {

@@ -2,14 +2,12 @@ package controllers;
 
 import objects.TableviewObservableLists.AimsHolder;
 import objects.TableviewObservableLists.ProjectsHolder;
-import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
-import javafx.stage.StageStyle;
 import general_classes.Main;
 import objects.Aim;
 import objects.Project;
@@ -74,7 +72,7 @@ public class MainController {
 
     public void putDataToObservableList () {
         System.out.println("putting Data to ObservableLists");
-        projectsHolder.setProjectsObsList(FXCollections.observableArrayList(Main.data.getProjects()));
+        projectsHolder.setProjectsObsList(FXCollections.observableArrayList(Main.dataHolder.getProjects()));
         projectsTable.setItems(projectsHolder.getProjectsObsList());
 
         projectsHolder.showAllProjects();

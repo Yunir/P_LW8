@@ -6,8 +6,6 @@ import objects.Project;
 
 import java.util.ArrayList;
 
-import static general_classes.Main.data;
-
 public class ProjectsHolder {
     private ObservableList<Project> ProjectsObsList;
 

@@ -3,7 +3,6 @@ package general_classes;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import controllers.MainController;
-import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import objects.Aim;
 import objects.Command;
@@ -14,45 +13,67 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-import static general_classes.Main.data;
+import static general_classes.Main.dataHolder;
 import static general_classes.Main.mainController;
 
 public class ActionEventSolver {
     private Gson gson;
     private DataInputStream dis;
     private DataOutputStream dos;
-
+    //private SocketChannel socketChannel;
+    //private MessageCreator messageCreator;
     public ActionEventSolver(DataInputStream dis, DataOutputStream dos) {
         this.dis = dis;
         this.dos = dos;
         gson = new GsonBuilder().create();
+        /*try {
+            socketChannel = SocketChannel.open();
+            socketChannel.connect(new InetSocketAddress(InetAddress.getByName("localhost"), 9999));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        messageCreator = new MessageCreator();
+    }
+
+    public void getFirstData() {
+        System.out.println("Sending start-Data...");
+        writeToServer(gson.toJson(messageCreator.firstRead()));
+        try {
+            readFromServer();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }*/
     }
 
     public void addProject(String nameOfProject) {
         new Thread(new Runnable() {
             @Override
             public void run() {
-
                 try {
+
                     PacketOfData p = new PacketOfData();
                     p.setCommandType(Command.ADD_PROJECT);
                     p.setName(nameOfProject);
                     dos.writeUTF(gson.toJson(p));
                     dos.flush();
+
+                    /*ByteBuffer buffer = ByteBuffer.wrap(gson.toJson(p).getBytes(StandardCharsets.UTF_8));
+                    socketChannel.write(buffer);
+                    System.out.println("Данные о создании проекта отправлены");*/
+
                     if(dis.readUTF().equals("accept")) {
-                        data.getProjects().add(new Project(nameOfProject, 0));
+                        dataHolder.getProjects().add(new Project(nameOfProject, 0));
                         MainController.projectsHolder.create(new Project(nameOfProject, 0));
                     } else {
                         System.out.println("Denied!");
                     }
-                    //data.showAllProjects();
+                    //dataHolder.showAllProjects();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
         }).start();
     }
-
     public void addAim(String nameOfProject, String text,int prior) {
         new Thread(new Runnable() {
             @Override
@@ -67,15 +88,15 @@ public class ActionEventSolver {
                     dos.flush();
                     if(dis.readUTF().equals("accept")) {
                         int ind = -1;
-                        for (int i = 0; i < data.getProjects().size(); i++) {
-                            if(data.getProjects().get(i).getName().equals(nameOfProject)) {
+                        for (int i = 0; i < dataHolder.getProjects().size(); i++) {
+                            if(dataHolder.getProjects().get(i).getName().equals(nameOfProject)) {
                                 ind = i;
-                                data.getProjects().get(i).getAimsList().add(new Aim(text, prior));
-                                data.getProjects().get(i).setAmount(data.getProjects().get(i).getAmount()+1);
+                                dataHolder.getProjects().get(i).getAimsList().add(new Aim(text, prior));
+                                dataHolder.getProjects().get(i).setAmount(dataHolder.getProjects().get(i).getAmount()+1);
                                 break;
                             }
                         }
-                        mainController.projectsHolder.setProjectsObsList(FXCollections.observableArrayList(data.getProjects()));
+                        mainController.projectsHolder.setProjectsObsList(FXCollections.observableArrayList(dataHolder.getProjects()));
 
                         mainController.getProjectsTable().getItems().clear();
                         mainController.getProjectsTable().getItems().addAll(mainController.projectsHolder.getProjectsObsList());
@@ -85,14 +106,13 @@ public class ActionEventSolver {
                     } else {
                         System.out.println("Denied!");
                     }
-                    //data.showAllProjects();
+                    //dataHolder.showAllProjects();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
         }).start();
     }
-
     public void updateAim(String projectName, String oldAimName, String text, int prior) {
         new Thread(new Runnable() {
             @Override
@@ -107,20 +127,20 @@ public class ActionEventSolver {
                     if(dis.readUTF().equals("accept")) {
                         int indP = -1;
                         int indA = -1;
-                        for (int i = 0; i < data.getProjects().size(); i++) {
-                            if(data.getProjects().get(i).getName().equals(projectName)) {
+                        for (int i = 0; i < dataHolder.getProjects().size(); i++) {
+                            if(dataHolder.getProjects().get(i).getName().equals(projectName)) {
                                 indP = i;
-                                for (int j = 0; j < data.getProjects().get(i).getAimsList().size(); j++) {
-                                    if(data.getProjects().get(i).getAimsList().get(j).getName().equals(oldAimName)) {
-                                        data.getProjects().get(i).getAimsList().get(j).setName(text);
-                                        data.getProjects().get(i).getAimsList().get(j).setPriority(prior);
+                                for (int j = 0; j < dataHolder.getProjects().get(i).getAimsList().size(); j++) {
+                                    if(dataHolder.getProjects().get(i).getAimsList().get(j).getName().equals(oldAimName)) {
+                                        dataHolder.getProjects().get(i).getAimsList().get(j).setName(text);
+                                        dataHolder.getProjects().get(i).getAimsList().get(j).setPriority(prior);
                                         break;
                                     }
                                 }
                                 break;
                             }
                         }
-                        mainController.projectsHolder.setProjectsObsList(FXCollections.observableArrayList(data.getProjects()));
+                        mainController.projectsHolder.setProjectsObsList(FXCollections.observableArrayList(dataHolder.getProjects()));
 
                         mainController.getProjectsTable().getItems().clear();
                         mainController.getProjectsTable().getItems().addAll(mainController.projectsHolder.getProjectsObsList());
@@ -130,14 +150,13 @@ public class ActionEventSolver {
                     } else {
                         System.out.println("Denied!");
                     }
-                    //data.showAllProjects();
+                    //dataHolder.showAllProjects();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
         }).start();
     }
-
     public void updateProject(String oldName, String newName) {
         new Thread(new Runnable() {
             @Override
@@ -150,14 +169,14 @@ public class ActionEventSolver {
                     dos.writeUTF(gson.toJson(p));
                     dos.flush();
                     if(dis.readUTF().equals("accept")) {
-                        for (int i = 0; i < data.getProjects().size(); i++) {
-                            if(data.getProjects().get(i).getName().equals(oldName)) {
-                                data.getProjects().get(i).setName(newName);
+                        for (int i = 0; i < dataHolder.getProjects().size(); i++) {
+                            if(dataHolder.getProjects().get(i).getName().equals(oldName)) {
+                                dataHolder.getProjects().get(i).setName(newName);
                                 break;
                             }
                         }
 
-                        mainController.projectsHolder.setProjectsObsList(FXCollections.observableArrayList(data.getProjects()));
+                        mainController.projectsHolder.setProjectsObsList(FXCollections.observableArrayList(dataHolder.getProjects()));
                         //TODO: remain active selection of project
                         mainController.getProjectsTable().getItems().clear();
                         mainController.getProjectsTable().getItems().addAll(mainController.projectsHolder.getProjectsObsList());
@@ -171,7 +190,6 @@ public class ActionEventSolver {
             }
         }).start();
     }
-
     public void deleteProject(String name) {
         new Thread(new Runnable() {
             @Override
@@ -185,14 +203,14 @@ public class ActionEventSolver {
                     dos.flush();
                     if(dis.readUTF().equals("accept")) {
                         int deleteNum = -1;
-                        for (int i = 0; i < data.getProjects().size(); i++) {
-                            if(data.getProjects().get(i).getName().equals(name)) {
+                        for (int i = 0; i < dataHolder.getProjects().size(); i++) {
+                            if(dataHolder.getProjects().get(i).getName().equals(name)) {
                                 deleteNum = i;
                                 break;
                             }
                         }
-                        data.getProjects().remove(deleteNum);
-                        mainController.projectsHolder.setProjectsObsList(FXCollections.observableArrayList(data.getProjects()));
+                        dataHolder.getProjects().remove(deleteNum);
+                        mainController.projectsHolder.setProjectsObsList(FXCollections.observableArrayList(dataHolder.getProjects()));
                         //mainController.getProjectsTable().refresh();
                         mainController.getProjectsTable().getItems().clear();
                         mainController.getProjectsTable().getItems().addAll(mainController.projectsHolder.getProjectsObsList());
@@ -207,7 +225,6 @@ public class ActionEventSolver {
             }
         }).start();
     }
-
     public void deleteAim(String project, String aim) {
         new Thread(new Runnable() {
             @Override
@@ -221,20 +238,20 @@ public class ActionEventSolver {
                     dos.flush();
                     if(dis.readUTF().equals("accept")) {
                         int deleteNum = -1;
-                        for (int i = 0; i < data.getProjects().size(); i++) {
-                            if(data.getProjects().get(i).getName().equals(project)) {
+                        for (int i = 0; i < dataHolder.getProjects().size(); i++) {
+                            if(dataHolder.getProjects().get(i).getName().equals(project)) {
                                 deleteNum = i;
-                                for (int j = 0; j < data.getProjects().get(i).getAimsList().size(); j++) {
-                                    if(data.getProjects().get(i).getAimsList().get(j).getName().equals(aim)) {
-                                        data.getProjects().get(i).getAimsList().remove(j);
-                                        data.getProjects().get(i).setAmount(data.getProjects().get(i).getAmount()-1);
+                                for (int j = 0; j < dataHolder.getProjects().get(i).getAimsList().size(); j++) {
+                                    if(dataHolder.getProjects().get(i).getAimsList().get(j).getName().equals(aim)) {
+                                        dataHolder.getProjects().get(i).getAimsList().remove(j);
+                                        dataHolder.getProjects().get(i).setAmount(dataHolder.getProjects().get(i).getAmount()-1);
                                         break;
                                     }
                                 }
                                 break;
                             }
                         }
-                        mainController.projectsHolder.setProjectsObsList(FXCollections.observableArrayList(data.getProjects()));
+                        mainController.projectsHolder.setProjectsObsList(FXCollections.observableArrayList(dataHolder.getProjects()));
                         //mainController.getProjectsTable().refresh();
                         mainController.getProjectsTable().getItems().clear();
                         mainController.getProjectsTable().getItems().addAll(mainController.projectsHolder.getProjectsObsList());
@@ -248,6 +265,29 @@ public class ActionEventSolver {
                 }
             }
         }).start();
-
     }
+
+    /*public void readFromServer() throws IOException {
+        String line = null;
+        line = dis.readUTF();
+        System.out.println(line);
+        PacketOfData packetOfData = new Gson().fromJson(line, PacketOfData.class);
+        dataHolder.setProjects(packetOfData.getProjectsList());
+        //dataHolder.showAllProjects();
+        mainController.putDataToObservableList();
+    }
+    public void writeToServer(String readyPacket){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    System.out.println("Writing to server - " + readyPacket);
+                    ByteBuffer buffer = ByteBuffer.wrap(readyPacket.getBytes(StandardCharsets.UTF_8));
+                    socketChannel.write(buffer);
+                    *//*dos.writeUTF(sms);
+                    dos.flush();*//*
+                } catch (IOException e) { System.out.println("Caused problem in writing to server"); }
+            }
+        }).start();
+    }*/
 }

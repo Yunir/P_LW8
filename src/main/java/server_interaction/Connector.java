@@ -1,6 +1,7 @@
 package server_interaction;
 
 import general_classes.ActionEventSolver;
+import javafx.application.Platform;
 import javafx.stage.Stage;
 import server_interaction.Threads.AwaitChangesThread;
 
@@ -9,17 +10,13 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
-
-import static general_classes.Main.mainController;
 import static general_classes.Main.serverUnavailableController;
 
-/**
- * Created by Yunicoed on 17.05.2017.
- */
 public class Connector {
     Socket socket = null;
     InputStream in = null;
     OutputStream out = null;
+
     private InetAddress IA;
     private int port;
     public IOFuncs ioFuncs;
@@ -52,7 +49,6 @@ public class Connector {
             System.out.println("Server in "+ IA.getHostAddress()+":"+port+" is not available");
             return false;
         } catch (IOException e) {
-            //TODO MEM pepe frog
             //TODO MEM Do it!
             //TODO MEM Pismak - yes you can, смелее
             //TODO MEM you entered to secret zone (oy-yeah)

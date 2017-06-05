@@ -2,8 +2,6 @@ package server_interaction.Threads;
 
 import server_interaction.IOFuncs;
 
-import java.net.SocketException;
-
 /**
  * Created by Yunicoed on 31.05.2017.
  */
