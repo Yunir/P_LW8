@@ -26,6 +26,7 @@ public class ConnectController {
     public void connectQuery(ActionEvent actionEvent) {
         System.out.println("Send to server log and password");
         try {
+            System.out.println(login.getText()+";"+ DigestUtils.md5Hex(password.getText()));
             toServer.getConnector().actionEventSolver.write(login.getText()+";"+ DigestUtils.md5Hex(password.getText()));
         } catch (IOException e) {
             e.printStackTrace();

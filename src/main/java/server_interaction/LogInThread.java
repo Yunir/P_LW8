@@ -1,4 +1,4 @@
-package server_interaction.Threads;
+package server_interaction;
 
 import controllers.MainController;
 import javafx.application.Platform;

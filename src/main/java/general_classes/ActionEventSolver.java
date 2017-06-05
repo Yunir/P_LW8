@@ -24,14 +24,6 @@ public class ActionEventSolver {
         this.dis = dis;
         this.dos = dos;
         gson = new GsonBuilder().create();
-        /*try {
-            socketChannel = SocketChannel.open();
-            socketChannel.connect(new InetSocketAddress(InetAddress.getByName("localhost"), 9999));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        messageCreator = new MessageCreator();
-    }*/
     }
 
     public void getFirstFullPacket() {
@@ -294,7 +286,7 @@ public class ActionEventSolver {
 
 
     //Simple Methods to talk with server
-    synchronized public void write(String sms)throws IOException {
+    public void write(String sms)throws IOException {
         System.out.println("write.start: " + sms);
         dos.writeUTF(sms);
         dos.flush();
@@ -305,28 +297,4 @@ public class ActionEventSolver {
         System.out.println("read: " + line);
         return line;
     }
-
-    /*public void read() throws IOException {
-        String line = null;
-        line = dis.readUTF();
-        System.out.println(line);
-        PacketOfData packetOfData = new Gson().fromJson(line, PacketOfData.class);
-        dataHolder.setProjects(packetOfData.getProjectsList());
-        //dataHolder.showAllProjects();
-        mainController.putDataToObservableList();
-    }
-    public void write(String readyPacket){
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    System.out.println("Writing to server - " + readyPacket);
-                    ByteBuffer buffer = ByteBuffer.wrap(readyPacket.getBytes(StandardCharsets.UTF_8));
-                    socketChannel.write(buffer);
-                    *//*dos.writeUTF(sms);
-                    dos.flush();*//*
-                } catch (IOException e) { System.out.println("Caused problem in writing to server"); }
-            }
-        }).start();
-    }*/
 }

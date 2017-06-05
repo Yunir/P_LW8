@@ -4,10 +4,10 @@ import general_classes.ActionEventSolver;
 import javafx.stage.Stage;
 
 import java.io.*;
-import java.net.InetAddress;
-import java.net.Socket;
-import java.net.SocketException;
-import java.net.UnknownHostException;
+import java.net.*;
+import java.nio.channels.Channels;
+import java.nio.channels.SocketChannel;
+
 import static general_classes.Main.serverUnavailableController;
 
 public class Connector {
@@ -17,7 +17,6 @@ public class Connector {
 
     private InetAddress IA;
     private int port;
-    //public IOFuncs ioFuncs;
     public ActionEventSolver actionEventSolver;
     Stage primaryStage;
 
@@ -30,14 +29,14 @@ public class Connector {
         this.primaryStage = primaryStage;
         try {
             socket = new Socket(IA, port);
-            in = socket.getInputStream();
-            out = socket.getOutputStream();
-            //ioFuncs = new IOFuncs(new DataInputStream(in), new DataOutputStream(out));
-            actionEventSolver = new ActionEventSolver(new DataInputStream(in), new DataOutputStream(out));
+            SocketChannel sc = SocketChannel.open();
+            sc.connect(new InetSocketAddress(InetAddress.getByName("localhost"), port));
+            actionEventSolver = new ActionEventSolver(new DataInputStream(Channels.newInputStream(sc)), new DataOutputStream(Channels.newOutputStream(sc)));
             /*if(awaiting){
                 AwaitChangesThread awaitChangesThread = new AwaitChangesThread(ioFuncs);
                 awaitChangesThread.start();
             }*/
+            actionEventSolver = new ActionEventSolver(new DataInputStream(socket.getInputStream()), new DataOutputStream(socket.getOutputStream()));
             return true;
         } catch (UnknownHostException e) {
             System.out.println("Host not found");
