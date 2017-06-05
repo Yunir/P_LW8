@@ -17,7 +17,7 @@ public class Connector {
 
     private InetAddress IA;
     private int port;
-    public IOFuncs ioFuncs;
+    //public IOFuncs ioFuncs;
     public ActionEventSolver actionEventSolver;
     Stage primaryStage;
 
@@ -32,7 +32,7 @@ public class Connector {
             socket = new Socket(IA, port);
             in = socket.getInputStream();
             out = socket.getOutputStream();
-            ioFuncs = new IOFuncs(new DataInputStream(in), new DataOutputStream(out));
+            //ioFuncs = new IOFuncs(new DataInputStream(in), new DataOutputStream(out));
             actionEventSolver = new ActionEventSolver(new DataInputStream(in), new DataOutputStream(out));
             /*if(awaiting){
                 AwaitChangesThread awaitChangesThread = new AwaitChangesThread(ioFuncs);
@@ -61,8 +61,8 @@ public class Connector {
         System.out.println("Server in "+ IA.getHostAddress()+":"+port+" is not available");
     }
 
-    /*Getters*/
+    /*Getters*//*
     public IOFuncs getIoFuncs() {
         return ioFuncs;
-    }
+    }*/
 }

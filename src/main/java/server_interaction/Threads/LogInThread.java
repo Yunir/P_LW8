@@ -17,7 +17,7 @@ public class LogInThread extends Thread {
             System.out.println("lock: logpass");
             while(!logpassCorrect) {
                 System.out.println("in loop");
-                if (toServer.getConnector().ioFuncs.getdIn().readUTF().equals("accept")) {
+                if (toServer.getConnector().actionEventSolver.read().equals("accept")) {
                     System.out.println("confirmation received");
                     logpassCorrect = true;
                     MainController.confirmationReceived = true;

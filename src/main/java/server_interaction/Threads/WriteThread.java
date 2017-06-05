@@ -1,3 +1,4 @@
+/*
 package server_interaction.Threads;
 
 import server_interaction.Connector;
@@ -20,4 +21,4 @@ public class WriteThread extends Thread {
         IOConnector.ioFuncs.writeToServer(sms);
     }
 
-}
+}*/

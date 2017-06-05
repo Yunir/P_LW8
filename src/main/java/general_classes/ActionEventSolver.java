@@ -7,10 +7,7 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import objects.Aim;
 import objects.Command;
-import objects.Project;
-import server_interaction.MessageSolver;
 import server_interaction.PacketOfData;
-import server_interaction.Threads.WriteThread;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -23,7 +20,6 @@ public class ActionEventSolver {
     private Gson gson;
     private DataInputStream dis;
     private DataOutputStream dos;
-    //private SocketChannel socketChannel;
     public ActionEventSolver(DataInputStream dis, DataOutputStream dos) {
         this.dis = dis;
         this.dos = dos;
@@ -304,7 +300,7 @@ public class ActionEventSolver {
         dos.flush();
         System.out.println("write.end");
     }
-    synchronized public String read() throws IOException {
+    public String read() throws IOException {
         String line = dis.readUTF();
         System.out.println("read: " + line);
         return line;

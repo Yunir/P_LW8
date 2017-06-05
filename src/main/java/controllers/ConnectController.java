@@ -8,6 +8,9 @@ import javafx.scene.control.*;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import org.apache.commons.codec.digest.DigestUtils;
+
+import java.io.IOException;
+
 import static general_classes.Main.toServer;
 
 public class ConnectController {
@@ -22,7 +25,11 @@ public class ConnectController {
 
     public void connectQuery(ActionEvent actionEvent) {
         System.out.println("Send to server log and password");
-        toServer.getConnector().ioFuncs.writeToServer(login.getText()+";"+ DigestUtils.md5Hex(password.getText()));
+        try {
+            toServer.getConnector().actionEventSolver.write(login.getText()+";"+ DigestUtils.md5Hex(password.getText()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         //TODO: if only recieve deny
         exceptionOfLogPass.setVisible(true);
     }
