@@ -32,8 +32,8 @@ public class FromServer implements ServerInterface {
                 try {
                     if(!MainController.confirmationReceived) accessToResource.await();
                     System.out.println("проснулся: FromServer");
-
-                    connector.getIoFuncs().awaitOfUpdates();
+                    connector.actionEventSolver.awaitOfUpdates();
+                    //connector.getIoFuncs().awaitOfUpdates();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 } finally {

@@ -3,6 +3,7 @@ package general_classes;
 import controllers.ConnectController;
 import controllers.ServerUnavailableController;
 import objects.DataHolder;
+import objects.Project;
 import server_interaction.Threads.LogInThread;
 import controllers.MainController;
 import javafx.application.Application;
@@ -45,4 +46,6 @@ public class Main extends Application {
             logIn.start();
         }
     }
+
+
 }

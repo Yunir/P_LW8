@@ -1,10 +1,13 @@
+/*
 package server_interaction.Threads;
 
 import server_interaction.IOFuncs;
 
+*/
 /**
  * Created by Yunicoed on 31.05.2017.
- */
+ *//*
+
 public class AwaitChangesThread extends Thread {
     //Thread loginAwaitThread;
     IOFuncs ioFuncs;
@@ -18,3 +21,4 @@ public class AwaitChangesThread extends Thread {
             ioFuncs.awaitOfUpdates();
     }
 }
+*/

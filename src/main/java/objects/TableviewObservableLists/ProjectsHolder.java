@@ -12,8 +12,8 @@ public class ProjectsHolder {
     public ProjectsHolder() { ProjectsObsList = FXCollections.observableArrayList(); }
 
     //Commands
-    public void create(Project project) {
-        ProjectsObsList.add(project);
+    public void create(String nameOfProject) {
+        ProjectsObsList.add(new Project(nameOfProject, 0));
         System.out.println(ProjectsObsList.get(ProjectsObsList.size()-1).getName() + " added successfully.");
     }
     public void update(String oldName, String newName) {

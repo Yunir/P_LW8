@@ -19,4 +19,8 @@ public class DataHolder {
             System.out.println(projectsList.get(i).getName());
         }
     }
+
+    public void addProject(String nameOfProject) {
+        projectsList.add(new Project(nameOfProject, 0));
+    }
 }

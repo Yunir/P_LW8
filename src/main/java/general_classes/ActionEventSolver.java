@@ -3,6 +3,7 @@ package general_classes;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import controllers.MainController;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import objects.Aim;
 import objects.Command;
@@ -34,16 +35,7 @@ public class ActionEventSolver {
             e.printStackTrace();
         }
         messageCreator = new MessageCreator();
-    }
-
-    public void getFirstData() {
-        System.out.println("Sending start-Data...");
-        write(gson.toJson(messageCreator.firstRead()));
-        try {
-            read();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
+    }*/
     }
 
     public void getFirstFullPacket() {
@@ -63,7 +55,7 @@ public class ActionEventSolver {
             }
         }).start();
     }
-    public void getFirstData() {
+    private void getFirstData() {
         try {
             write(gson.toJson(MessageCreator.firstRead()));
             String packet = read();
@@ -74,26 +66,45 @@ public class ActionEventSolver {
             e.printStackTrace();
         }
     }
+    public void awaitOfUpdates() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                boolean allIsGood = true;
+                while (allIsGood) {
+                    try {
+                        String packet = read();
+                        PacketOfData packetOfData = new Gson().fromJson(packet, PacketOfData.class);
+                        dataHolder.setProjects(packetOfData.getProjectsList());
+                        mainController.putDataToObservableList();
+                        System.out.println("Wow, new Information");
+                    } catch (IOException e) {
+                        allIsGood = false;
+                        Platform.runLater(new Runnable() {
+                            @Override
+                            public void run() {
+                                fromServer.getConnector().showLostConnection();
+                            }
+                        });
+                    }
+                }
+            }
+        }).start();
+
+    }
 
     public void addProject(String nameOfProject) {
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
-
-                    PacketOfData p = new PacketOfData();
-                    p.setCommandType(Command.ADD_PROJECT);
-                    p.setName(nameOfProject);
-                    dos.writeUTF(gson.toJson(p));
-                    dos.flush();
-
+                    write(gson.toJson(MessageCreator.addProject(nameOfProject)));
                     /*ByteBuffer buffer = ByteBuffer.wrap(gson.toJson(p).getBytes(StandardCharsets.UTF_8));
                     socketChannel.write(buffer);
                     System.out.println("Данные о создании проекта отправлены");*/
-
-                    if(dis.readUTF().equals("accept")) {
-                        dataHolder.getProjects().add(new Project(nameOfProject, 0));
-                        MainController.projectsHolder.create(new Project(nameOfProject, 0));
+                    if(read().equals("accept")) {
+                        dataHolder.addProject(nameOfProject);
+                        MainController.projectsHolder.create(nameOfProject);
                     } else {
                         System.out.println("Denied!");
                     }
@@ -108,19 +119,11 @@ public class ActionEventSolver {
         new Thread(new Runnable() {
             @Override
             public void run() {
-
                 try {
-                    PacketOfData p = new PacketOfData();
-                    p.setCommandType(Command.ADD_AIM);
-                    p.setName(nameOfProject+";"+text);
-                    p.setPriority(prior);
-                    dos.writeUTF(gson.toJson(p));
-                    dos.flush();
-                    if(dis.readUTF().equals("accept")) {
-                        int ind = -1;
+                    write(gson.toJson(MessageCreator.addAim(nameOfProject, text, prior)));
+                    if(read().equals("accept")) {
                         for (int i = 0; i < dataHolder.getProjects().size(); i++) {
                             if(dataHolder.getProjects().get(i).getName().equals(nameOfProject)) {
-                                ind = i;
                                 dataHolder.getProjects().get(i).getAimsList().add(new Aim(text, prior));
                                 dataHolder.getProjects().get(i).setAmount(dataHolder.getProjects().get(i).getAmount()+1);
                                 break;
@@ -152,9 +155,8 @@ public class ActionEventSolver {
                     p.setCommandType(Command.UPDATE_AIM);
                     p.setName(projectName+";"+oldAimName+";"+text);
                     p.setPriority(prior);
-                    dos.writeUTF(gson.toJson(p));
-                    dos.flush();
-                    if(dis.readUTF().equals("accept")) {
+                    write(gson.toJson(p));
+                    if(read().equals("accept")) {
                         int indP = -1;
                         int indA = -1;
                         for (int i = 0; i < dataHolder.getProjects().size(); i++) {
@@ -196,9 +198,8 @@ public class ActionEventSolver {
                     PacketOfData p = new PacketOfData();
                     p.setCommandType(Command.UPDATE_PROJECT);
                     p.setName(oldName+";"+newName);
-                    dos.writeUTF(gson.toJson(p));
-                    dos.flush();
-                    if(dis.readUTF().equals("accept")) {
+                    write(gson.toJson(p));
+                    if(read().equals("accept")) {
                         for (int i = 0; i < dataHolder.getProjects().size(); i++) {
                             if(dataHolder.getProjects().get(i).getName().equals(oldName)) {
                                 dataHolder.getProjects().get(i).setName(newName);
@@ -229,9 +230,8 @@ public class ActionEventSolver {
                     PacketOfData p = new PacketOfData();
                     p.setCommandType(Command.DELETE_PROJECT);
                     p.setName(name);
-                    dos.writeUTF(gson.toJson(p));
-                    dos.flush();
-                    if(dis.readUTF().equals("accept")) {
+                    write(gson.toJson(p));
+                    if(read().equals("accept")) {
                         int deleteNum = -1;
                         for (int i = 0; i < dataHolder.getProjects().size(); i++) {
                             if(dataHolder.getProjects().get(i).getName().equals(name)) {
@@ -264,9 +264,8 @@ public class ActionEventSolver {
                     PacketOfData p = new PacketOfData();
                     p.setCommandType(Command.DELETE_AIM);
                     p.setName(project+";"+aim);
-                    dos.writeUTF(gson.toJson(p));
-                    dos.flush();
-                    if(dis.readUTF().equals("accept")) {
+                    write(gson.toJson(p));
+                    if(read().equals("accept")) {
                         int deleteNum = -1;
                         for (int i = 0; i < dataHolder.getProjects().size(); i++) {
                             if(dataHolder.getProjects().get(i).getName().equals(project)) {

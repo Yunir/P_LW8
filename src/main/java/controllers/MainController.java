@@ -75,7 +75,7 @@ public class MainController {
         projectsHolder.setProjectsObsList(FXCollections.observableArrayList(Main.dataHolder.getProjects()));
         projectsTable.setItems(projectsHolder.getProjectsObsList());
 
-        projectsHolder.showAllProjects();
+        //projectsHolder.showAllProjects();
     }
 
     public void openAimsOfProject(MouseEvent mouseEvent) {

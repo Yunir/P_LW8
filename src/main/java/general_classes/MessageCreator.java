@@ -17,4 +17,12 @@ public class MessageCreator {
         packetOfData.setName(nameOfProject);
         return packetOfData;
     }
+
+    public static PacketOfData addAim(String nameOfProject, String aim, int prior) {
+        PacketOfData p = new PacketOfData();
+        p.setCommandType(Command.ADD_AIM);
+        p.setName(nameOfProject+";"+aim);
+        p.setPriority(prior);
+        return p;
+    }
 }

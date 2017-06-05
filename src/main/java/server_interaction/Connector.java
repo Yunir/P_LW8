@@ -1,9 +1,7 @@
 package server_interaction;
 
 import general_classes.ActionEventSolver;
-import javafx.application.Platform;
 import javafx.stage.Stage;
-import server_interaction.Threads.AwaitChangesThread;
 
 import java.io.*;
 import java.net.InetAddress;
@@ -36,10 +34,10 @@ public class Connector {
             out = socket.getOutputStream();
             ioFuncs = new IOFuncs(new DataInputStream(in), new DataOutputStream(out));
             actionEventSolver = new ActionEventSolver(new DataInputStream(in), new DataOutputStream(out));
-            if(awaiting){
+            /*if(awaiting){
                 AwaitChangesThread awaitChangesThread = new AwaitChangesThread(ioFuncs);
                 awaitChangesThread.start();
-            }
+            }*/
             return true;
         } catch (UnknownHostException e) {
             System.out.println("Host not found");
