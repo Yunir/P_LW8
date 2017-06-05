@@ -32,9 +32,10 @@ public class MessageSolver {
     }
 
     public boolean checkAuthData() throws IOException {
-        String authData = dis.readUTF();
-        String[] splitedLine = authData.split(";");
         while (true){
+            String authData = dis.readUTF();
+            System.out.println(authData + " gotten");
+            String[] splitedLine = authData.split(";");
             if (LOGIN.equals(splitedLine[0]) && PASSWORD.equals(splitedLine[1])) {
                 dos.writeUTF(REQUEST_ACCEPT);
                 return true;
