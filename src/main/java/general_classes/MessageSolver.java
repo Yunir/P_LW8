@@ -7,9 +7,11 @@ import objects.Aim;
 import objects.Project;
 import org.apache.commons.codec.digest.DigestUtils;
 
+import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 import static general_classes.Main.*;
 
@@ -47,7 +49,16 @@ public class MessageSolver {
     public void startConversationWithUser() throws IOException {
         String receivedMessage;
         while(true) {
+
+            /*ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            while(dis.available() != 0) {
+                System.out.print("here");
+                baos.write(dis.readByte());
+            }
+            receivedMessage = new String(baos.toByteArray(), StandardCharsets.UTF_8);
+            System.out.println("Recieved message " + receivedMessage);*/
             receivedMessage = dis.readUTF();
+
             System.out.printf(WRITE_MESSAGE, userId, receivedMessage);
             dos.writeUTF(analyzeMessage(receivedMessage, userId));
             dos.flush();

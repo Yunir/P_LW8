@@ -1,17 +1,19 @@
 package data_processing;
 
+import com.sun.rowset.FilteredRowSetImpl;
 import objects.Aim;
 import objects.Project;
 
+import javax.sql.rowset.FilteredRowSet;
 import java.sql.*;
 import java.util.ArrayList;
 import static general_classes.Main.dataHolder;
 
 public class Database {
-    static final String DB_DRIVER = "org.postgresql.Driver";
-    static final String DB_CONNECTION = "jdbc:postgresql://127.0.0.1:5432/ProjectsDB";
-    static final String DB_USER = "postgres";
-    static final String DB_PASSWORD = "admin";
+    private static final String DB_DRIVER = "org.postgresql.Driver";
+    private static final String DB_CONNECTION = "jdbc:postgresql://127.0.0.1:5432/ProjectsDB";
+    private static final String DB_USER = "postgres";
+    private static final String DB_PASSWORD = "admin";
 
     private Connection dbConnection;
 
@@ -38,7 +40,7 @@ public class Database {
             String query = "SELECT * FROM projectholder ORDER BY id;";
             statement = dbConnection.createStatement();
             resultSet = statement.executeQuery(query);
-            ArrayList<Project> projectList = new ArrayList<Project>();
+            ArrayList<Project> projectList = new ArrayList<>();
             while (resultSet.next()) {
                 String subquery = "SELECT id, aim, priority FROM aimholder where project_id = "+ resultSet.getInt(1) +" ORDER BY id;";
                 subStatement = dbConnection.createStatement();
@@ -105,14 +107,16 @@ public class Database {
     }
     public int findSimilarProjects(String name) {
         try {
-            Statement statement = null;
-            ResultSet rs = null;
+            Statement statement;
+            ResultSet rs;
             String query = "select count(id) from projectholder where project ~* \'^"+ name +"$\';";
             statement = dbConnection.createStatement();
             rs = statement.executeQuery(query);
+            FilteredRowSet frs = new FilteredRowSetImpl();
+            frs.populate(rs);
             System.out.println("Query successfully completed");
-            while (rs.next()){
-                return rs.getInt(1);
+            while (frs.next()){
+                return frs.getInt(1);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -122,14 +126,16 @@ public class Database {
 
     public int findSimilarAims(String project, String aim) {
         try {
-            Statement statement = null;
-            ResultSet rs = null;
+            Statement statement;
+            ResultSet rs;
             String query = "SELECT count(id) FROM aimholder WHERE aim = \'"+aim+"\' AND project_id = (SELECT id FROM projectholder WHERE project = \'"+project+"\');";
             statement = dbConnection.createStatement();
             rs = statement.executeQuery(query);
+            FilteredRowSet frs = new FilteredRowSetImpl();
+            frs.populate(rs);
             System.out.println("Query successfully completed");
-            while (rs.next()){
-                return rs.getInt(1);
+            while (frs.next()){
+                return frs.getInt(1);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -139,14 +145,9 @@ public class Database {
 
     /*Private Methods*/
     private void activateQuery(String q) throws SQLException {
-        Statement statement = null;
-        ResultSet rs = null;
-        String query = q;
+        Statement statement;
         statement = dbConnection.createStatement();
-        statement.execute(query);
+        statement.execute(q);
         System.out.println("Query successfully completed");
     }
-
-    /*Getters, setters*/
-    public Connection getDbConnection() {return dbConnection;}
 }
