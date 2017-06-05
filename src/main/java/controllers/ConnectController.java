@@ -21,6 +21,7 @@ public class ConnectController {
     private Label exceptionOfLogPass;
 
     public void connectQuery(ActionEvent actionEvent) {
+        System.out.println("Send to server log and password");
         toServer.getConnector().ioFuncs.writeToServer(login.getText()+";"+ DigestUtils.md5Hex(password.getText()));
         //TODO: if only recieve deny
         exceptionOfLogPass.setVisible(true);
