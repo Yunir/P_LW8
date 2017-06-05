@@ -239,4 +239,13 @@ public class MessageSolver {
         }
         return null;
     }
+
+    public void write(PacketOfData p) {
+        try {
+            dos.writeUTF(gson.toJson(p));
+            dos.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

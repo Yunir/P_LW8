@@ -2,6 +2,7 @@ package client_interaction;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import general_classes.MessageSolver;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -11,9 +12,10 @@ import java.net.Socket;
 import static general_classes.Main.*;
 
 public class FromConnection extends Thread {
-    DataInputStream dis;
-    DataOutputStream dos;
+    //DataInputStream dis;
+    //DataOutputStream dos;
     int idOfConnection;
+    private MessageSolver messageSolver;
     Socket recieveChangesSocket = null;
     Gson gson;
 
@@ -21,6 +23,11 @@ public class FromConnection extends Thread {
         gson = new GsonBuilder().create();
         idOfConnection = num;
         this.recieveChangesSocket = socket;
+        try {
+            messageSolver = new MessageSolver(new DataInputStream (recieveChangesSocket.getInputStream()), new DataOutputStream(recieveChangesSocket.getOutputStream()), idOfConnection);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         setDaemon(true);
         setPriority(NORM_PRIORITY);
         System.out.println("Client accepted");
@@ -30,8 +37,8 @@ public class FromConnection extends Thread {
     public void run()
     {
         try {
-            dis = new DataInputStream (recieveChangesSocket.getInputStream());
-            dos = new DataOutputStream(recieveChangesSocket.getOutputStream());
+            //dis = new DataInputStream (recieveChangesSocket.getInputStream());
+            //dos = new DataOutputStream(recieveChangesSocket.getOutputStream());
 
             while (true) {
                 locker.lock();
@@ -43,10 +50,9 @@ public class FromConnection extends Thread {
                     System.out.println("User is awake " + idOfConnection);
                     }
                     System.out.println("Write new information to user " + idOfConnection);
-                    if(idOfConnection != generalPacketOfData.getConnectionId()) dos.writeUTF(gson.toJson(generalPacketOfData));
+                    if(idOfConnection != generalPacketOfData.getConnectionId()) messageSolver.write(generalPacketOfData);
                     else System.out.println("User " + idOfConnection + " sent this updates, he doesn't need on it");
                 System.out.println(idOfConnection + "...");
-                dos.flush();
                 locker.unlock();
             sleep(1000);
                 System.out.println(idOfConnection + "....");
