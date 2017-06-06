@@ -1,5 +1,7 @@
 package general_classes;
 
+import controllers.MainController;
+import objects.Aim;
 import objects.Command;
 import objects.Project;
 import server_interaction.PacketOfData;
@@ -23,6 +25,15 @@ public class MessageCreator {
         p.setCommandType(Command.ADD_AIM);
         p.setName(nameOfProject+";"+aim);
         p.setPriority(prior);
+        return p;
+    }
+
+    public static Object putClass() {
+        PacketOfData p = new PacketOfData();
+        p.setCommandType(Command.CREATE_OBJECT_TABLE);
+        if(MainController.c == Aim.class) {
+            p.setPriority(2);
+        } else p.setPriority(1);
         return p;
     }
 }

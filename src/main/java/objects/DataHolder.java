@@ -1,5 +1,6 @@
 package objects;
 
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 
 import static controllers.MainController.projectsHolder;
@@ -21,6 +22,6 @@ public class DataHolder {
     }
 
     public void addProject(String nameOfProject) {
-        projectsList.add(new Project(nameOfProject, 0));
+        projectsList.add(new Project(nameOfProject, 0, OffsetDateTime.now()));
     }
 }

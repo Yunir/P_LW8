@@ -33,7 +33,7 @@ public class MainController extends Observable implements Initializable {
     public static volatile boolean confirmationReceived = false;
     public static AimsHolder aimsHolder;
     public static ProjectsHolder projectsHolder;
-
+    public static Class c = Aim.class;
     private static final String RU_CODE = "ru";
     private static final String EN_CODE = "en_ca";
     private static final String HR_CODE = "hr_ru";
@@ -108,6 +108,7 @@ public class MainController extends Observable implements Initializable {
     public void openAimsOfProject(MouseEvent mouseEvent) {
         Project selectedProject = (Project) ((TableView)mouseEvent.getSource()).getSelectionModel().getSelectedItem();
         if(selectedProject == null)return;
+        c = Project.class;
         aimsHolder.setAimsObsList(FXCollections.observableArrayList(selectedProject.getAimsList()));
         aimsTable.setItems(aimsHolder.getAimsObsList());
         ACreate.setDisable(false);
@@ -158,6 +159,10 @@ public class MainController extends Observable implements Initializable {
         toServer.getConnector().actionEventSolver.deleteAim(projectsTable.getSelectionModel().getSelectedItem().getName(), aimsTable.getSelectionModel().getSelectedItem().getName());
     }
 
+    public void createObjTable(ActionEvent actionEvent) {
+        toServer.getConnector().actionEventSolver.createObj();
+    }
+
     public void showCreateAimDialog(ActionEvent actionEvent) {
         Stage stage = new Stage();
         try {
@@ -178,6 +183,7 @@ public class MainController extends Observable implements Initializable {
     public void unlockButtons(MouseEvent mouseEvent) {
         Aim temp = (Aim) ((TableView)mouseEvent.getSource()).getSelectionModel().getSelectedItem();
         if(temp==null)return;
+        c = Aim.class;
         AUpdate.setDisable(false);
         ADelete.setDisable(false);
     }

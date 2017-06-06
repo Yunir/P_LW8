@@ -4,6 +4,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import objects.Project;
 
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 
 public class ProjectsHolder {
@@ -13,7 +14,7 @@ public class ProjectsHolder {
 
     //Commands
     public void create(String nameOfProject) {
-        ProjectsObsList.add(new Project(nameOfProject, 0));
+        ProjectsObsList.add(new Project(nameOfProject, 0, OffsetDateTime.now()));
         System.out.println(ProjectsObsList.get(ProjectsObsList.size()-1).getName() + " added successfully.");
     }
     public void update(String oldName, String newName) {

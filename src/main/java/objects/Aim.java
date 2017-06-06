@@ -1,6 +1,6 @@
 package objects;
 
-import java.io.Serializable;
+import java.time.OffsetDateTime;
 
 /**
  * Created by Yunicoed on 16.05.2017.
@@ -8,10 +8,11 @@ import java.io.Serializable;
 public class Aim {
     public String name;
     public int priority;
-
-    public Aim(String name, int priority) {
+    OffsetDateTime d;
+    public Aim(String name, int priority, OffsetDateTime dd) {
         this.name = name;
         this.priority = priority;
+        d = dd;
     }
 
     /*Getters, setters*/

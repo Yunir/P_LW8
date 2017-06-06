@@ -1,8 +1,11 @@
+/*
 package server_interaction;
 
+*/
 /**
  * Created by Yunicoed on 17.05.2017.
- */
+ *//*
+
 public class Commands {
     public static String UProject = "project;update;jkvsanjdao;dfs";
     private static String RProject = "project;read"; //если кеши одинаковые, не читать
@@ -35,3 +38,4 @@ public class Commands {
 
 
 }
+*/

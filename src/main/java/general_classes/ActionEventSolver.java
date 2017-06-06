@@ -12,6 +12,7 @@ import server_interaction.PacketOfData;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.time.OffsetDateTime;
 
 import static general_classes.Main.*;
 import static general_classes.Main.locker;
@@ -112,7 +113,7 @@ public class ActionEventSolver {
                     if(read().equals("accept")) {
                         for (int i = 0; i < dataHolder.getProjects().size(); i++) {
                             if(dataHolder.getProjects().get(i).getName().equals(nameOfProject)) {
-                                dataHolder.getProjects().get(i).getAimsList().add(new Aim(text, prior));
+                                dataHolder.getProjects().get(i).getAimsList().add(new Aim(text, prior, OffsetDateTime.now()));
                                 dataHolder.getProjects().get(i).setAmount(dataHolder.getProjects().get(i).getAmount()+1);
                                 break;
                             }
@@ -283,7 +284,18 @@ public class ActionEventSolver {
             }
         }).start();
     }
-
+    public void createObj() {
+        try {
+            write(gson.toJson(MessageCreator.putClass()));
+            if(read().equals("accept")) {
+                System.out.println("Congratulations, my friend!");
+            } else {
+                System.out.println("Denied!");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     //Simple Methods to talk with server
     public void write(String sms)throws IOException {
