@@ -29,9 +29,9 @@ public class Connector {
         this.primaryStage = primaryStage;
         try {
             socket = new Socket(IA, port);
-            SocketChannel sc = SocketChannel.open();
-            sc.connect(new InetSocketAddress(InetAddress.getByName("localhost"), port));
-            actionEventSolver = new ActionEventSolver(new DataInputStream(Channels.newInputStream(sc)), new DataOutputStream(Channels.newOutputStream(sc)));
+            //SocketChannel sc = SocketChannel.open();
+            //sc.connect(new InetSocketAddress(InetAddress.getByName("localhost"), port));
+            //actionEventSolver = new ActionEventSolver(new DataInputStream(Channels.newInputStream(sc)), new DataOutputStream(Channels.newOutputStream(sc)));
             /*if(awaiting){
                 AwaitChangesThread awaitChangesThread = new AwaitChangesThread(ioFuncs);
                 awaitChangesThread.start();

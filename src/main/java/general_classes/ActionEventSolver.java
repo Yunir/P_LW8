@@ -87,12 +87,12 @@ public class ActionEventSolver {
             public void run() {
                 try {
                     write(gson.toJson(MessageCreator.addProject(nameOfProject)));
-                    /*ByteBuffer buffer = ByteBuffer.wrap(gson.toJson(p).getBytes(StandardCharsets.UTF_8));
-                    socketChannel.write(buffer);
-                    System.out.println("Данные о создании проекта отправлены");*/
                     if(read().equals("accept")) {
-                        dataHolder.addProject(nameOfProject);
-                        MainController.projectsHolder.create(nameOfProject);
+                        String[] splitedLine = nameOfProject.split(";");
+                        for (int i = 0; i < splitedLine.length; i++) {
+                            dataHolder.addProject(splitedLine[i]);
+                            MainController.projectsHolder.create(splitedLine[i]);
+                        }
                     } else {
                         System.out.println("Denied!");
                     }

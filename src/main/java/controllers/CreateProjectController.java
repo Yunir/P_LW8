@@ -15,9 +15,18 @@ public class CreateProjectController {
     public static Stage CreateProjectStage;
     @FXML
     public TextField projectName;
-
+    public static String projects = "";
     public void createProject(ActionEvent actionEvent) {
-        toServer.getConnector().actionEventSolver.addProject(projectName.getText());
+        if(projects.equals("")) projects += projectName.getText();
+        else projects = projects+";"+projectName.getText();
+        toServer.getConnector().actionEventSolver.addProject(projects);
+        projects = "";
         CreateProjectStage.close();
+    }
+
+    public void nextProject(ActionEvent actionEvent) {
+        if(projects.equals("")) projects += projectName.getText();
+        else projects = projects+";"+projectName.getText();
+        projectName.setText("");
     }
 }

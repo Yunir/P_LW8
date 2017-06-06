@@ -1,5 +1,6 @@
 package controllers;
 
+import javafx.fxml.Initializable;
 import objects.TableviewObservableLists.AimsHolder;
 import objects.TableviewObservableLists.ProjectsHolder;
 import javafx.collections.FXCollections;
@@ -22,10 +23,12 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.net.URL;
+import java.util.ResourceBundle;
 
 import static general_classes.Main.toServer;
 
-public class MainController {
+public class MainController implements Initializable {
     public static volatile boolean confirmationReceived = false;
     public static AimsHolder aimsHolder;
     public static ProjectsHolder projectsHolder;
@@ -52,14 +55,16 @@ public class MainController {
     private Button AUpdate;
     @FXML
     private Button ADelete;
-    @FXML
-    private void initialize() {
+    private ResourceBundle resourceBundle;
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        resourceBundle = resources;
         nameOfProject.setCellValueFactory(new PropertyValueFactory<Project, String>("name"));
         amountOfAims.setCellValueFactory(new PropertyValueFactory<Project, Integer>("amount"));
 
         nameOfAim.setCellValueFactory(new PropertyValueFactory<Aim, String>("name"));
         priorityOfAim.setCellValueFactory(new PropertyValueFactory<Aim, Integer>("priority"));
-        aimsTable.setPlaceholder(new Label("Click to any project to start working with aims."));
+        aimsTable.setPlaceholder(new Label(resourceBundle.getString("main.no_chosen_project")));
         ACreate.setDisable(true);
         AUpdate.setDisable(true);
         ADelete.setDisable(true);

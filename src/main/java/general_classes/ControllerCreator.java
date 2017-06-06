@@ -11,6 +11,8 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 import java.io.IOException;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 public class ControllerCreator {
 
@@ -18,8 +20,9 @@ public class ControllerCreator {
     MainController showMainView(Stage parent) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("../fxml/main.fxml"));
+            loader.setResources(ResourceBundle.getBundle("bundles.Locale", new Locale("ru")));
             Parent root = loader.load();
-            parent.setTitle("Deal with it!");
+            parent.setTitle(loader.getResources().getString("main.title"));
             parent.setMinWidth(650);
             parent.setMinHeight(650);
             parent.setScene(new Scene(root));
