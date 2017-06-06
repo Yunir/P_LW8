@@ -5,8 +5,12 @@ import objects.Aim;
 import objects.Project;
 
 import javax.sql.rowset.FilteredRowSet;
+import java.lang.reflect.Field;
 import java.sql.*;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
+import java.util.Vector;
+
 import static general_classes.Main.dataHolder;
 
 public class Database {
@@ -19,6 +23,11 @@ public class Database {
 
     public Database() {
         getDBConnection();
+        try {
+            activateQuery("CREATE TABLE IF NOT EXISTS realized_objects (ID SERIAL PRIMARY KEY, name VARCHAR(256));");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     private void getDBConnection() {
@@ -45,9 +54,9 @@ public class Database {
                 String subquery = "SELECT id, aim, priority FROM aimholder where project_id = "+ resultSet.getInt(1) +" ORDER BY id;";
                 subStatement = dbConnection.createStatement();
                 subResultSet = subStatement.executeQuery(subquery);
-                Project project = new Project(resultSet.getString(2).replace("  ",""),resultSet.getInt(3));
+                Project project = new Project(resultSet.getString(2).replace("  ",""),resultSet.getInt(3), OffsetDateTime.now());
                 while(subResultSet.next()) {
-                    project.getAimsList().add(new Aim(subResultSet.getString(2).replace("  ",""),subResultSet.getInt(3)));
+                    project.getAimsList().add(new Aim(subResultSet.getString(2).replace("  ",""),subResultSet.getInt(3), OffsetDateTime.now()));
                 }
                 projectList.add(project);
                 dataHolder.setProjects(projectList);
@@ -61,9 +70,14 @@ public class Database {
         }
     }
 
-    public void insertProject(String name) {
+    public void insertProject(String[] name) {
         try {
-            activateQuery("INSERT INTO projectholder (project) VALUES(\'" + name + "\');");
+            activateQuery("BEGIN;");
+            for (int i = 0; i < name.length; i++) {
+
+                activateQuery("INSERT INTO projectholder (project) VALUES(\'" + name[i] + "\');");
+            }
+            activateQuery("COMMIT;");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -149,5 +163,55 @@ public class Database {
         statement = dbConnection.createStatement();
         statement.execute(q);
         System.out.println("Query successfully completed");
+    }
+
+    public synchronized void newObjectTable(Class aClass) {
+        Statement statement;
+        try {
+            String nameOfClass = aClass.getName().replace('.', '_');
+            statement = dbConnection.createStatement();
+            Vector<String> realized_objects_vector = new Vector<>();
+            boolean canCreate = true;
+            ResultSet rs = statement.executeQuery("SELECT DISTINCT name FROM realized_objects; ");
+            while (rs.next()){
+                realized_objects_vector.add(rs.getString(1));
+            }
+            for(String already_created : realized_objects_vector){
+                if(already_created.equals(nameOfClass)){
+                    canCreate=false;
+                    break;
+                }
+            }
+            if ((!(aClass == null))&&(canCreate)) {
+                Field[] fields = aClass.getDeclaredFields();
+                String[] attributes = new String[fields.length];
+                String[] types = new String[fields.length];
+                for(int i=0;i<fields.length;i++){
+                    attributes[i] = fields[i].getName();
+                    System.out.println(fields[i].getType().getName());
+                    if(fields[i].getType().getName().equals("java.time.OffsetDateTime")){
+                        System.out.println(fields[i].getType().getName().equals("java.time.OffsetDateTime"));
+                        types[i]="varchar(50)";}
+                    else if(fields[i].getType().getName().equals("java.lang.String")){types[i]="varchar(50)";}
+                    else if(fields[i].getType().getName().equals("boolean")){types[i]="Boolean";}
+                    else if(fields[i].getType().getName().equals("int")){types[i]="Integer";}
+                    else types[i]="next";;
+                }
+
+                StringBuilder build = new StringBuilder("CREATE TABLE IF NOT EXISTS "+nameOfClass+" (ID SERIAL PRIMARY KEY,");
+                for(int i=0;i<attributes.length;i++){
+                    if(types[i].equals("next")) continue;
+                    String append =" "+attributes[i]+" "+types[i]+",";
+                    build.append(append);
+                }
+                build.deleteCharAt(build.length()-1);
+                build.append(");");
+                String superQuery = build.toString();
+                System.out.println("my query " + superQuery);
+                statement.execute(superQuery);
+                statement.execute("INSERT INTO realized_objects VALUES (DEFAULT ,'" +nameOfClass+"');");
+
+            }
+        }catch (Exception e){}
     }
 }

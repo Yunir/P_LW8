@@ -7,11 +7,10 @@ import objects.Aim;
 import objects.Project;
 import org.apache.commons.codec.digest.DigestUtils;
 
-import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
+import java.time.OffsetDateTime;
 
 import static general_classes.Main.*;
 
@@ -73,12 +72,22 @@ public class MessageSolver {
                 packetOfData.setProjectsList(dataHolder.getProjectsList());
                 return gson.toJson(packetOfData);
             case ADD_PROJECT:
-                if(DB.findSimilarProjects(packetOfData.getName()) == 0){
+                boolean everyoneUnique = true;
+                String[] ssplitedLine = packetOfData.getName().split(";");
+                for (int i = 0; i < ssplitedLine.length; i++) {
+                    if(DB.findSimilarProjects(ssplitedLine[i]) != 0){
+                        everyoneUnique = false;
+                        break;
+                    }
+                }
+                if(everyoneUnique){
                     locker.lock();
-                    //add to collection
-                    dataHolder.getProjectsList().add(new Project(packetOfData.getName(), 0));
                     //add to DB
-                    DB.insertProject(packetOfData.getName());
+                    DB.insertProject(ssplitedLine);
+                    //add to collection
+                    for (int i = 0; i < ssplitedLine.length; i++) {
+                        dataHolder.getProjectsList().add(new Project(ssplitedLine[i], 0, OffsetDateTime.now()));
+                    }
                     generalPacketOfData = new PacketOfData();
                     System.out.println("Need to send new data to other users");
                     notifyEveryone = true;
@@ -152,7 +161,7 @@ public class MessageSolver {
                     //change in collection
                     for (Project eachProject : dataHolder.getProjectsList()) {
                         if (eachProject.getName().equals(splitedLineAim[0])) {
-                            eachProject.getAimsList().add(new Aim(splitedLineAim[1], packetOfData.getPriority()));
+                            eachProject.getAimsList().add(new Aim(splitedLineAim[1], packetOfData.getPriority(), OffsetDateTime.now()));
                             eachProject.setAmount(eachProject.getAmount()+1);
                             break;
                         }
@@ -235,6 +244,11 @@ public class MessageSolver {
                     System.out.println("You don't have aim with same name - " + delAim[1]);
                     return REQUEST_DENY;
                 }
+            case CREATE_OBJECT_TABLE:
+                if(packetOfData.getPriority() == 2)
+                    DB.newObjectTable(Aim.class);
+                else DB.newObjectTable(Project.class);
+                return REQUEST_ACCEPT;
             default:
                 break;
         }
