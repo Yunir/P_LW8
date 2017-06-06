@@ -1,12 +1,11 @@
 package controllers;
 
+import javafx.event.EventHandler;
 import javafx.fxml.Initializable;
+import javafx.scene.control.*;
 import objects.TableviewObservableLists.AimsHolder;
 import objects.TableviewObservableLists.ProjectsHolder;
 import javafx.collections.FXCollections;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import general_classes.Main;
@@ -18,20 +17,27 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.TableView;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import utils.Lang;
+import utils.LocaleManager;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Observable;
 import java.util.ResourceBundle;
 
 import static general_classes.Main.toServer;
 
-public class MainController implements Initializable {
+public class MainController extends Observable implements Initializable {
     public static volatile boolean confirmationReceived = false;
     public static AimsHolder aimsHolder;
     public static ProjectsHolder projectsHolder;
+
+    private static final String RU_CODE = "ru";
+    private static final String EN_CODE = "en_ca";
+    private static final String HR_CODE = "hr_ru";
+    private static final String BE_CODE = "be_by";
 
     @FXML
     private TableView<Project> projectsTable;
@@ -55,6 +61,8 @@ public class MainController implements Initializable {
     private Button AUpdate;
     @FXML
     private Button ADelete;
+    @FXML
+    private ComboBox comboLocales;
     private ResourceBundle resourceBundle;
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -70,17 +78,31 @@ public class MainController implements Initializable {
         ADelete.setDisable(true);
         PUpdate.setDisable(true);
         PDelete.setDisable(true);
-
+        initListeners();
+        fillLangComboBox();
+        fillData();
         aimsHolder = new AimsHolder();
         projectsHolder = new ProjectsHolder();
     }
 
     public void putDataToObservableList () {
         System.out.println("putting Data to ObservableLists");
-        projectsHolder.setProjectsObsList(FXCollections.observableArrayList(Main.dataHolder.getProjects()));
-        projectsTable.setItems(projectsHolder.getProjectsObsList());
+            projectsHolder.setProjectsObsList(FXCollections.observableArrayList(Main.dataHolder.getProjects()));
+            projectsTable.setItems(projectsHolder.getProjectsObsList());
 
         //projectsHolder.showAllProjects();
+    }
+
+    private void fillData() {
+        System.out.println("putting Data to ObservableLists");
+        if(projectsHolder != null) {
+            projectsHolder.setProjectsObsList(FXCollections.observableArrayList(Main.dataHolder.getProjects()));
+            projectsTable.setItems(projectsHolder.getProjectsObsList());
+        } else {
+            projectsHolder = new ProjectsHolder();
+            projectsHolder.setProjectsObsList(FXCollections.observableArrayList());
+            projectsTable.setItems(projectsHolder.getProjectsObsList());
+        }
     }
 
     public void openAimsOfProject(MouseEvent mouseEvent) {
@@ -171,6 +193,37 @@ public class MainController implements Initializable {
     }
     public TableView getAimsTable() {
         return aimsTable;
+    }
+
+    private void fillLangComboBox() {
+        Lang langRU = new Lang(0, RU_CODE, resourceBundle.getString("ru"), LocaleManager.RU_LOCALE);
+        Lang langEN = new Lang(1, EN_CODE, resourceBundle.getString("en"), LocaleManager.EN_LOCALE);
+        Lang langBE = new Lang(2, BE_CODE, resourceBundle.getString("be"), LocaleManager.BE_LOCALE);
+        Lang langHR = new Lang(3, HR_CODE, resourceBundle.getString("hr"), LocaleManager.HR_LOCALE);
+
+        comboLocales.getItems().add(langRU);
+        comboLocales.getItems().add(langEN);
+        comboLocales.getItems().add(langBE);
+        comboLocales.getItems().add(langHR);
+
+        if(LocaleManager.getCurrentLang()==null){
+            comboLocales.getSelectionModel().select(0);
+        } else {
+            comboLocales.getSelectionModel().select(LocaleManager.getCurrentLang().getIndex());
+        }
+    }
+
+    private void initListeners() {
+        comboLocales.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                Lang selectedLang = (Lang) comboLocales.getSelectionModel().getSelectedItem();
+                LocaleManager.setCurrentLang(selectedLang);
+
+                setChanged();
+                notifyObservers(selectedLang);
+            }
+        });
     }
 
     public void showUpdateAimDialog(ActionEvent actionEvent) {
