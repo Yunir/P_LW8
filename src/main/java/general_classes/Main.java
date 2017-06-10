@@ -7,6 +7,8 @@ import server_interaction.LogInThread;
 import controllers.MainController;
 import javafx.application.Application;
 import javafx.stage.Stage;
+import utils.Lang;
+import utils.LocaleManager;
 
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
@@ -16,7 +18,7 @@ public class Main extends Application {
     public static ToServer toServer;
     public static FromServer fromServer;
     //Controllers
-    private ControllerCreator cc = new ControllerCreator();
+    public static ControllerCreator cc = new ControllerCreator();
     public static MainController mainController;
     public static ConnectController connectController;
     public static ServerUnavailableController serverUnavailableController;
@@ -35,7 +37,6 @@ public class Main extends Application {
     public void start(Stage primaryStage){
         //create Controllers
         mainController = cc.showMainView(primaryStage);
-        mainController.setControllerCreator(cc);
         connectController = cc.showLogInDialog(primaryStage);
         serverUnavailableController = cc.prepareServerUnavailableDialog(primaryStage);
         if(toServer.establishConnection(primaryStage)) {

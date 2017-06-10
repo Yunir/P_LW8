@@ -1,6 +1,5 @@
 package controllers;
 
-import general_classes.ControllerCreator;
 import javafx.event.EventHandler;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -27,15 +26,13 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Observable;
 import java.util.ResourceBundle;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static general_classes.ControllerCreator.BUNDLES_FOLDER;
+import static general_classes.Main.cc;
 import static general_classes.Main.toServer;
 
 public class MainController extends Observable implements Initializable {
     public static volatile boolean confirmationReceived = false;
-    ControllerCreator controllerCreator;
     public static AimsHolder aimsHolder;
     public static ProjectsHolder projectsHolder;
     public static Class c = Aim.class;
@@ -129,24 +126,14 @@ public class MainController extends Observable implements Initializable {
     }
 
     public void showCreateProjectDialog(ActionEvent actionEvent) {
-        Stage stage = new Stage();
-        try {
-            Parent root = FXMLLoader.load(getClass().getResource("../fxml/createProject.fxml"));
-            stage.setTitle("New project");
-            stage.setResizable(false);
-            stage.setScene(new Scene(root));
-            stage.initModality(Modality.WINDOW_MODAL);
-            stage.initOwner(((Node)actionEvent.getSource()).getScene().getWindow());
-            CreateProjectController.CreateProjectStage = stage;
-            CreateProjectController.prTable = projectsTable;
-            UpdateProjectController.aiTable = aimsTable;
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        Stage stage = cc.showCreateProjectDialog(actionEvent, resourceBundle.getString("create_project_title"));
+        stage.show();
+        CreateProjectController.CreateProjectStage = stage;
+        CreateProjectController.prTable = projectsTable;
+        UpdateProjectController.aiTable = aimsTable;
     }
     public void showUpdateProjectDialog(ActionEvent actionEvent) {
-        Stage stage = controllerCreator.showUpdateProjectDialog(actionEvent);
+        Stage stage = cc.showUpdateProjectDialog(actionEvent, resourceBundle.getString("update_project_title"));
         stage.show();
         UpdateProjectController.UpdateProjectStage = stage;
         UpdateProjectController.prTable = projectsTable;
@@ -165,20 +152,10 @@ public class MainController extends Observable implements Initializable {
     }
 
     public void showCreateAimDialog(ActionEvent actionEvent) {
-        Stage stage = new Stage();
-        try {
-            Parent root = FXMLLoader.load(getClass().getResource("../fxml/createAim.fxml"));
-            stage.setTitle("New aim");
-            stage.setResizable(false);
-            stage.setScene(new Scene(root));
-            stage.initModality(Modality.WINDOW_MODAL);
-            stage.initOwner(((Node)actionEvent.getSource()).getScene().getWindow());
-            CreateAimController.CreateAimStage = stage;
-            CreateAimController.projectName = projectsTable.getSelectionModel().getSelectedItem().getName();
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        Stage stage = cc.showCreateAimDialog(actionEvent, resourceBundle.getString("create_aim_title"));
+        CreateAimController.CreateAimStage = stage;
+        CreateAimController.projectName = projectsTable.getSelectionModel().getSelectedItem().getName();
+        stage.show();
     }
 
     public void unlockButtons(MouseEvent mouseEvent) {
@@ -215,6 +192,8 @@ public class MainController extends Observable implements Initializable {
 
         if(LocaleManager.getCurrentLang()==null){
             comboLocales.getSelectionModel().select(0);
+            Lang selectedLang = (Lang) comboLocales.getSelectionModel().getSelectedItem();
+            LocaleManager.setCurrentLang(selectedLang);
         } else {
             comboLocales.getSelectionModel().select(LocaleManager.getCurrentLang().getIndex());
         }
@@ -234,24 +213,11 @@ public class MainController extends Observable implements Initializable {
     }
 
     public void showUpdateAimDialog(ActionEvent actionEvent) {
-        Stage stage = new Stage();
-        try {
-            Parent root = FXMLLoader.load(getClass().getResource("../fxml/updateAim.fxml"));
-            stage.setTitle("Change aim and priority");
-            stage.setResizable(false);
-            stage.setScene(new Scene(root));
-            stage.initModality(Modality.WINDOW_MODAL);
-            stage.initOwner(((Node)actionEvent.getSource()).getScene().getWindow());
-            UpdateAimController.UpdateAimStage = stage;
-            UpdateAimController.projectName = projectsTable.getSelectionModel().getSelectedItem().getName();
-            UpdateAimController.oldAimName = aimsTable.getSelectionModel().getSelectedItem().getName();
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+        Stage stage = cc.showUpdateAimDialog(actionEvent, resourceBundle.getString("update_aim_title"));
+        UpdateAimController.UpdateAimStage = stage;
+        UpdateAimController.projectName = projectsTable.getSelectionModel().getSelectedItem().getName();
+        UpdateAimController.oldAimName = aimsTable.getSelectionModel().getSelectedItem().getName();
+        stage.show();
 
-    public void setControllerCreator(ControllerCreator controllerCreator) {
-        this.controllerCreator = controllerCreator;
     }
 }

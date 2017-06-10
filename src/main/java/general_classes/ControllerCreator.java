@@ -28,6 +28,7 @@ public class ControllerCreator implements Observer {
     public static final String BUNDLES_FOLDER = "bundles.Locale";
     private Stage primaryStage;
     private MainController mainController;
+
     /*Create Controllers*/
     MainController showMainView(Stage parent) {
         this.primaryStage = parent;
@@ -71,13 +72,13 @@ public class ControllerCreator implements Observer {
         }
     }
 
-    public Stage showUpdateProjectDialog(ActionEvent actionEvent) {
+    public Stage showUpdateProjectDialog(ActionEvent actionEvent, String update_project_title) {
         Stage stage = new Stage();
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("../fxml/updateProject.fxml"));
-            loader.setResources(ResourceBundle.getBundle(BUNDLES_FOLDER, LocaleManager.RU_LOCALE));
+            loader.setResources(ResourceBundle.getBundle(BUNDLES_FOLDER, LocaleManager.getCurrentLang().getLocale()));
             Parent root = loader.load();
-            stage.setTitle("Change name of project");
+            stage.setTitle(update_project_title);
             stage.setResizable(false);
             stage.setScene(new Scene(root));
             stage.initModality(Modality.WINDOW_MODAL);
@@ -98,12 +99,9 @@ public class ControllerCreator implements Observer {
 
     private VBox loadFXML(Locale locale) {
         fxmlLoader = new FXMLLoader();
-
         fxmlLoader.setLocation(getClass().getResource(FXML_MAIN));
         fxmlLoader.setResources(ResourceBundle.getBundle(BUNDLES_FOLDER, locale));
-
         VBox node = null;
-
         try {
             node = (VBox) fxmlLoader.load();
 
@@ -125,5 +123,59 @@ public class ControllerCreator implements Observer {
         primaryStage.setMinWidth(650);
         primaryStage.setMinHeight(650);
         primaryStage.show();
+    }
+
+    public Stage showCreateProjectDialog(ActionEvent actionEvent, String create_project_title) {
+        Stage stage = new Stage();
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("../fxml/createProject.fxml"));
+            loader.setResources(ResourceBundle.getBundle(BUNDLES_FOLDER, LocaleManager.getCurrentLang().getLocale()));
+            Parent root = loader.load();
+            stage.setTitle(create_project_title);
+            stage.setResizable(false);
+            stage.setScene(new Scene(root));
+            stage.initModality(Modality.WINDOW_MODAL);
+            stage.initOwner(((Node)actionEvent.getSource()).getScene().getWindow());
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return stage;
+    }
+
+    public Stage showCreateAimDialog(ActionEvent actionEvent, String create_aim_title) {
+        Stage stage = new Stage();
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("../fxml/createAim.fxml"));
+            loader.setResources(ResourceBundle.getBundle(BUNDLES_FOLDER, LocaleManager.getCurrentLang().getLocale()));
+            Parent root = loader.load();
+
+            stage.setTitle(create_aim_title);
+            stage.setResizable(false);
+            stage.setScene(new Scene(root));
+            stage.initModality(Modality.WINDOW_MODAL);
+            stage.initOwner(((Node)actionEvent.getSource()).getScene().getWindow());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return stage;
+    }
+
+    public Stage showUpdateAimDialog(ActionEvent actionEvent, String create_project_title) {
+        Stage stage =new Stage();
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("../fxml/updateAim.fxml"));
+            loader.setResources(ResourceBundle.getBundle(BUNDLES_FOLDER, LocaleManager.getCurrentLang().getLocale()));
+            Parent root = loader.load();
+            stage.setTitle(create_project_title);
+            stage.setResizable(false);
+            stage.setScene(new Scene(root));
+            stage.initModality(Modality.WINDOW_MODAL);
+            stage.initOwner(((Node)actionEvent.getSource()).getScene().getWindow());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return stage;
     }
 }
