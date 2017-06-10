@@ -3,7 +3,9 @@ package general_classes;
 import controllers.ConnectController;
 import controllers.MainController;
 import controllers.ServerUnavailableController;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
@@ -36,6 +38,7 @@ public class ControllerCreator implements Observer {
         Stage logInStage = new Stage(StageStyle.TRANSPARENT);
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("../fxml/connect.fxml"));
+            loader.setResources(ResourceBundle.getBundle(BUNDLES_FOLDER, LocaleManager.RU_LOCALE));
             Parent root = loader.load();
             logInStage.setResizable(false);
             logInStage.setScene(new Scene(root));
@@ -66,6 +69,24 @@ public class ControllerCreator implements Observer {
             System.out.println("Can'readThread load fxml 'connect' file: " + e.getMessage());
             return null;
         }
+    }
+
+    public Stage showUpdateProjectDialog(ActionEvent actionEvent) {
+        Stage stage = new Stage();
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("../fxml/updateProject.fxml"));
+            loader.setResources(ResourceBundle.getBundle(BUNDLES_FOLDER, LocaleManager.RU_LOCALE));
+            Parent root = loader.load();
+            stage.setTitle("Change name of project");
+            stage.setResizable(false);
+            stage.setScene(new Scene(root));
+            stage.initModality(Modality.WINDOW_MODAL);
+            stage.initOwner(((Node)actionEvent.getSource()).getScene().getWindow());
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return stage;
     }
 
     @Override

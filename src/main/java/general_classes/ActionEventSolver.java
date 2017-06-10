@@ -94,6 +94,12 @@ public class ActionEventSolver {
                             dataHolder.addProject(splitedLine[i]);
                             MainController.projectsHolder.create(splitedLine[i]);
                         }
+                        Platform.runLater(new Runnable() {
+                            @Override
+                            public void run() {
+                                mainController.getProjectsTable().refresh();
+                            }
+                        });
                     } else {
                         System.out.println("Denied!");
                     }

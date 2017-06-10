@@ -35,6 +35,7 @@ public class Main extends Application {
     public void start(Stage primaryStage){
         //create Controllers
         mainController = cc.showMainView(primaryStage);
+        mainController.setControllerCreator(cc);
         connectController = cc.showLogInDialog(primaryStage);
         serverUnavailableController = cc.prepareServerUnavailableDialog(primaryStage);
         if(toServer.establishConnection(primaryStage)) {

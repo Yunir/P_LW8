@@ -6,6 +6,8 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
+import java.util.regex.Matcher;
+
 import static general_classes.Main.toServer;
 
 public class CreateAimController {
@@ -14,8 +16,6 @@ public class CreateAimController {
     public static Stage CreateAimStage;
     @FXML
     public TextField aimName;
-    @FXML
-    public TextField aimPriority;
     @FXML
     public ComboBox aimPriorityBox;
     @FXML
@@ -27,9 +27,10 @@ public class CreateAimController {
         aimPriorityBox.getSelectionModel().selectFirst();
     }
     public void createAim(ActionEvent actionEvent) {
-        //TODO check it is 32 symbols and have only characters
-        toServer.getConnector().actionEventSolver.addAim(projectName, aimName.getText(), Integer.parseInt(aimPriorityBox.getValue().toString()));
-        CreateAimStage.close();
-
+        Matcher matcher = MainController.pattern.matcher(aimName.getText());
+        if(matcher.matches() && aimName.getText().toString().length() < 33) {
+            toServer.getConnector().actionEventSolver.addAim(projectName, aimName.getText(), Integer.parseInt(aimPriorityBox.getValue().toString()));
+            CreateAimStage.close();
+        }
     }
 }

@@ -1,5 +1,6 @@
 package controllers;
 
+import general_classes.ControllerCreator;
 import javafx.event.EventHandler;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -26,11 +27,15 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Observable;
 import java.util.ResourceBundle;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import static general_classes.ControllerCreator.BUNDLES_FOLDER;
 import static general_classes.Main.toServer;
 
 public class MainController extends Observable implements Initializable {
     public static volatile boolean confirmationReceived = false;
+    ControllerCreator controllerCreator;
     public static AimsHolder aimsHolder;
     public static ProjectsHolder projectsHolder;
     public static Class c = Aim.class;
@@ -38,15 +43,22 @@ public class MainController extends Observable implements Initializable {
     private static final String EN_CODE = "en_ca";
     private static final String HR_CODE = "hr_ru";
     private static final String BE_CODE = "be_by";
+    public static Pattern pattern = Pattern.compile(
+            "[" +
+                    "a-zA-Zа-яА-ЯёЁ" +
+                    "\\s" +         //знаки-разделители (пробел, табуляция и т.д.)
+                    "]" +
+                    "*");
+
 
     @FXML
-    private TableView<Project> projectsTable;
+    private volatile TableView<Project> projectsTable;
     @FXML
     private TableColumn<Project, String> nameOfProject;
     @FXML
     private TableColumn<Project, Integer> amountOfAims;
     @FXML
-    private TableView<Aim> aimsTable;
+    private volatile TableView<Aim> aimsTable;
     @FXML
     private TableColumn<Aim, String> nameOfAim;
     @FXML
@@ -134,22 +146,11 @@ public class MainController extends Observable implements Initializable {
         }
     }
     public void showUpdateProjectDialog(ActionEvent actionEvent) {
-        Stage stage = new Stage();
-        try {
-            UpdateProjectController.oldProjectName = projectsTable.getSelectionModel().getSelectedItem().getName();
-            Parent root = FXMLLoader.load(getClass().getResource("../fxml/updateProject.fxml"));
-            stage.setTitle("Change name of project");
-            stage.setResizable(false);
-            stage.setScene(new Scene(root));
-            stage.initModality(Modality.WINDOW_MODAL);
-            stage.initOwner(((Node)actionEvent.getSource()).getScene().getWindow());
-            UpdateProjectController.UpdateProjectStage = stage;
-            UpdateProjectController.prTable = projectsTable;
-            UpdateProjectController.aiTable = aimsTable;
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        Stage stage = controllerCreator.showUpdateProjectDialog(actionEvent);
+        stage.show();
+        UpdateProjectController.UpdateProjectStage = stage;
+        UpdateProjectController.prTable = projectsTable;
+        UpdateProjectController.aiTable = aimsTable;
     }
     public void deleteProject(ActionEvent actionEvent) {
         toServer.getConnector().actionEventSolver.deleteProject(projectsTable.getSelectionModel().getSelectedItem().getName());
@@ -248,5 +249,9 @@ public class MainController extends Observable implements Initializable {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void setControllerCreator(ControllerCreator controllerCreator) {
+        this.controllerCreator = controllerCreator;
     }
 }

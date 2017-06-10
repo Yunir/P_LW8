@@ -10,6 +10,7 @@ import javafx.stage.Window;
 import org.apache.commons.codec.digest.DigestUtils;
 
 import java.io.IOException;
+import java.util.regex.Matcher;
 
 import static general_classes.Main.toServer;
 
@@ -26,8 +27,11 @@ public class ConnectController {
     public void connectQuery(ActionEvent actionEvent) {
         System.out.println("Send to server log and password");
         try {
-            System.out.println(login.getText()+";"+ DigestUtils.md5Hex(password.getText()));
-            toServer.getConnector().actionEventSolver.write(login.getText()+";"+ DigestUtils.md5Hex(password.getText()));
+            Matcher matcher = MainController.pattern.matcher(login.getText()+ password.getText());
+            if(matcher.matches()){
+                System.out.println(login.getText()+";"+ DigestUtils.md5Hex(password.getText()));
+                toServer.getConnector().actionEventSolver.write(login.getText()+";"+ DigestUtils.md5Hex(password.getText()));
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }

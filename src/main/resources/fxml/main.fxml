@@ -154,7 +154,7 @@
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                      </HBox.margin>
                   </Button>
-                  <Button fx:id="ACreate1" mnemonicParsing="false" onAction="#createObjTable" prefWidth="500.0" text="Create object-table">
+                  <Button fx:id="ACreate1" mnemonicParsing="false" onAction="#createObjTable" prefWidth="500.0" text="%main.createtableobject">
                      <HBox.margin>
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                      </HBox.margin>
