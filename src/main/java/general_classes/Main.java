@@ -22,7 +22,7 @@ public class Main extends Application {
     public static MainController mainController;
     public static ConnectController connectController;
     public static ServerUnavailableController serverUnavailableController;
-
+    public static Stage stageInStart;
     public static volatile ReentrantLock locker = new ReentrantLock();
     public static volatile Condition accessToResource = locker.newCondition();
 
@@ -36,9 +36,10 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage){
         //create Controllers
+        stageInStart = primaryStage;
         mainController = cc.showMainView(primaryStage);
         connectController = cc.showLogInDialog(primaryStage);
-        serverUnavailableController = cc.prepareServerUnavailableDialog(primaryStage);
+        //cc.prepareServerUnavailableDialog(primaryStage);
         if(toServer.establishConnection(primaryStage)) {
             fromServer.establishConnection(primaryStage);
             fromServer.awaitOfUpdates();

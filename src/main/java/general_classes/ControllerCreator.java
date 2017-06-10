@@ -53,10 +53,11 @@ public class ControllerCreator implements Observer {
             return null;
         }
     }
-    ServerUnavailableController prepareServerUnavailableDialog(Stage parent) {
+    public void prepareServerUnavailableDialog(Stage parent) {
         Stage stage = new Stage(StageStyle.TRANSPARENT);
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("../fxml/serverUnavailable.fxml"));
+            loader.setResources(ResourceBundle.getBundle(BUNDLES_FOLDER, LocaleManager.getCurrentLang().getLocale()));
             Parent root = loader.load();
             stage.setMinHeight(150);
             stage.setMinWidth(300);
@@ -65,10 +66,10 @@ public class ControllerCreator implements Observer {
             stage.initModality(Modality.WINDOW_MODAL);
             stage.initOwner(parent);
             ServerUnavailableController.stage = stage;
-            return loader.getController();
+            //return loader.getController();
+            stage.show();
         } catch (IOException e) {
             System.out.println("Can'readThread load fxml 'connect' file: " + e.getMessage());
-            return null;
         }
     }
 

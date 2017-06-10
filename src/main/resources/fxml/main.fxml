@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
@@ -12,7 +17,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox minHeight="400.0" minWidth="700.0" prefHeight="650.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.MainController">
+<VBox minHeight="400.0" minWidth="700.0" prefHeight="650.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.MainController">
    <children>
       <AnchorPane prefHeight="20.0" prefWidth="200.0">
          <children>
@@ -94,14 +99,14 @@
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                      </HBox.margin>
                      <children>
-                        <HBox prefWidth="340.0">
+                        <HBox prefWidth="1000.0">
                            <children>
                               <Button fx:id="PCreate" mnemonicParsing="false" onAction="#showCreateProjectDialog" text="%main.create">
                                  <HBox.margin>
                                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                  </HBox.margin>
                               </Button>
-                              <Button fx:id="PUpdate" mnemonicParsing="false" onAction="#showUpdateProjectDialog" text="%main.update">
+                              <Button fx:id="PUpdate" mnemonicParsing="false" onAction="#showUpdateProjectDialog" text="%main.update" wrapText="true">
                                  <HBox.margin>
                                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                  </HBox.margin>
@@ -120,7 +125,7 @@
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                      </HBox.margin>
                      <children>
-                        <HBox prefWidth="340.0">
+                        <HBox prefWidth="1000.0">
                            <children>
                               <Button fx:id="ACreate" mnemonicParsing="false" onAction="#showCreateAimDialog" text="%main.create">
                                  <HBox.margin>
@@ -149,12 +154,12 @@
          <children>
             <HBox prefWidth="800.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0">
                <children>
-                  <Button fx:id="PCreate1" mnemonicParsing="false" onAction="#showCreateProjectDialog" prefWidth="500.0" text="Drop object-table" visible="false">
+                  <Button fx:id="PCreate1" mnemonicParsing="false" onAction="#showCreateProjectDialog" prefWidth="1000.0" text="Drop object-table" visible="false">
                      <HBox.margin>
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                      </HBox.margin>
                   </Button>
-                  <Button fx:id="ACreate1" mnemonicParsing="false" onAction="#createObjTable" prefWidth="500.0" text="%main.createtableobject">
+                  <Button fx:id="ACreate1" mnemonicParsing="false" onAction="#createObjTable" prefWidth="1000.0" text="%main.createtableobject">
                      <HBox.margin>
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                      </HBox.margin>

@@ -40,6 +40,10 @@ public class MainController extends Observable implements Initializable {
     private static final String EN_CODE = "en_ca";
     private static final String HR_CODE = "hr_ru";
     private static final String BE_CODE = "be_by";
+    private static final String ES_CODE = "es";
+    private static final String NO_CODE = "no_NO";
+    private static final String WG_CODE = "wg";
+    private static final String CS_CODE = "cs";
     public static Pattern pattern = Pattern.compile(
             "[" +
                     "a-zA-Zа-яА-ЯёЁ" +
@@ -184,11 +188,19 @@ public class MainController extends Observable implements Initializable {
         Lang langEN = new Lang(1, EN_CODE, resourceBundle.getString("en"), LocaleManager.EN_LOCALE);
         Lang langBE = new Lang(2, BE_CODE, resourceBundle.getString("be"), LocaleManager.BE_LOCALE);
         Lang langHR = new Lang(3, HR_CODE, resourceBundle.getString("hr"), LocaleManager.HR_LOCALE);
+        Lang langES = new Lang(4, ES_CODE, resourceBundle.getString("es"), LocaleManager.ES_LOCALE);
+        Lang langNO = new Lang(5, NO_CODE, resourceBundle.getString("no"), LocaleManager.NO_LOCALE);
+        Lang langWG = new Lang(6, WG_CODE, resourceBundle.getString("wg"), LocaleManager.WG_LOCALE);
+        Lang langCS = new Lang(7, CS_CODE, resourceBundle.getString("cs"), LocaleManager.CS_LOCALE);
 
         comboLocales.getItems().add(langRU);
         comboLocales.getItems().add(langEN);
         comboLocales.getItems().add(langBE);
         comboLocales.getItems().add(langHR);
+        comboLocales.getItems().add(langES);
+        comboLocales.getItems().add(langNO);
+        comboLocales.getItems().add(langWG);
+        comboLocales.getItems().add(langCS);
 
         if(LocaleManager.getCurrentLang()==null){
             comboLocales.getSelectionModel().select(0);

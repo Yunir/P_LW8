@@ -8,6 +8,7 @@ import java.net.*;
 import java.nio.channels.Channels;
 import java.nio.channels.SocketChannel;
 
+import static general_classes.Main.cc;
 import static general_classes.Main.serverUnavailableController;
 
 public class Connector {
@@ -42,21 +43,24 @@ public class Connector {
             System.out.println("Host not found");
             return false;
         } catch (SocketException e){
-            serverUnavailableController.showServerUnavailableScene();
+            //serverUnavailableController.showServerUnavailableScene();
+            cc.prepareServerUnavailableDialog(primaryStage);
             System.out.println("Server in "+ IA.getHostAddress()+":"+port+" is not available");
             return false;
         } catch (IOException e) {
             //TODO MEM Do it!
             //TODO MEM Pismak - yes you can, смелее
             //TODO MEM you entered to secret zone (oy-yeah)
-            serverUnavailableController.showServerUnavailableScene();
+            cc.prepareServerUnavailableDialog(primaryStage);
+            //serverUnavailableController.showServerUnavailableScene();
             System.out.println("Server in "+ IA.getHostAddress()+":"+port+" is not available");
             return false;
         }
     }
 
     public void showLostConnection () {
-        serverUnavailableController.showServerUnavailableScene();
+        //serverUnavailableController.showServerUnavailableScene();
+        cc.prepareServerUnavailableDialog(primaryStage);
         System.out.println("Server in "+ IA.getHostAddress()+":"+port+" is not available");
     }
 

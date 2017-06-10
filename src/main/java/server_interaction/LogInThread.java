@@ -36,7 +36,8 @@ public class LogInThread extends Thread {
             Platform.runLater(new Runnable() {
                 @Override
                 public void run() {
-                    serverUnavailableController.showServerUnavailableScene();
+                    cc.prepareServerUnavailableDialog(stageInStart);
+                    // serverUnavailableController.showServerUnavailableScene();
                 }
             });
         }
