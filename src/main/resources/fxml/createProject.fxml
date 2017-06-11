@@ -37,7 +37,7 @@
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                </HBox.margin>
             </Button>
-            <Button mnemonicParsing="false" onAction="#createProject" prefWidth="500.0" text="%enter">
+            <Button mnemonicParsing="false" onAction="#createProject" prefWidth="500.0" text="%enter" defaultButton="true">
                <HBox.margin>
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                </HBox.margin>

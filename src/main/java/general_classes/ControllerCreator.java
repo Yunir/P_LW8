@@ -59,8 +59,8 @@ public class ControllerCreator implements Observer {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("../fxml/serverUnavailable.fxml"));
             loader.setResources(ResourceBundle.getBundle(BUNDLES_FOLDER, LocaleManager.getCurrentLang().getLocale()));
             Parent root = loader.load();
-            stage.setMinHeight(150);
-            stage.setMinWidth(300);
+            stage.setMinHeight(200);
+            stage.setMinWidth(400);
             stage.setResizable(false);
             stage.setScene(new Scene(root));
             stage.initModality(Modality.WINDOW_MODAL);
@@ -105,7 +105,6 @@ public class ControllerCreator implements Observer {
         VBox node = null;
         try {
             node = (VBox) fxmlLoader.load();
-
             mainController = fxmlLoader.getController();
             mainController.addObserver(this);
             primaryStage.setTitle(fxmlLoader.getResources().getString("main.title"));
@@ -113,16 +112,15 @@ public class ControllerCreator implements Observer {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         return node;
     }
 
     private void createGUI(Locale locale) {
         currentRoot = loadFXML(locale);
-        Scene scene = new Scene(currentRoot, 650, 650);
+        Scene scene = new Scene(currentRoot, 950, 650);
         primaryStage.setScene(scene);
-        primaryStage.setMinWidth(650);
-        primaryStage.setMinHeight(650);
+        primaryStage.setMinWidth(950);
+        primaryStage.setMinHeight(700);
         primaryStage.show();
     }
 

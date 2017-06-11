@@ -3,6 +3,7 @@ package controllers;
 import javafx.event.EventHandler;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.layout.VBox;
 import objects.TableviewObservableLists.AimsHolder;
 import objects.TableviewObservableLists.ProjectsHolder;
 import javafx.collections.FXCollections;
@@ -13,16 +14,10 @@ import objects.Aim;
 import objects.Project;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 import utils.Lang;
 import utils.LocaleManager;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.Observable;
 import java.util.ResourceBundle;
@@ -60,6 +55,8 @@ public class MainController extends Observable implements Initializable {
     private TableColumn<Project, Integer> amountOfAims;
     @FXML
     private volatile TableView<Aim> aimsTable;
+    @FXML
+    private VBox main;
     @FXML
     private TableColumn<Aim, String> nameOfAim;
     @FXML
