@@ -14,7 +14,7 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class Main extends Application {
-    public static DataHolder dataHolder;
+    public static volatile DataHolder dataHolder;
     public static ToServer toServer;
     public static FromServer fromServer;
     //Controllers

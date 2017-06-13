@@ -5,6 +5,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import objects.TableviewObservableLists.AimsHolder;
+import objects.TableviewObservableLists.NotesHolder;
 import objects.TableviewObservableLists.ProjectsHolder;
 import javafx.collections.FXCollections;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -228,5 +229,10 @@ public class MainController extends Observable implements Initializable {
         UpdateAimController.oldAimName = aimsTable.getSelectionModel().getSelectedItem().getName();
         stage.show();
 
+    }
+
+    public void showReflTable(ActionEvent actionEvent) {
+        Stage stage = cc.showReflTable(actionEvent, "докажи, что могёшь в рефлексии");
+        stage.show();
     }
 }

@@ -20,7 +20,7 @@ public class CreateProjectController {
     public static String projects = "";
     public void createProject(ActionEvent actionEvent) {
         Matcher matcher = MainController.pattern.matcher(projectName.getText());
-        if (matcher.matches() && projectName.getText().toString().length() < 33) {
+        if (matcher.matches() && projectName.getText().toString().length() < 33 && projectName.getText().toString().trim().length() > 0) {
             if (projects.equals("")) projects += projectName.getText();
             else projects = projects + ";" + projectName.getText();
             toServer.getConnector().actionEventSolver.addProject(projects);
@@ -31,7 +31,7 @@ public class CreateProjectController {
 
     public void nextProject(ActionEvent actionEvent) {
         Matcher matcher = MainController.pattern.matcher(projectName.getText());
-        if(matcher.matches() && projectName.getText().toString().length() < 33) {
+        if(matcher.matches() && projectName.getText().toString().length() < 33 && projectName.getText().toString().trim().length() > 0) {
             if (projects.equals("")) projects += projectName.getText();
             else projects = projects + ";" + projectName.getText();
             projectName.setText("");

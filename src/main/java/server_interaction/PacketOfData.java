@@ -2,6 +2,7 @@ package server_interaction;
 
 import objects.Aim;
 import objects.Command;
+import objects.Notes;
 import objects.Project;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -12,6 +13,7 @@ public class PacketOfData implements Serializable {
     private int priority;
     private Command commandType;
     public ArrayList<Project> projectsList = new ArrayList<Project>();
+    public ArrayList<Notes> notesList = new ArrayList<>();
     private ArrayList<Integer> blockedData;
 
     /*Getters, setters*/

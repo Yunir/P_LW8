@@ -22,7 +22,7 @@ public class UpdateProjectController {
     public void updateProject(ActionEvent actionEvent) {
 
         Matcher matcher = MainController.pattern.matcher(newProjectName.getText());
-        if(matcher.matches() && newProjectName.getText().toString().length() < 33) {
+        if(matcher.matches() && newProjectName.getText().toString().length() < 33 && newProjectName.getText().toString().trim().length() > 0) {
         toServer.getConnector().actionEventSolver.updateProject(oldProjectName, newProjectName.getText());
         UpdateProjectStage.close();
     }

@@ -29,7 +29,7 @@ public class UpdateAimController {
     }
     public void updateAim(ActionEvent actionEvent) {
         Matcher matcher = MainController.pattern.matcher(newAimName.getText());
-        if(matcher.matches() && newAimName.getText().toString().length() < 33) {
+        if(matcher.matches() && newAimName.getText().toString().length() < 33 && newAimName.getText().toString().trim().length() > 0) {
             toServer.getConnector().actionEventSolver.updateAim(projectName, oldAimName, newAimName.getText(), Integer.parseInt(newAimPriorityBox.getValue().toString()));
             UpdateAimStage.close();
         }

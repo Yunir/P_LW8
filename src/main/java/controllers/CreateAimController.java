@@ -28,7 +28,7 @@ public class CreateAimController {
     }
     public void createAim(ActionEvent actionEvent) {
         Matcher matcher = MainController.pattern.matcher(aimName.getText());
-        if(matcher.matches() && aimName.getText().toString().length() < 33) {
+        if(matcher.matches() && aimName.getText().toString().length() < 33 && aimName.getText().toString().trim().length() > 0 ) {
             toServer.getConnector().actionEventSolver.addAim(projectName, aimName.getText(), Integer.parseInt(aimPriorityBox.getValue().toString()));
             CreateAimStage.close();
         }

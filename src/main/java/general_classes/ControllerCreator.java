@@ -2,6 +2,7 @@ package general_classes;
 
 import controllers.ConnectController;
 import controllers.MainController;
+import controllers.ReflTableController;
 import controllers.ServerUnavailableController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
@@ -168,6 +169,61 @@ public class ControllerCreator implements Observer {
             loader.setResources(ResourceBundle.getBundle(BUNDLES_FOLDER, LocaleManager.getCurrentLang().getLocale()));
             Parent root = loader.load();
             stage.setTitle(create_project_title);
+            stage.setResizable(false);
+            stage.setScene(new Scene(root));
+            stage.initModality(Modality.WINDOW_MODAL);
+            stage.initOwner(((Node)actionEvent.getSource()).getScene().getWindow());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return stage;
+    }
+
+    public Stage showReflTable(ActionEvent actionEvent, String s) {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("../fxml/reflTable.fxml"));
+        loader.setResources(ResourceBundle.getBundle(BUNDLES_FOLDER, LocaleManager.getCurrentLang().getLocale()));
+        Parent root = null;
+        Stage stage =new Stage();
+        try {
+            root = loader.load();
+            stage.setTitle(s);
+            stage.setResizable(false);
+            stage.setScene(new Scene(root));
+            stage.initModality(Modality.WINDOW_MODAL);
+            stage.initOwner(((Node)actionEvent.getSource()).getScene().getWindow());
+            ReflTableController.reflTableStage = stage;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return stage;
+    }
+
+    public Stage showCreateNoteDialog(ActionEvent actionEvent, String s) {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("../fxml/createNote.fxml"));
+        loader.setResources(ResourceBundle.getBundle(BUNDLES_FOLDER, LocaleManager.getCurrentLang().getLocale()));
+        Parent root = null;
+        Stage stage =new Stage();
+        try {
+            root = loader.load();
+            stage.setTitle(s);
+            stage.setResizable(false);
+            stage.setScene(new Scene(root));
+            stage.initModality(Modality.WINDOW_MODAL);
+            stage.initOwner(((Node)actionEvent.getSource()).getScene().getWindow());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return stage;
+    }
+
+    public Stage showUpdateNoteDialog(ActionEvent actionEvent, String s) {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("../fxml/updateNote.fxml"));
+        loader.setResources(ResourceBundle.getBundle(BUNDLES_FOLDER, LocaleManager.getCurrentLang().getLocale()));
+        Parent root = null;
+        Stage stage =new Stage();
+        try {
+            root = loader.load();
+            stage.setTitle(s);
             stage.setResizable(false);
             stage.setScene(new Scene(root));
             stage.initModality(Modality.WINDOW_MODAL);

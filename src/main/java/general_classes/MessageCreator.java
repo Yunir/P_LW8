@@ -1,8 +1,11 @@
 package general_classes;
 
+import com.sun.xml.internal.bind.v2.runtime.reflect.Lister;
+import com.sun.xml.internal.ws.api.message.Packet;
 import controllers.MainController;
 import objects.Aim;
 import objects.Command;
+import objects.Notes;
 import objects.Project;
 import server_interaction.PacketOfData;
 
@@ -34,6 +37,14 @@ public class MessageCreator {
         if(MainController.c == Aim.class) {
             p.setPriority(2);
         } else p.setPriority(1);
+        return p;
+    }
+
+    public static PacketOfData addNote(String text, int i) {
+        PacketOfData p = new PacketOfData();
+        p.setCommandType(Command.CREATE_NOTE);
+        p.setName(text);
+        p.setPriority(i);
         return p;
     }
 }
