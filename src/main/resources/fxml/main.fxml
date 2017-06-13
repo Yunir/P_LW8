@@ -18,7 +18,7 @@
          <children>
             <HBox alignment="TOP_RIGHT" prefHeight="20.0" prefWidth="700.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0">
                <children>
-                  <Button mnemonicParsing="false" onAction="#showReflTable" text="Заметки">
+                  <Button mnemonicParsing="false" onAction="#showReflTable" text="%main.notes">
                      <HBox.margin>
                         <Insets right="20.0" />
                      </HBox.margin>

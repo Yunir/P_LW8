@@ -181,7 +181,7 @@ public class ControllerCreator implements Observer {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("../fxml/reflTable.fxml"));
         loader.setResources(ResourceBundle.getBundle(BUNDLES_FOLDER, LocaleManager.getCurrentLang().getLocale()));
         Parent root = null;
-        Stage stage =new Stage();
+        Stage stage = new Stage();
         try {
             root = loader.load();
             stage.setTitle(s);

@@ -264,7 +264,7 @@ public class MainController extends Observable implements Initializable {
     }
 
     public void showReflTable(ActionEvent actionEvent) {
-        Stage stage = cc.showReflTable(actionEvent, "докажи, что могёшь в рефлексии");
+        Stage stage = cc.showReflTable(actionEvent, resourceBundle.getString("refl_title"));
         stage.show();
     }
 }
