@@ -16,6 +16,7 @@ import objects.Project;
 import objects.TableviewObservableLists.NotesHolder;
 import objects.TableviewObservableLists.ProjectsHolder;
 
+import static controllers.UpdateNoteController.UpdateNoteStage;
 import static controllers.UpdateNoteController.oldNoteName;
 import static general_classes.Main.cc;
 import static general_classes.Main.toServer;
@@ -24,7 +25,7 @@ public class ReflTableController {
     public static Stage reflTableStage;
     public static NotesHolder notesHolder = new NotesHolder();
     @FXML
-    private volatile TableView<Notes> notes;
+    public volatile TableView<Notes> notes;
     @FXML
     private TableColumn<Notes, String> text;
     @FXML
@@ -39,7 +40,6 @@ public class ReflTableController {
     public void initialize() {
         text.setCellValueFactory(new PropertyValueFactory<Notes, String>("text"));
         importance.setCellValueFactory(new PropertyValueFactory<Notes, Integer>("importance"));
-
         //notes.setPlaceholder(new Label("There is no notes, yet..."));
         update.setDisable(true);
         delete.setDisable(true);
@@ -61,6 +61,7 @@ public class ReflTableController {
     public void showUpdateNote(ActionEvent actionEvent) {
         Stage stage = cc.showUpdateNoteDialog(actionEvent, "Создай заметку!");
         stage.show();
+        UpdateNoteController.ReflStage = reflTableStage;
         UpdateNoteController.UpdateNoteStage = stage;
         update.setDisable(true);
         delete.setDisable(true);

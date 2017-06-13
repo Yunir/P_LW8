@@ -18,6 +18,8 @@ public class UpdateNoteController {
     @FXML
     public static Stage UpdateNoteStage;
     @FXML
+    public static Stage ReflStage;
+    @FXML
     public TextField newNoteText;
     @FXML
     public ComboBox importance;
@@ -34,6 +36,7 @@ public class UpdateNoteController {
         if(matcher.matches() && newNoteText.getText().toString().length() < 33 && newNoteText.getText().toString().trim().length() > 0) {
             toServer.getConnector().actionEventSolver.updateNote(oldNoteName, newNoteText.getText(), Integer.parseInt(importance.getValue().toString()));
             UpdateNoteStage.close();
+            ReflStage.close();
         }
     }
 }

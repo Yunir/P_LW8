@@ -160,6 +160,7 @@ public class ActionEventSolver {
                         mainController.getProjectsTable().getItems().addAll(mainController.projectsHolder.getProjectsObsList());
                         mainController.getAimsTable().getItems().clear();
                         mainController.disableUpdateDeleteButtons();
+                        mainController.tryToChangeLanguage();
                         //MainController.projectsHolder.getProjectsObsList().get(ind).getAimsList().add(new Aim(text, prior));
                     } else {
                         System.out.println("Denied!");
@@ -203,6 +204,7 @@ public class ActionEventSolver {
                         mainController.getProjectsTable().getItems().addAll(mainController.projectsHolder.getProjectsObsList());
                         mainController.getAimsTable().getItems().clear();
                         mainController.disableUpdateDeleteButtons();
+                        mainController.tryToChangeLanguage();
                         //MainController.projectsHolder.getProjectsObsList().get(ind).getAimsList().add(new Aim(text, prior));
                     } else {
                         System.out.println("Denied!");
@@ -394,6 +396,7 @@ public class ActionEventSolver {
                         mainController.getProjectsTable().getItems().addAll(mainController.projectsHolder.getProjectsObsList());
                         mainController.getAimsTable().getItems().clear();
                         mainController.disableUpdateDeleteButtons();
+                        mainController.tryToChangeLanguage();
                     } else {
                         System.out.println("Denied!");
                     }
