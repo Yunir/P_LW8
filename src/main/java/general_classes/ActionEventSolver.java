@@ -11,6 +11,7 @@ import objects.Command;
 import objects.Notes;
 import server_interaction.PacketOfData;
 
+import javax.swing.text.TableView;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -98,14 +99,18 @@ public class ActionEventSolver {
                         String[] splitedLine = nameOfProject.split(";");
                         for (int i = 0; i < splitedLine.length; i++) {
                             dataHolder.addProject(splitedLine[i]);
-                            MainController.projectsHolder.create(splitedLine[i]);
+                            //MainController.projectsHolder.create(splitedLine[i]);
                         }
+                        System.out.println("Update in acceptmessage");
+                        mainController.putDataToObservableList();
+                        mainController.tryToChangeLanguage();
+                        /*mainController.getProjectsTable().refresh();
                         Platform.runLater(new Runnable() {
                             @Override
                             public void run() {
                                 mainController.getProjectsTable().refresh();
                             }
-                        });
+                        });*/
                     } else {
                         System.out.println("Denied!");
                     }
@@ -271,8 +276,10 @@ public class ActionEventSolver {
 
                         mainController.projectsHolder.setProjectsObsList(FXCollections.observableArrayList(dataHolder.getProjects()));
                         //TODO: remain active selection of project
-                        mainController.getProjectsTable().getItems().clear();
-                        mainController.getProjectsTable().getItems().addAll(mainController.projectsHolder.getProjectsObsList());
+                       // mainController.getProjectsTable().getItems().clear();
+                        //mainController.getProjectsTable().getItems().addAll(mainController.projectsHolder.getProjectsObsList());
+                        mainController.putDataToObservableList();
+                        mainController.getProjectsTable().refresh();
                         mainController.disableUpdateDeleteButtons();
                     } else {
                         System.out.println("Denied!");
@@ -308,6 +315,7 @@ public class ActionEventSolver {
                         mainController.getProjectsTable().getItems().addAll(mainController.projectsHolder.getProjectsObsList());
                         mainController.getAimsTable().getItems().clear();
                         mainController.disableUpdateDeleteButtons();
+                        mainController.tryToChangeLanguage();
                     } else {
                         System.out.println("Denied!");
                     }

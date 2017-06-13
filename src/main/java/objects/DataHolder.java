@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import static controllers.MainController.projectsHolder;
 
 public class DataHolder {
-    public ArrayList<Project> projectsList = new ArrayList<Project>();
+    public volatile ArrayList<Project> projectsList = new ArrayList<Project>();
     public volatile ArrayList<Notes> notesList = new ArrayList<>();
     public DataHolder() {projectsList = new ArrayList<Project>();}
 

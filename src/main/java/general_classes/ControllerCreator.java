@@ -16,6 +16,7 @@ import javafx.stage.StageStyle;
 import utils.Lang;
 import utils.LocaleManager;
 
+import javax.swing.text.TableView;
 import java.io.IOException;
 import java.util.Locale;
 import java.util.Observable;
@@ -85,7 +86,6 @@ public class ControllerCreator implements Observer {
             stage.setScene(new Scene(root));
             stage.initModality(Modality.WINDOW_MODAL);
             stage.initOwner(((Node)actionEvent.getSource()).getScene().getWindow());
-
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -136,8 +136,6 @@ public class ControllerCreator implements Observer {
             stage.setScene(new Scene(root));
             stage.initModality(Modality.WINDOW_MODAL);
             stage.initOwner(((Node)actionEvent.getSource()).getScene().getWindow());
-
-
         } catch (IOException e) {
             e.printStackTrace();
         }

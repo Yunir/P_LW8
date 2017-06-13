@@ -41,8 +41,10 @@ public class ProjectsHolder {
 
     }
     public void showAllProjects() {
+        System.out.println();
         for (int i = 0; i < ProjectsObsList.size(); i++) {
-            System.out.println(ProjectsObsList.get(i).getName());
+            System.out.print(ProjectsObsList.get(i).getName() + "   ");
         }
+        System.out.println();
     }
 }

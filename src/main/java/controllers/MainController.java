@@ -1,5 +1,6 @@
 package controllers;
 
+import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -89,19 +90,19 @@ public class MainController extends Observable implements Initializable {
         ADelete.setDisable(true);
         PUpdate.setDisable(true);
         PDelete.setDisable(true);
+        aimsHolder = new AimsHolder();
+        projectsHolder = new ProjectsHolder();
         initListeners();
         fillLangComboBox();
         fillData();
-        aimsHolder = new AimsHolder();
-        projectsHolder = new ProjectsHolder();
     }
 
     public void putDataToObservableList () {
-        System.out.println("putting Data to ObservableLists");
-            projectsHolder.setProjectsObsList(FXCollections.observableArrayList(Main.dataHolder.getProjects()));
-            projectsTable.setItems(projectsHolder.getProjectsObsList());
-
-        //projectsHolder.showAllProjects();
+        System.out.println("Refresh projectsHolder and projectsTable");
+        projectsHolder.setProjectsObsList(FXCollections.observableArrayList(Main.dataHolder.getProjects()));
+        projectsTable.setItems(projectsHolder.getProjectsObsList());
+        projectsTable.refresh();
+        projectsHolder.showAllProjects();
     }
 
     private void fillData() {
@@ -120,11 +121,14 @@ public class MainController extends Observable implements Initializable {
         Project selectedProject = (Project) ((TableView)mouseEvent.getSource()).getSelectionModel().getSelectedItem();
         if(selectedProject == null)return;
         c = Project.class;
+        UpdateProjectController.oldProjectName = selectedProject.getName();
         aimsHolder.setAimsObsList(FXCollections.observableArrayList(selectedProject.getAimsList()));
         aimsTable.setItems(aimsHolder.getAimsObsList());
         ACreate.setDisable(false);
         PUpdate.setDisable(false);
         PDelete.setDisable(false);
+        aimsTable.refresh();
+        projectsTable.refresh();
     }
 
     public void showCreateProjectDialog(ActionEvent actionEvent) {
@@ -132,7 +136,7 @@ public class MainController extends Observable implements Initializable {
         stage.show();
         CreateProjectController.CreateProjectStage = stage;
         CreateProjectController.prTable = projectsTable;
-        UpdateProjectController.aiTable = aimsTable;
+        CreateProjectController.aiTable = aimsTable;
     }
     public void showUpdateProjectDialog(ActionEvent actionEvent) {
         Stage stage = cc.showUpdateProjectDialog(actionEvent, resourceBundle.getString("update_project_title"));
@@ -143,21 +147,34 @@ public class MainController extends Observable implements Initializable {
     }
     public void deleteProject(ActionEvent actionEvent) {
         toServer.getConnector().actionEventSolver.deleteProject(projectsTable.getSelectionModel().getSelectedItem().getName());
-    }
 
-    public void deleteAim(ActionEvent actionEvent) {
-        toServer.getConnector().actionEventSolver.deleteAim(projectsTable.getSelectionModel().getSelectedItem().getName(), aimsTable.getSelectionModel().getSelectedItem().getName());
     }
-
-    public void createObjTable(ActionEvent actionEvent) {
-        toServer.getConnector().actionEventSolver.createObj();
-    }
-
     public void showCreateAimDialog(ActionEvent actionEvent) {
         Stage stage = cc.showCreateAimDialog(actionEvent, resourceBundle.getString("create_aim_title"));
         CreateAimController.CreateAimStage = stage;
         CreateAimController.projectName = projectsTable.getSelectionModel().getSelectedItem().getName();
         stage.show();
+    }
+    public void showUpdateAimDialog(ActionEvent actionEvent) {
+        Stage stage = cc.showUpdateAimDialog(actionEvent, resourceBundle.getString("update_aim_title"));
+        UpdateAimController.UpdateAimStage = stage;
+        UpdateAimController.projectName = projectsTable.getSelectionModel().getSelectedItem().getName();
+        UpdateAimController.oldAimName = aimsTable.getSelectionModel().getSelectedItem().getName();
+        stage.show();
+
+    }
+    public void deleteAim(ActionEvent actionEvent) {
+        toServer.getConnector().actionEventSolver.deleteAim(projectsTable.getSelectionModel().getSelectedItem().getName(), aimsTable.getSelectionModel().getSelectedItem().getName());
+        aimsTable.refresh();
+        projectsTable.refresh();
+
+        aimsHolder = new AimsHolder();
+        aimsHolder.setAimsObsList(FXCollections.observableArrayList());
+        aimsTable.setItems(aimsHolder.getAimsObsList());
+    }
+
+    public void createObjTable(ActionEvent actionEvent) {
+        toServer.getConnector().actionEventSolver.createObj();
     }
 
     public void unlockButtons(MouseEvent mouseEvent) {
@@ -209,10 +226,34 @@ public class MainController extends Observable implements Initializable {
         }
     }
 
+    public void tryToChangeLanguage() {
+        if(LocaleManager.getCurrentLang().getIndex() == 0) {
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    comboLocales.getSelectionModel().select(1);
+                    comboLocales.getSelectionModel().select(0);
+                }
+            });
+        } else {
+            int iii = LocaleManager.getCurrentLang().getIndex();
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    comboLocales.getSelectionModel().select(0);
+                    comboLocales.getSelectionModel().select(iii);
+                }
+            });
+        }
+
+
+    }
+
     private void initListeners() {
         comboLocales.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
+                System.out.println("you changed language");
                 Lang selectedLang = (Lang) comboLocales.getSelectionModel().getSelectedItem();
                 LocaleManager.setCurrentLang(selectedLang);
 
@@ -220,15 +261,6 @@ public class MainController extends Observable implements Initializable {
                 notifyObservers(selectedLang);
             }
         });
-    }
-
-    public void showUpdateAimDialog(ActionEvent actionEvent) {
-        Stage stage = cc.showUpdateAimDialog(actionEvent, resourceBundle.getString("update_aim_title"));
-        UpdateAimController.UpdateAimStage = stage;
-        UpdateAimController.projectName = projectsTable.getSelectionModel().getSelectedItem().getName();
-        UpdateAimController.oldAimName = aimsTable.getSelectionModel().getSelectedItem().getName();
-        stage.show();
-
     }
 
     public void showReflTable(ActionEvent actionEvent) {
