@@ -1,19 +1,26 @@
 package objects;
 
+import ORM.Attribute;
+import ORM.Entity;
+
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 
+@Entity(name="projects")
 public class Project {
+    @Attribute(name="name", type="VARCHAR(32)")
     private String name;
+    @Attribute(name="amount", type="INTEGER")
     private int amount;
-    OffsetDateTime d;
+    @Attribute(name="create_time", type="VARCHAR(32)")
+    OffsetDateTime date;
 
     public ArrayList<Aim> aimsList = new ArrayList<Aim>();
 
-    public Project(String name, int amount, OffsetDateTime dd) {
+    public Project(String name, int amount, OffsetDateTime date) {
         this.name = name;
         this.amount = amount;
-        d = dd;
+        this.date = date;
     }
 
     /*Getters, setters*/
@@ -29,5 +36,11 @@ public class Project {
     }
     public void setAmount(int amount) {
         this.amount = amount;
+    }
+    public OffsetDateTime getDate() {
+        return date;
+    }
+    public void setDate(OffsetDateTime date) {
+        this.date = date;
     }
 }

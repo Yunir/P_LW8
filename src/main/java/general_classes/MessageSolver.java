@@ -4,6 +4,7 @@ import client_interaction.PacketOfData;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import objects.Aim;
+import objects.Notes;
 import objects.Project;
 import org.apache.commons.codec.digest.DigestUtils;
 
@@ -70,6 +71,7 @@ public class MessageSolver {
         switch (packetOfData.getCommandType()) {
             case FIRST_READ:
                 packetOfData.setProjectsList(dataHolder.getProjectsList());
+                packetOfData.notesList = dataHolder.getNotesList();
                 return gson.toJson(packetOfData);
             case ADD_PROJECT:
                 boolean everyoneUnique = true;
@@ -223,6 +225,7 @@ public class MessageSolver {
                             for (int j = 0; j < dataHolder.getProjectsList().get(i).getAimsList().size(); j++) {
                                 if(dataHolder.getProjectsList().get(i).getAimsList().get(j).getName().equals(delAim[1])) {
                                     dataHolder.getProjectsList().get(i).getAimsList().remove(j);
+                                    dataHolder.getProjectsList().get(i).setAmount(dataHolder.getProjectsList().get(i).getAmount()+1);
                                     break;
                                 }
                             }
@@ -249,7 +252,65 @@ public class MessageSolver {
                     DB.newObjectTable(Aim.class);
                 else DB.newObjectTable(Project.class);
                 return REQUEST_ACCEPT;
-            default:
+            case CREATE_NOTE:
+                locker.lock();
+                //add to DB
+                databaseManager.addObjectToTable(new Notes(packetOfData.getName(), packetOfData.getPriority()));
+                //add to collection
+                dataHolder.notesList.add(new Notes(packetOfData.getName(), packetOfData.getPriority()));
+                generalPacketOfData = new PacketOfData();
+                System.out.println("Need to send new data to other users");
+                notifyEveryone = true;
+                generalPacketOfData.projectsList = dataHolder.getProjectsList();
+                generalPacketOfData.setConnectionId(idOfConnection);
+                updates.signalAll();
+                System.out.println("Notified everyone, that we have new Data");
+                locker.unlock();
+                return REQUEST_ACCEPT;
+            case UPDATE_NOTE:
+                String[] splitedLineNote = packetOfData.getName().split(";");
+                locker.lock();
+                //change in DB
+                databaseManager.updateObjectInTable(new Notes(splitedLineNote[0], 1), "importance", packetOfData.getPriority()+"", "text");
+                databaseManager.updateObjectInTable(new Notes(splitedLineNote[0], 100), "text", splitedLineNote[1], "text");
+                //change in collection
+                        for (int j = 0; j < dataHolder.notesList.size(); j++) {
+                            if(dataHolder.notesList.get(j).getText().equals(splitedLineNote[0])) {
+                                dataHolder.notesList.get(j).setText(splitedLineNote[1]);
+                                dataHolder.notesList.get(j).setImportance(packetOfData.getPriority());
+                                break;
+                            }
+                        }
+                generalPacketOfData = new PacketOfData();
+                System.out.println("Need to send new data to other users");
+                notifyEveryone = true;
+                generalPacketOfData.projectsList = dataHolder.getProjectsList();
+                generalPacketOfData.setConnectionId(idOfConnection);
+                updates.signalAll();
+                System.out.println("Notified everyone, that we have new Data");
+                locker.unlock();
+                return REQUEST_ACCEPT;
+            case DELETE_NOTE:
+                locker.lock();
+                //change in DB
+                databaseManager.deleteObjectInTable(new Notes(packetOfData.getName(), 9999), "text");
+                //change in collection
+                for (int j = 0; j < dataHolder.notesList.size(); j++) {
+                    if(dataHolder.notesList.get(j).getText().equals(packetOfData.getName())) {
+                        dataHolder.notesList.remove(j);
+                        break;
+                    }
+                }
+                generalPacketOfData = new PacketOfData();
+                System.out.println("Need to send new data to other users");
+                notifyEveryone = true;
+                generalPacketOfData.projectsList = dataHolder.getProjectsList();
+                generalPacketOfData.setConnectionId(idOfConnection);
+                updates.signalAll();
+                System.out.println("Notified everyone, that we have new Data");
+                locker.unlock();
+                return REQUEST_ACCEPT;
+                default:
                 break;
         }
         return null;

@@ -2,6 +2,7 @@ package data_processing;
 
 import com.sun.rowset.FilteredRowSetImpl;
 import objects.Aim;
+import objects.Notes;
 import objects.Project;
 
 import javax.sql.rowset.FilteredRowSet;
@@ -63,6 +64,17 @@ public class Database {
                 subStatement.close();
                 subResultSet.close();
             }
+
+            query = "SELECT * FROM notes ORDER BY id;";
+            statement = dbConnection.createStatement();
+            resultSet = statement.executeQuery(query);
+            ArrayList<Notes> notesList = new ArrayList<>();
+            while (resultSet.next()){
+                Notes note = new Notes(resultSet.getString(2), resultSet.getInt(3));
+                notesList.add(note);
+            }
+            dataHolder.setNotesList(notesList);
+
             statement.close();
             resultSet.close();
         } catch (SQLException e) {
