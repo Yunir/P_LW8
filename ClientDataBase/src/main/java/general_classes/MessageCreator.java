@@ -1,7 +1,5 @@
 package general_classes;
 
-import com.sun.xml.internal.bind.v2.runtime.reflect.Lister;
-import com.sun.xml.internal.ws.api.message.Packet;
 import controllers.MainController;
 import objects.Aim;
 import objects.Command;

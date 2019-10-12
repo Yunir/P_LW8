@@ -8,6 +8,10 @@
     <artifactId>client_db</artifactId>
     <version>2.0</version>
 
+    <properties>
+        <exec.mainClass>general_classes.Main</exec.mainClass>
+    </properties>
+
     <build>
         <plugins>
             <plugin>
