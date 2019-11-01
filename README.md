@@ -1,13 +1,26 @@
+## Technical requirements
+[x] Обмен данными между клиентом и сервером должен осуществляться по протоколу TCP.
+[x] При этом сервер должен использовать потоки ввода-вывода а клиент - сетевой канал.
+[x] Для соединения с базой данных использовать java.sql.DriverManager.
+[x] Имя пользователя и пароль для соединения с базой задавать в аргументах метода getConnection().
+[x] Для получения результатов запроса использовать javax.sql.rowset.FilteredRowSet.
+[x] Групповые операции удаления и вставки данных должны быть реализованы с использованием транзакций.
+[x] Одиночные операции модификации данных должны быть реализованы с использованием
+метода CallableStatement.execute()
+
 ## How-to-run
 * Server database
     ```
     cd ServerDataBase
-    maven compile 
-    maven exec:java
+    mvn compile 
+    mvn exec:java
     ```
 * Client database
     ```
     cd ClientDataBase
-    maven compile 
-    maven exec:java
+    mvn compile 
+    mvn exec:java
     ```
+    
+## Sum up
+Выполнив эту лабораторную работу я научился интернацианализировать приложение исспользуя Resource Bundle, а также с помощью рефлексии создавать orm.
